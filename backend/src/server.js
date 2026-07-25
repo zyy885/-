@@ -84,30 +84,95 @@ app.delete('/api/users/:id', authMiddleware, requireRole('teacher'), async (req,
   res.json({ ok: true });
 });
 
-app.get('/api/word-lists', authMiddleware, async (req, res) => {
+app.get('/api/word-books', authMiddleware, async (req, res) => {
   let rows;
   if (req.user.role === 'teacher') {
     rows = await db.prepare(
-      'SELECT wl.*, (SELECT COUNT(*) FROM words w WHERE w.word_list_id = wl.id) as word_count FROM word_lists wl WHERE wl.teacher_id = ? ORDER BY wl.created_at DESC'
+      `SELECT wb.*, 
+        (SELECT COUNT(*) FROM word_lists wl WHERE wl.word_book_id = wb.id) as list_count,
+        (SELECT COUNT(*) FROM words w 
+         INNER JOIN word_lists wl ON wl.id = w.word_list_id 
+         WHERE wl.word_book_id = wb.id) as word_count
+       FROM word_books wb 
+       WHERE wb.teacher_id = ? 
+       ORDER BY wb.created_at DESC`
     ).all(req.user.id);
   } else {
     rows = await db.prepare(
-      `SELECT DISTINCT wl.*, (SELECT COUNT(*) FROM words w WHERE w.word_list_id = wl.id) as word_count
-       FROM word_lists wl
+      `SELECT DISTINCT wb.*, 
+        (SELECT COUNT(*) FROM word_lists wl WHERE wl.word_book_id = wb.id) as list_count,
+        (SELECT COUNT(*) FROM words w 
+         INNER JOIN word_lists wl ON wl.id = w.word_list_id 
+         WHERE wl.word_book_id = wb.id) as word_count
+       FROM word_books wb
+       INNER JOIN word_lists wl ON wl.word_book_id = wb.id
        INNER JOIN tasks t ON t.word_list_id = wl.id
        INNER JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?
-       ORDER BY wl.created_at DESC`
+       ORDER BY wb.created_at DESC`
     ).all(req.user.id);
   }
+  res.json({ wordBooks: rows });
+});
+
+app.post('/api/word-books', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const { name, description } = req.body;
+  if (!name) return res.status(400).json({ error: '请输入单词书名称' });
+  const info = await db.prepare(
+    'INSERT INTO word_books (name, description, teacher_id) VALUES (?, ?, ?)'
+  ).run(name, description || '', req.user.id);
+  res.json({ id: info.lastInsertRowid });
+});
+
+app.put('/api/word-books/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const { name, description } = req.body;
+  await db.prepare(
+    'UPDATE word_books SET name = ?, description = ? WHERE id = ? AND teacher_id = ?'
+  ).run(name, description || '', req.params.id, req.user.id);
+  res.json({ ok: true });
+});
+
+app.delete('/api/word-books/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
+  await db.prepare('DELETE FROM word_books WHERE id = ? AND teacher_id = ?').run(
+    req.params.id, req.user.id
+  );
+  res.json({ ok: true });
+});
+
+app.get('/api/word-lists', authMiddleware, async (req, res) => {
+  const { word_book_id } = req.query;
+  let rows;
+  let baseSQL = 'SELECT wl.*, (SELECT COUNT(*) FROM words w WHERE w.word_list_id = wl.id) as word_count FROM word_lists wl';
+  let whereSQL = '';
+  let params = [];
+
+  if (req.user.role === 'teacher') {
+    whereSQL = ' WHERE wl.teacher_id = ?';
+    params.push(req.user.id);
+  } else {
+    baseSQL += ` INNER JOIN tasks t ON t.word_list_id = wl.id
+                 INNER JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?`;
+    whereSQL = ' WHERE 1=1';
+    params.push(req.user.id);
+  }
+
+  if (word_book_id) {
+    whereSQL += ' AND wl.word_book_id = ?';
+    params.push(word_book_id);
+  } else if (req.user.role === 'teacher') {
+    whereSQL += ' AND wl.word_book_id IS NULL';
+  }
+
+  const finalSQL = baseSQL + whereSQL + ' GROUP BY wl.id ORDER BY wl.created_at DESC';
+  rows = await db.prepare(finalSQL).all(...params);
   res.json({ wordLists: rows });
 });
 
 app.post('/api/word-lists', authMiddleware, requireRole('teacher'), async (req, res) => {
-  const { name, description, words } = req.body;
+  const { name, description, words, word_book_id } = req.body;
   if (!name) return res.status(400).json({ error: '请输入词表名称' });
   const info = await db.prepare(
-    'INSERT INTO word_lists (name, description, teacher_id) VALUES (?, ?, ?)'
-  ).run(name, description || '', req.user.id);
+    'INSERT INTO word_lists (name, description, word_book_id, teacher_id) VALUES (?, ?, ?, ?)'
+  ).run(name, description || '', word_book_id || null, req.user.id);
   const listId = info.lastInsertRowid;
   if (words && words.length) {
     const stmt = db.prepare(
@@ -121,10 +186,10 @@ app.post('/api/word-lists', authMiddleware, requireRole('teacher'), async (req, 
 });
 
 app.put('/api/word-lists/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
-  const { name, description } = req.body;
+  const { name, description, word_book_id } = req.body;
   await db.prepare(
-    'UPDATE word_lists SET name = ?, description = ? WHERE id = ? AND teacher_id = ?'
-  ).run(name, description || '', req.params.id, req.user.id);
+    'UPDATE word_lists SET name = ?, description = ?, word_book_id = ? WHERE id = ? AND teacher_id = ?'
+  ).run(name, description || '', word_book_id || null, req.params.id, req.user.id);
   res.json({ ok: true });
 });
 
@@ -515,11 +580,11 @@ app.get('/api/word-lists/:id/export', authMiddleware, async (req, res) => {
 });
 
 app.post('/api/word-lists/import', authMiddleware, requireRole('teacher'), async (req, res) => {
-  const { name, description, words } = req.body;
+  const { name, description, words, word_book_id } = req.body;
   if (!name || !words || !Array.isArray(words)) return res.status(400).json({ error: '参数错误' });
   const info = await db.prepare(
-    'INSERT INTO word_lists (name, description, teacher_id) VALUES (?, ?, ?)'
-  ).run(name, description || '', req.user.id);
+    'INSERT INTO word_lists (name, description, word_book_id, teacher_id) VALUES (?, ?, ?, ?)'
+  ).run(name, description || '', word_book_id || null, req.user.id);
   const listId = info.lastInsertRowid;
   const stmt = db.prepare(
     'INSERT INTO words (word_list_id, word, meaning, example) VALUES (?, ?, ?, ?)'

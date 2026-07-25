@@ -4,7 +4,9 @@ import { api } from '../api.js';
 
 export default function TaskManage() {
   const [tasks, setTasks] = useState([]);
+  const [wordBooks, setWordBooks] = useState([]);
   const [lists, setLists] = useState([]);
+  const [selectedBookId, setSelectedBookId] = useState(null);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
@@ -12,18 +14,26 @@ export default function TaskManage() {
     name: '', word_list_id: '', deadline: '', test_words_count: 10, test_mode: 'mixed', student_ids: [] });
 
   useEffect(() => { load(); }, []);
+  useEffect(() => { loadLists(); }, [selectedBookId]);
 
   const load = async () => {
-    Promise.all([api.getTasks(), api.getWordLists(), api.getStudents()])
-      .then(([t, w, s]) => {
+    Promise.all([api.getTasks(), api.getWordBooks(), api.getStudents()])
+      .then(([t, wb, s]) => {
         setTasks(t.tasks);
-        setLists(w.wordLists);
+        setWordBooks(wb.wordBooks);
         setStudents(s.students);
-        if (w.wordLists.length > 0 && !form.word_list_id) {
-          setForm(f => ({ ...f, word_list_id: w.wordLists[0].id }));
-        }
       })
       .finally(() => setLoading(false));
+  };
+
+  const loadLists = async () => {
+    try {
+      const data = await api.getWordLists(selectedBookId || undefined);
+      setLists(data.wordLists);
+      if (data.wordLists.length > 0 && !form.word_list_id) {
+        setForm(f => ({ ...f, word_list_id: data.wordLists[0].id }));
+      }
+    } catch (e) {}
   };
 
   const toggleStudent = (id) => {
@@ -81,6 +91,12 @@ export default function TaskManage() {
             <h3>发布测试任务</h3>
             <div className="form-group"><label>任务名称</label>
               <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="如：Unit 1 测试" />
+            </div>
+            <div className="form-group"><label>选择单词书</label>
+              <select value={selectedBookId || ''} onChange={e => { setSelectedBookId(e.target.value || null); setForm(f => ({ ...f, word_list_id: '' })); }}>
+                <option value="">全部词表</option>
+                {wordBooks.map(b => <option key={b.id} value={b.id}>{b.name} ({b.list_count || 0}个词表)</option>)}
+              </select>
             </div>
             <div className="form-group"><label>选择词表</label>
               <select value={form.word_list_id} onChange={e => setForm({ ...form, word_list_id: e.target.value })}>

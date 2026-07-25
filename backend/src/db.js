@@ -87,10 +87,19 @@ const buildDDL = () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
+      CREATE TABLE IF NOT EXISTS word_books (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT,
+        teacher_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
       CREATE TABLE IF NOT EXISTS word_lists (
         id SERIAL PRIMARY KEY,
         name TEXT NOT NULL,
         description TEXT,
+        word_book_id INTEGER REFERENCES word_books(id) ON DELETE SET NULL,
         teacher_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
@@ -206,12 +215,23 @@ const buildDDL = () => {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
-    CREATE TABLE IF NOT EXISTS word_lists (
+    CREATE TABLE IF NOT EXISTS word_books (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       description TEXT,
       teacher_id INTEGER NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS word_lists (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      description TEXT,
+      word_book_id INTEGER,
+      teacher_id INTEGER NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (word_book_id) REFERENCES word_books(id) ON DELETE SET NULL,
       FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
     );
 
@@ -341,11 +361,13 @@ const buildDDL = () => {
       await db.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS test_mode TEXT DEFAULT 'en_to_zh'`);
       await db.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS sentence_list_id INTEGER`);
       await db.query(`ALTER TABLE test_records ADD COLUMN IF NOT EXISTS question_type TEXT DEFAULT 'en_to_zh'`);
+      await db.query(`ALTER TABLE word_lists ADD COLUMN IF NOT EXISTS word_book_id INTEGER REFERENCES word_books(id) ON DELETE SET NULL`);
       await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS idx_study_records_unique ON study_records (task_student_id, word_id)`);
     } else {
       try { db.prepare('ALTER TABLE tasks ADD COLUMN test_mode TEXT DEFAULT "en_to_zh"').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE tasks ADD COLUMN sentence_list_id INTEGER').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE test_records ADD COLUMN question_type TEXT DEFAULT "en_to_zh"').run(); } catch (e) {}
+      try { db.prepare('ALTER TABLE word_lists ADD COLUMN word_book_id INTEGER').run(); } catch (e) {}
       try { db.prepare('CREATE UNIQUE INDEX IF NOT EXISTS idx_study_records_unique ON study_records (task_student_id, word_id)').run(); } catch (e) {}
     }
   } catch (e) {}

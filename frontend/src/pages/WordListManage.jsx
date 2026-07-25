@@ -2,32 +2,48 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../api.js';
 
 export default function WordListManage() {
+  const [wordBooks, setWordBooks] = useState([]);
+  const [selectedBookId, setSelectedBookId] = useState(null);
   const [lists, setLists] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [words, setWords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
+  const [showCreateBook, setShowCreateBook] = useState(false);
   const [showAddWord, setShowAddWord] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [newList, setNewList] = useState({ name: '', description: '' });
+  const [newBook, setNewBook] = useState({ name: '', description: '' });
   const [newWord, setNewWord] = useState({ word: '', meaning: '', example: '' });
   const [editingWord, setEditingWord] = useState(null);
   const [renamingId, setRenamingId] = useState(null);
   const [renamingValue, setRenamingValue] = useState('');
+  const [renamingBookId, setRenamingBookId] = useState(null);
+  const [renamingBookValue, setRenamingBookValue] = useState('');
   const [importData, setImportData] = useState('');
   const [importPreview, setImportPreview] = useState(null);
   const [importFileName, setImportFileName] = useState('');
 
-  useEffect(() => { loadLists(); }, []);
+  useEffect(() => { loadWordBooks(); }, []);
+  useEffect(() => { loadLists(selectedBookId); }, [selectedBookId]);
   useEffect(() => { if (selectedId) loadWords(selectedId); }, [selectedId]);
 
-  const loadLists = async () => {
-    const data = await api.getWordLists();
+  const loadWordBooks = async () => {
+    try {
+      const data = await api.getWordBooks();
+      setWordBooks(data.wordBooks);
+    } catch (e) {}
+    setLoading(false);
+  };
+
+  const loadLists = async (bookId) => {
+    const data = await api.getWordLists(bookId || undefined);
     setLists(data.wordLists);
     if (!selectedId && data.wordLists.length > 0) {
       setSelectedId(data.wordLists[0].id);
+    } else if (data.wordLists.length === 0) {
+      setSelectedId(null);
     }
-    setLoading(false);
   };
 
   const loadWords = async (id) => {
@@ -35,14 +51,49 @@ export default function WordListManage() {
     setWords(data.words);
   };
 
+  const createBook = async () => {
+    if (!newBook.name.trim()) return alert('请输入单词书名称');
+    try {
+      const data = await api.createWordBook(newBook);
+      setSelectedBookId(data.id);
+      setNewBook({ name: '', description: '' });
+      setShowCreateBook(false);
+      loadWordBooks();
+    } catch (e) { alert(e.message); }
+  };
+
+  const deleteBook = async (id) => {
+    if (!confirm('确定删除该单词书及其所有词表？')) return;
+    await api.deleteWordBook(id);
+    if (selectedBookId === id) setSelectedBookId(null);
+    loadWordBooks();
+  };
+
+  const startRenameBook = (b) => {
+    setRenamingBookId(b.id);
+    setRenamingBookValue(b.name);
+  };
+
+  const saveRenameBook = async () => {
+    if (!renamingBookValue.trim()) return alert('单词书名称不能为空');
+    const book = wordBooks.find(b => b.id === renamingBookId);
+    if (!book) return;
+    try {
+      await api.updateWordBook(renamingBookId, { name: renamingBookValue.trim(), description: book.description || '' });
+      setRenamingBookId(null);
+      setRenamingBookValue('');
+      loadWordBooks();
+    } catch (e) { alert(e.message); }
+  };
+
   const createList = async () => {
     if (!newList.name.trim()) return alert('请输入词表名称');
     try {
-      const data = await api.createWordList(newList);
+      const data = await api.createWordList({ ...newList, word_book_id: selectedBookId || null });
       setSelectedId(data.id);
       setNewList({ name: '', description: '' });
       setShowCreate(false);
-      loadLists();
+      loadLists(selectedBookId);
     } catch (e) { alert(e.message); }
   };
 
@@ -50,7 +101,7 @@ export default function WordListManage() {
     if (!confirm('确定删除该词表及其所有单词？')) return;
     await api.deleteWordList(id);
     if (selectedId === id) setSelectedId(null);
-    loadLists();
+    loadLists(selectedBookId);
   };
 
   const startRename = (l) => {
@@ -63,10 +114,10 @@ export default function WordListManage() {
     const list = lists.find(l => l.id === renamingId);
     if (!list) return;
     try {
-      await api.updateWordList(renamingId, { name: renamingValue.trim(), description: list.description || '' });
+      await api.updateWordList(renamingId, { name: renamingValue.trim(), description: list.description || '', word_book_id: selectedBookId || null });
       setRenamingId(null);
       setRenamingValue('');
-      loadLists();
+      loadLists(selectedBookId);
     } catch (e) { alert(e.message); }
   };
 
@@ -77,7 +128,7 @@ export default function WordListManage() {
       setNewWord({ word: '', meaning: '', example: '' });
       setShowAddWord(false);
       loadWords(selectedId);
-      loadLists();
+      loadLists(selectedBookId);
     } catch (e) { alert(e.message); }
   };
 
@@ -93,7 +144,7 @@ export default function WordListManage() {
     if (!confirm('确定删除该单词？')) return;
     await api.deleteWord(id);
     loadWords(selectedId);
-    loadLists();
+    loadLists(selectedBookId);
   };
 
   const batchAddWords = () => {
@@ -111,7 +162,7 @@ export default function WordListManage() {
       } catch (e) { errors.push(`第${i + 1}行: ${e.message}`); }
     })).then(() => {
       loadWords(selectedId);
-      loadLists();
+      loadLists(selectedBookId);
       alert(`成功添加 ${count} 个单词${errors.length ? '，失败：' + errors.length + '个' : ''}`);
     });
   };
@@ -307,13 +358,14 @@ export default function WordListManage() {
         name: importPreview.name,
         description: '',
         words: importPreview.words,
+        word_book_id: selectedBookId || null,
       });
       alert(`导入成功！词表「${importPreview.name}」已添加，共 ${res.imported || importPreview.words.length} 个单词`);
       setShowImport(false);
       setImportData('');
       setImportPreview(null);
       setImportFileName('');
-      loadLists();
+      loadLists(selectedBookId);
     } catch (e) {
       alert('导入失败：' + e.message);
     }
@@ -350,8 +402,28 @@ export default function WordListManage() {
     <div className="word-manage">
       <div className="page-header">
         <h2>词表管理</h2>
-        <button className="btn btn-primary" onClick={() => setShowCreate(true)}>+ 新建词表</button>
+        <button className="btn btn-primary" onClick={() => setShowCreateBook(true)}>+ 新建单词书</button>
       </div>
+
+      {showCreateBook && (
+        <div className="modal" onClick={() => setShowCreateBook(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h3>新建单词书</h3>
+            <div className="form-group">
+              <label>名称</label>
+              <input value={newBook.name} onChange={e => setNewBook({ ...newBook, name: e.target.value })} placeholder="如：考研英语5500词" />
+            </div>
+            <div className="form-group">
+              <label>描述（可选）</label>
+              <input value={newBook.description} onChange={e => setNewBook({ ...newBook, description: e.target.value })} />
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-outline" onClick={() => setShowCreateBook(false)}>取消</button>
+              <button className="btn btn-primary" onClick={createBook}>创建</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showCreate && (
         <div className="modal" onClick={() => setShowCreate(false)}>
@@ -373,9 +445,59 @@ export default function WordListManage() {
         </div>
       )}
 
-      <div className="manage-layout">
+      <div className="manage-layout" style={{ gridTemplateColumns: '240px 280px 1fr' }}>
         <div className="sidebar">
-          <h3>词表列表</h3>
+          <h3>单词书</h3>
+          <div
+            className={'list-item' + (selectedBookId === null ? ' active' : '')}
+            onClick={() => { setSelectedBookId(null); setSelectedId(null); }}
+          >
+            <div className="list-item-info">
+              <div className="list-item-name">📁 未分类</div>
+              <div className="muted small">不属于任何单词书的词表</div>
+            </div>
+          </div>
+          {wordBooks.map(b => (
+            <div
+              key={b.id}
+              className={'list-item' + (selectedBookId === b.id ? ' active' : '')}
+              onClick={() => !renamingBookId && setSelectedBookId(b.id)}
+            >
+              <div className="list-item-info" style={{ flex: 1, minWidth: 0 }}>
+                {renamingBookId === b.id ? (
+                  <input
+                    autoFocus
+                    value={renamingBookValue}
+                    onChange={e => setRenamingBookValue(e.target.value)}
+                    onClick={e => e.stopPropagation()}
+                    onKeyDown={e => { if (e.key === 'Enter') saveRenameBook(); if (e.key === 'Escape') { setRenamingBookId(null); setRenamingBookValue(''); } }}
+                    style={{ width: '100%', padding: 4, fontSize: 14, borderRadius: 4, border: '1px solid #3b82f6' }}
+                  />
+                ) : (
+                  <div className="list-item-name">📚 {b.name}</div>
+                )}
+                <div className="muted small">{b.list_count || 0} 个词表 · {b.word_count || 0} 词</div>
+              </div>
+              {renamingBookId === b.id ? (
+                <>
+                  <button className="icon-btn" onClick={e => { e.stopPropagation(); saveRenameBook(); }} title="保存">✓</button>
+                  <button className="icon-btn" onClick={e => { e.stopPropagation(); setRenamingBookId(null); setRenamingBookValue(''); }} title="取消">✕</button>
+                </>
+              ) : (
+                <>
+                  <button className="icon-btn" onClick={e => { e.stopPropagation(); startRenameBook(b); }} title="重命名">✏️</button>
+                  <button className="icon-btn" onClick={e => { e.stopPropagation(); deleteBook(b.id); }} title="删除">🗑</button>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="sidebar">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+            <h3 style={{ margin: 0 }}>词表列表</h3>
+            <button className="btn btn-primary btn-sm" onClick={() => setShowCreate(true)}>+ 新建</button>
+          </div>
           {lists.length === 0 && <div className="muted small">暂无词表</div>}
           {lists.map(l => (
             <div

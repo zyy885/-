@@ -8,6 +8,8 @@ function speak(word) {
 
 export default function StudentWordLists() {
   const navigate = useNavigate();
+  const [wordBooks, setWordBooks] = useState([]);
+  const [selectedBookId, setSelectedBookId] = useState(null);
   const [lists, setLists] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [words, setWords] = useState([]);
@@ -15,9 +17,13 @@ export default function StudentWordLists() {
   const [favMap, setFavMap] = useState({});
 
   useEffect(() => {
-    loadLists();
+    loadWordBooks();
     loadFavs();
   }, []);
+
+  useEffect(() => {
+    loadLists(selectedBookId);
+  }, [selectedBookId]);
 
   useEffect(() => {
     if (selectedId) loadWords(selectedId);
@@ -44,14 +50,21 @@ export default function StudentWordLists() {
     } catch (e) {}
   };
 
-  const loadLists = async () => {
+  const loadWordBooks = async () => {
     try {
-      const data = await api.getWordLists();
+      const data = await api.getWordBooks();
+      setWordBooks(data.wordBooks);
+    } catch (e) {}
+    setLoading(false);
+  };
+
+  const loadLists = async (bookId) => {
+    try {
+      const data = await api.getWordLists(bookId || undefined);
       setLists(data.wordLists);
       if (data.wordLists.length > 0) setSelectedId(data.wordLists[0].id);
-    } finally {
-      setLoading(false);
-    }
+      else setSelectedId(null);
+    } catch (e) {}
   };
 
   const loadWords = async (id) => {
@@ -69,9 +82,34 @@ export default function StudentWordLists() {
         <div />
       </div>
 
-      <div className="manage-layout">
+      <div className="manage-layout" style={{ gridTemplateColumns: '240px 280px 1fr' }}>
         <div className="sidebar">
-          <h3>全部词表</h3>
+          <h3>单词书</h3>
+          <div
+            className={'list-item' + (selectedBookId === null ? ' active' : '')}
+            onClick={() => { setSelectedBookId(null); setSelectedId(null); }}
+          >
+            <div className="list-item-info">
+              <div className="list-item-name">📁 全部词表</div>
+              <div className="muted small">查看所有词表</div>
+            </div>
+          </div>
+          {wordBooks.map(b => (
+            <div
+              key={b.id}
+              className={'list-item' + (selectedBookId === b.id ? ' active' : '')}
+              onClick={() => setSelectedBookId(b.id)}
+            >
+              <div className="list-item-info">
+                <div className="list-item-name">📚 {b.name}</div>
+                <div className="muted small">{b.list_count || 0} 个词表 · {b.word_count || 0} 词</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="sidebar">
+          <h3>词表列表</h3>
           {lists.length === 0 && <div className="muted small">暂无词表</div>}
           {lists.map(l => (
             <div
