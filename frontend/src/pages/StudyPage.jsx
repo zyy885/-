@@ -12,6 +12,7 @@ export default function StudyPage() {
   const [idx, setIdx] = useState(0);
   const [showMeaning, setShowMeaning] = useState(false);
   const [favMap, setFavMap] = useState({});
+  const [hints, setHints] = useState({ firstLetter: false, example: false, image: false, syllable: false });
 
   const speak = (w) => {
     try { const u = new SpeechSynthesisUtterance(w); u.lang = 'en-US'; speechSynthesis.speak(u); } catch (e) {}
@@ -74,6 +75,7 @@ export default function StudyPage() {
 
   const next = () => {
     setShowMeaning(false);
+    setHints({ firstLetter: false, example: false, image: false, syllable: false });
     if (idx < words.length - 1) {
       setIdx(idx + 1);
     }
@@ -81,7 +83,12 @@ export default function StudyPage() {
 
   const prev = () => {
     setShowMeaning(false);
+    setHints({ firstLetter: false, example: false, image: false, syllable: false });
     if (idx > 0) setIdx(idx - 1);
+  };
+
+  const toggleHint = (key) => {
+    setHints({ ...hints, [key]: !hints[key] });
   };
 
   if (loading) return <div className="loading">加载中...</div>;
@@ -90,6 +97,12 @@ export default function StudyPage() {
   const word = words[idx];
   const studiedCount = Object.keys(studiedMap).length;
   const progress = (studiedCount / words.length) * 100;
+
+  const firstLetterHint = word.word.charAt(0).toUpperCase() + '... (' + word.word.length + '个字母)';
+  const syllableHint = word.word.replace(/[^aeiouAEIOU]/g, '').length + ' 个元音';
+  const exampleWithBlank = word.example
+    ? word.example.replace(new RegExp('\\b' + word.word + '\\b', 'gi'), '______')
+    : '';
 
   return (
     <div className="study-page">
@@ -102,6 +115,56 @@ export default function StudyPage() {
         <div className="progress-fill" style={{ width: progress + '%' }} />
       </div>
       <p className="muted small center">已学习 {studiedCount}/{words.length} 个</p>
+
+      {!showMeaning && (
+        <div className="hint-buttons">
+          <button
+            className={'btn btn-sm ' + (hints.firstLetter ? 'btn-primary' : 'btn-outline')}
+            onClick={() => toggleHint('firstLetter')}
+          >💡 首字母提示</button>
+          <button
+            className={'btn btn-sm ' + (hints.syllable ? 'btn-primary' : 'btn-outline')}
+            onClick={() => toggleHint('syllable')}
+          >🔤 音节提示</button>
+          <button
+            className={'btn btn-sm ' + (hints.example ? 'btn-primary' : 'btn-outline')}
+            onClick={() => toggleHint('example')}
+          >📝 例句提示</button>
+          <button
+            className={'btn btn-sm ' + (hints.image ? 'btn-primary' : 'btn-outline')}
+            onClick={() => toggleHint('image')}
+          >🖼️ 图片提示</button>
+        </div>
+      )}
+
+      {hints.firstLetter && !showMeaning && (
+        <div className="hint-panel">
+          <span className="badge badge-blue">首字母提示</span>
+          <span className="hint-text-large">{firstLetterHint}</span>
+        </div>
+      )}
+      {hints.syllable && !showMeaning && (
+        <div className="hint-panel">
+          <span className="badge badge-green">音节提示</span>
+          <span className="hint-text-large">{syllableHint}</span>
+        </div>
+      )}
+      {hints.example && !showMeaning && word.example && (
+        <div className="hint-panel">
+          <span className="badge badge-orange">例句提示</span>
+          <span className="hint-text-large">{exampleWithBlank}</span>
+        </div>
+      )}
+      {hints.image && !showMeaning && (
+        <div className="hint-panel" style={{ justifyContent: 'center' }}>
+          <img
+            src={'https://image.pollinations.ai/prompt/' + encodeURIComponent(word.word + ' ' + (word.meaning || '')) + '?width=400&height=300&nologo=true'}
+            alt="提示图片"
+            style={{ maxWidth: '100%', borderRadius: 8, maxHeight: 260 }}
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        </div>
+      )}
 
       <div className="flashcard" onClick={() => setShowMeaning(!showMeaning)}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12 }}>
@@ -120,7 +183,21 @@ export default function StudyPage() {
         {showMeaning && (
           <div className="flashcard-meaning">
             <p className="meaning-text">{word.meaning}</p>
-            {word.example && <p className="example">例句：{word.example}</p>}
+            {word.example && (
+              <p className="example">
+                <span style={{ fontWeight: 600 }}>📝 例句：</span>{word.example}
+              </p>
+            )}
+            {hints.image || showMeaning ? (
+              <div style={{ marginTop: 12, textAlign: 'center' }}>
+                <img
+                  src={'https://image.pollinations.ai/prompt/' + encodeURIComponent(word.word + ' ' + (word.meaning || '')) + '?width=400&height=250&nologo=true'}
+                  alt="关联图片"
+                  style={{ maxWidth: '100%', borderRadius: 8, maxHeight: 220 }}
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+              </div>
+            ) : null}
           </div>
         )}
         {!showMeaning && <p className="hint-text">点击卡片查看释义</p>}
