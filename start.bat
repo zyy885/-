@@ -1,8 +1,9 @@
 @echo off
-title 研途单词 - 启动中...
+setlocal enabledelayedexpansion
+title Yantu Vocab - Starting...
 
 echo ==========================================
-echo   研途单词 - Windows 启动脚本
+echo   Yantu Vocab - Startup Script
 echo ==========================================
 echo.
 
@@ -10,45 +11,74 @@ cd /d "%~dp0"
 
 where node >nul 2>nul
 if %errorlevel% neq 0 (
-  echo [错误] 未检测到 Node.js！
+  echo [ERROR] Node.js not found!
   echo.
-  echo 请先安装 Node.js:
-  echo   下载地址: https://nodejs.org/zh-cn
-  echo   下载 LTS 长期支持版，安装完成后重新运行本脚本
+  echo Please install Node.js first:
+  echo   Download: https://nodejs.org/
+  echo   Install LTS version, then re-run this script
   echo.
   pause
   exit /b 1
 )
 
-echo Node.js 版本:
+echo Node.js version:
 node -v
-echo npm 版本:
+echo npm version:
 npm -v
 echo.
 
-echo [1/2] 检查并安装后端依赖...
+echo [1/4] Checking backend dependencies...
 if not exist "backend\node_modules" (
-  echo   正在安装后端依赖，首次运行需要 1-2 分钟...
+  echo   Installing backend dependencies, may take 1-2 minutes...
   cd backend
   call npm install
   if %errorlevel% neq 0 (
     echo.
-    echo [错误] 后端依赖安装失败！
-    echo 请检查网络连接，或手动在 backend 目录下执行 npm install
+    echo [ERROR] Failed to install backend dependencies!
+    echo Check network connection, or run: cd backend ^&^& npm install
     pause
     exit /b 1
   )
   cd ..
-  echo   后端依赖安装完成
+  echo   Backend dependencies installed
 ) else (
-  echo   后端依赖已存在，跳过
+  echo   Backend dependencies exist, skipping
 )
 
 echo.
-echo [2/2] 启动服务...
-echo   服务地址: http://localhost:3001
-echo   浏览器会自动打开，请不要关闭此窗口
-echo   按 Ctrl+C 停止服务
+echo [2/4] Checking port 3001...
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr :3001 ^| findstr LISTENING') do (
+  echo   Found process using port 3001: PID %%a, stopping...
+  taskkill /PID %%a /F >nul 2>nul
+)
+timeout /t 2 /nobreak >nul
+echo   Port 3001 is ready
+
+echo.
+echo [3/4] Checking SQLite module...
+cd backend
+node -e "require('better-sqlite3')" >nul 2>nul
+if %errorlevel% neq 0 (
+  echo   SQLite module mismatch detected, rebuilding...
+  call npm rebuild better-sqlite3
+  if !errorlevel! neq 0 (
+    echo   Rebuild failed, trying reinstall...
+    if exist "node_modules\better-sqlite3" (
+      rmdir /s /q node_modules\better-sqlite3
+    )
+    call npm install better-sqlite3
+  )
+  echo   SQLite module fixed
+) else (
+  echo   SQLite module OK
+)
+cd ..
+
+echo.
+echo [4/4] Starting server...
+echo   URL: http://localhost:3001
+echo   Browser will open automatically. Do not close this window.
+echo   Press Ctrl+C to stop server
 echo.
 echo ==========================================
 echo.
@@ -57,9 +87,9 @@ cd backend
 start "" http://localhost:3001
 node src/server.js
 
-if %errorlevel% neq 0 (
-  echo.
-  echo [错误] 服务启动失败！
-  echo 请检查端口 3001 是否被占用
-  pause
-)
+echo.
+echo ==========================================
+echo   Server stopped.
+echo ==========================================
+echo.
+pause

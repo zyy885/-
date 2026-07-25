@@ -232,7 +232,7 @@ export default function ProgressView() {
                     <div className="result-content">
                       <p className="word-text">
                         <strong>{r.word}</strong>
-                        {(r.question_type === 'zh_to_en' && <span className="badge badge-green" style={{ fontSize: 12, marginLeft: 8 }}>汉译英</span>}
+                        {r.question_type === 'zh_to_en' && <span className="badge badge-green" style={{ fontSize: 12, marginLeft: 8 }}>汉译英</span>}
                         {r.question_type !== 'zh_to_en' && <span className="badge badge-blue" style={{ fontSize: 12, marginLeft: 8 }}>英译汉</span>}
                       </p>
                       <p className="muted small">你的答案：{r.user_answer || '(空)'}</p>
