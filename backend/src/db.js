@@ -25,10 +25,12 @@ if (isPG) {
 function convertSQL(sql) {
   if (!isPG) return sql;
   let i = 0;
+  const hasIgnore = /INSERT OR IGNORE INTO/i.test(sql);
   let result = sql.replace(/\?/g, () => `$${++i}`);
-  result = result.replace(/INSERT OR IGNORE INTO (\w+)(.*?)(?:VALUES|\()/is, (match, table, rest) => {
-    return `INSERT INTO ${table}${rest} ON CONFLICT DO NOTHING `;
-  });
+  result = result.replace(/INSERT OR IGNORE INTO/gi, 'INSERT INTO');
+  if (hasIgnore) {
+    result = result.trim() + ' ON CONFLICT DO NOTHING';
+  }
   return result;
 }
 
