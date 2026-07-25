@@ -31,6 +31,9 @@ function convertSQL(sql) {
   if (hasIgnore) {
     result = result.trim() + ' ON CONFLICT DO NOTHING';
   }
+  if (/^INSERT INTO/i.test(result.trim()) && !/RETURNING/i.test(result)) {
+    result = result.trim() + ' RETURNING id';
+  }
   return result;
 }
 
