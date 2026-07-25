@@ -92,4 +92,6 @@ export const api = {
   importSentenceList: (data) => request('POST', '/sentence-lists/import', data),
   submitTranslation: (data) => request('POST', '/translation/submit', data),
   getTranslationRecords: () => request('GET', '/translation/records'),
+  getTestRecords: (tsId) => request('GET', `/task-students/${tsId}/test-records`),
+  updateTestRecord: (recId, is_correct) => request('PUT', `/test-records/${recId}`, { is_correct }),
 };

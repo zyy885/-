@@ -673,6 +673,39 @@ app.get('/api/translation/records', authMiddleware, (req, res) => {
   res.json({ records: rows });
 });
 
+app.get('/api/task-students/:id/test-records', authMiddleware, requireRole('teacher'), (req, res) => {
+  const ts = db.prepare('SELECT * FROM task_students WHERE id = ?').get(req.params.id);
+  if (!ts) return res.status(404).json({ error: '未找到' });
+  const task = db.prepare('SELECT * FROM tasks WHERE id = ?').get(ts.task_id);
+  if (task && task.teacher_id !== req.user.id) return res.status(403).json({ error: '无权限' });
+  const records = db.prepare(
+    `SELECT tr.*, w.word, w.meaning, w.example, u.username as student_name
+     FROM test_records tr
+     INNER JOIN words w ON w.id = tr.word_id
+     INNER JOIN task_students ts ON ts.id = tr.task_student_id
+     INNER JOIN users u ON u.id = ts.student_id
+     WHERE tr.task_student_id = ? ORDER BY tr.id`
+  ).all(req.params.id);
+  res.json({ taskStudent: ts, records });
+});
+
+app.put('/api/test-records/:id', authMiddleware, requireRole('teacher'), (req, res) => {
+  const { is_correct } = req.body;
+  const rec = db.prepare('SELECT * FROM test_records WHERE id = ?').get(req.params.id);
+  if (!rec) return res.status(404).json({ error: '未找到' });
+  const ts = db.prepare('SELECT * FROM task_students WHERE id = ?').get(rec.task_student_id);
+  if (!ts) return res.status(404).json({ error: '未找到' });
+  const task = db.prepare('SELECT * FROM tasks WHERE id = ?').get(ts.task_id);
+  if (task && task.teacher_id !== req.user.id) return res.status(403).json({ error: '无权限' });
+  db.prepare('UPDATE test_records SET is_correct = ? WHERE id = ?').run(is_correct ? 1 : 0, req.params.id);
+  const stats = db.prepare(
+    'SELECT COUNT(*) as total, SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END) as correct FROM test_records WHERE task_student_id = ?'
+  ).get(ts.id);
+  const score = stats.total > 0 ? (stats.correct / stats.total) * 100 : 0;
+  db.prepare('UPDATE task_students SET test_score = ? WHERE id = ?').run(score, ts.id);
+  res.json({ ok: true, score });
+});
+
 if (fs.existsSync(FRONTEND_DIST)) {
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api/')) return next();

@@ -19,6 +19,8 @@ export default function ProgressView() {
   const [data, setData] = useState({ progress: [], words: [] });
   const [commentModal, setCommentModal] = useState(null);
   const [commentContent, setCommentContent] = useState('');
+  const [testRecordsModal, setTestRecordsModal] = useState(null);
+  const [testRecordsLoading, setTestRecordsLoading] = useState(false);
 
   useEffect(() => { load(); }, [id]);
 
@@ -57,6 +59,33 @@ export default function ProgressView() {
       alert('评语发送成功');
       setCommentModal(null);
       setCommentContent('');
+    } catch (e) {
+      alert(e.message);
+    }
+  };
+
+  const openTestRecords = async (ts) => {
+    setTestRecordsModal({ ...ts, records: [] });
+    setTestRecordsLoading(true);
+    try {
+      const d = await api.getTestRecords(ts.id);
+      setTestRecordsModal({ ...ts, records: d.records });
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      setTestRecordsLoading(false);
+    }
+  };
+
+  const toggleCorrect = async (rec) => {
+    try {
+      const newVal = rec.is_correct ? 0 : 1;
+      const d = await api.updateTestRecord(rec.id, newVal);
+      const updated = testRecordsModal.records.map(r =>
+        r.id === rec.id ? { ...r, is_correct: newVal } : r
+      );
+      setTestRecordsModal({ ...testRecordsModal, records: updated, test_score: d.score });
+      load();
     } catch (e) {
       alert(e.message);
     }
@@ -148,6 +177,9 @@ export default function ProgressView() {
                 <td>
                   <div style={{ display: 'flex', gap: 6 }}>
                     <button className="btn btn-outline btn-sm" onClick={() => openComment(p)}>评语</button>
+                    {p.test_score != null && (
+                      <button className="btn btn-primary btn-sm" onClick={() => openTestRecords(p)}>查看答案</button>
+                    )}
                     <button className="btn btn-danger btn-sm" onClick={() => handleReset(p)}>重置</button>
                   </div>
                 </td>
@@ -172,6 +204,56 @@ export default function ProgressView() {
             <div className="modal-actions">
               <button className="btn btn-outline" onClick={() => setCommentModal(null)}>取消</button>
               <button className="btn btn-primary" onClick={submitComment}>发送</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {testRecordsModal && (
+        <div className="modal" onClick={() => setTestRecordsModal(null)}>
+          <div className="modal-content modal-lg" onClick={e => e.stopPropagation()}>
+            <h3>
+              「{testRecordsModal.username}」的测试答案
+              {testRecordsModal.test_score != null && (
+                <span style={{ marginLeft: 12 }} className={'score ' + (testRecordsModal.test_score >= 80 ? 'good' : testRecordsModal.test_score >= 60 ? 'mid' : 'low')}>
+                  {Math.round(testRecordsModal.test_score)}分
+                </span>
+              )}
+            </h3>
+            {testRecordsLoading ? (
+              <div className="loading">加载中...</div>
+            ) : testRecordsModal.records.length === 0 ? (
+              <div className="empty-state">暂无测试记录</div>
+            ) : (
+              <div className="result-list" style={{ maxHeight: 500, overflowY: 'auto' }}>
+                {testRecordsModal.records.map((r, i) => (
+                  <div key={r.id} className={'result-item ' + (r.is_correct ? 'correct' : 'wrong')}>
+                    <div className="result-num">{i + 1}</div>
+                    <div className="result-content">
+                      <p className="word-text">
+                        <strong>{r.word}</strong>
+                        {(r.question_type === 'zh_to_en' && <span className="badge badge-green" style={{ fontSize: 12, marginLeft: 8 }}>汉译英</span>}
+                        {r.question_type !== 'zh_to_en' && <span className="badge badge-blue" style={{ fontSize: 12, marginLeft: 8 }}>英译汉</span>}
+                      </p>
+                      <p className="muted small">你的答案：{r.user_answer || '(空)'}</p>
+                      <p className="muted small">正确答案：{(r.question_type || 'en_to_zh') === 'en_to_zh' ? r.meaning : r.word}</p>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
+                      <div className="result-indicator">{r.is_correct ? '✓' : '✗'}</div>
+                      <button
+                        className={'btn btn-sm ' + (r.is_correct ? 'btn-outline' : 'btn-success')}
+                        style={{ fontSize: 12 }}
+                        onClick={() => toggleCorrect(r)}
+                      >
+                        {r.is_correct ? '改为错误' : '改为正确'}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="modal-actions">
+              <button className="btn btn-outline" onClick={() => setTestRecordsModal(null)}>关闭</button>
             </div>
           </div>
         </div>
