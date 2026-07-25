@@ -311,20 +311,24 @@ app.post('/api/tests/submit', authMiddleware, (req, res) => {
     const qType = a.question_type || 'en_to_zh';
     let isCorrect = false;
     const userAns = (a.user_answer || '').trim().toLowerCase();
-    const cleanMeaning = (s) => {
-      s = s.trim().toLowerCase();
-      s = s.replace(/\(.*?\)/g, '').trim();
-      s = s.replace(/^[a-z]+\.\s*/, '').trim();
-      s = s.replace(/^[（(][^）)]*[）)]\s*/, '').trim();
-      return s;
-    };
-    if (qType === 'zh_to_en') {
-      const validWords = word.word.split(/[;,，；、\/\|]/).map(s => s.trim().toLowerCase()).filter(Boolean);
-      isCorrect = validWords.some(w => w === userAns || userAns.includes(w) || w.includes(userAns));
+    if (userAns.length === 0) {
+      isCorrect = false;
     } else {
-      const rawMeanings = word.meaning.split(/[;,，；、\/\|]/).map(s => s.trim()).filter(Boolean);
-      const validMeanings = rawMeanings.map(cleanMeaning).filter(Boolean);
-      isCorrect = validMeanings.some(m => m === userAns || userAns.includes(m) || m.includes(userAns));
+      const cleanMeaning = (s) => {
+        s = s.trim().toLowerCase();
+        s = s.replace(/\(.*?\)/g, '').trim();
+        s = s.replace(/^[a-z]+\.\s*/, '').trim();
+        s = s.replace(/^[（(][^）)]*[）)]\s*/, '').trim();
+        return s;
+      };
+      if (qType === 'zh_to_en') {
+        const validWords = word.word.split(/[;,，；、\/\|]/).map(s => s.trim().toLowerCase()).filter(Boolean);
+        isCorrect = validWords.some(w => w === userAns || userAns.includes(w) || w.includes(userAns));
+      } else {
+        const rawMeanings = word.meaning.split(/[;,，；、\/\|]/).map(s => s.trim()).filter(Boolean);
+        const validMeanings = rawMeanings.map(cleanMeaning).filter(Boolean);
+        isCorrect = validMeanings.some(m => m === userAns || userAns.includes(m) || m.includes(userAns));
+      }
     }
     if (isCorrect) correct++;
     insertTr.run(task_student_id, a.word_id, a.user_answer || '', isCorrect ? 1 : 0, qType);
