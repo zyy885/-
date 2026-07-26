@@ -221,13 +221,13 @@ export default function WordListManage() {
 
   const smartParse = (text, fileName = '') => {
     text = (text || '').trim();
+    text = text.replace(/^\uFEFF/, '');
     if (!text) return { error: '内容为空', name: '', words: [] };
 
     const POS_STRICT = /^(n|v|vt|vi|adj|adv|prep|conj|pron|intj|abbr|aux|art|num)\.?$/i;
     const POS_LOOSE = /^[\"'\"'\(（]?\s*(n|v|vt|vi|adj|adv|prep|conj|pron|intj|abbr|aux|art|num)\.?\s*[\"'\"'\)）]?$/i;
     const isPOS = (s) => POS_STRICT.test(s.trim());
     const startsWithPOS = (s) => /^(n|v|vt|vi|adj|adv|prep|conj|pron|intj|abbr|aux|art|num)\.?\b/i.test(s.trim());
-    const cleanLine = (s) => s.replace(/\s+/g, ' ').replace(/[\"'\"']/g, '').trim();
 
     let name = fileName.replace(/\.[^.]+$/, '') || '';
     let words = [];
@@ -248,7 +248,17 @@ export default function WordListManage() {
       if (words.length > 0) return { name, words, format: 'JSON' };
     } catch (e) {}
 
-    const rawLines = text.split(/\r?\n/).map(l => cleanLine(l)).filter(Boolean);
+    const stripLinePrefix = (line) => {
+      line = line.replace(/^[\s\u3000]+/, '');
+      line = line.replace(/^[\(（]?\d+[\)）\.、\s]+/, '');
+      line = line.replace(/^[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳]\s*/, '');
+      line = line.replace(/^[▪■●◆▲★☆◇□※•·]\s*/, '');
+      return line.trim();
+    };
+
+    const cleanLine = (s) => s.replace(/\s+/g, ' ').replace(/[\"'\"']/g, '').trim();
+
+    const rawLines = text.split(/\r?\n/).map(l => stripLinePrefix(l)).map(l => cleanLine(l)).filter(Boolean);
     const lines = [];
     for (let i = 0; i < rawLines.length; i++) {
       let line = rawLines[i];
@@ -263,8 +273,54 @@ export default function WordListManage() {
       if (line) lines.push(line);
     }
 
-    const delimiters = [/[,，\t]/, /\s{2,}/, /[:：]/, /\s+/];
-    let bestResult = { words: [], delimiter: null };
+    const tryParseLine = (line) => {
+      line = line.trim();
+      if (!line) return null;
+      if (/^(单词|word|term|英语|英文|序号|list|释义|中文|翻译|meaning)/i.test(line)) return null;
+
+      const hasCN = /[\u4e00-\u9fa5]/.test(line);
+      const hasEN = /[a-zA-Z]/.test(line);
+      if (!hasCN || !hasEN) return null;
+
+      const trySplit = (pattern) => {
+        const parts = line.split(pattern).map(s => s.trim()).filter(Boolean);
+        if (parts.length < 2) return null;
+        let eng = '', zh = '';
+        for (const p of parts) {
+          if (/[a-zA-Z]/.test(p) && !POS_LOOSE.test(p) && !eng) {
+            eng = p;
+          } else if (/[\u4e00-\u9fa5]/.test(p)) {
+            zh = zh ? zh + '；' + p : p;
+          }
+        }
+        if (eng && zh) return { word: eng, meaning: zh, example: '' };
+        return null;
+      };
+
+      const multiDelims = [
+        /\s*[,，]\s*/,
+        /\s*\t\s*/,
+        /\s*[|｜]\s*/,
+        /\s*[—–\-]{1,3}\s*/,
+        /\s*[:：]\s*/,
+        /\s{2,}/,
+        /\s+/,
+      ];
+
+      for (const d of multiDelims) {
+        const r = trySplit(d);
+        if (r) return r;
+      }
+
+      const cnPart = (line.match(/[\u4e00-\u9fa5][\u4e00-\u9fa5，。；：、\s\w\d()（）]*[\u4e00-\u9fa5\d]/) || [])[0];
+      const enPart = (line.match(/[a-zA-Z][a-zA-Z\s\-']*[a-zA-Z]/) || [])[0];
+      if (enPart && cnPart) {
+        const w = enPart.trim();
+        const m = cnPart.trim();
+        if (!isPOS(w)) return { word: w, meaning: m, example: '' };
+      }
+      return null;
+    };
 
     const smartMergeLine = (line) => {
       const segs = line.split(/\s*((?:n|v|vt|vi|adj|adv|prep|conj|pron|intj|abbr|aux|art|num)\.?)\s+/i).map(s => s.trim()).filter(Boolean);
@@ -295,67 +351,15 @@ export default function WordListManage() {
       return null;
     };
 
-    for (const delim of delimiters) {
-      const parsed = [];
-      for (const line of lines) {
-        if (/^(单词|word|term|英语|英文|序号|list)/i.test(line)) continue;
-
-        const merged = smartMergeLine(line);
-        if (merged) { parsed.push(merged); continue; }
-
-        const parts = line.split(delim).map(p => p.trim()).filter(Boolean);
-        if (parts.length < 2) continue;
-
-        const engIdx = parts.findIndex(p => /[a-zA-Z]/.test(p) && !POS_LOOSE.test(p));
-        if (engIdx < 0) continue;
-
-        let w = parts[engIdx];
-        if (POS_LOOSE.test(w)) continue;
-
-        const zhParts = [];
-        let ex = '';
-        for (let i = 0; i < parts.length; i++) {
-          if (i === engIdx) continue;
-          const p = parts[i];
-          if (POS_LOOSE.test(p)) {
-            const pos = p.replace(/[\"'\"'\(（\)）]/g, '').trim();
-            if (zhParts.length > 0) zhParts[zhParts.length - 1] = pos + ' ' + zhParts[zhParts.length - 1];
-            else zhParts.push(pos);
-          } else if (/[\u4e00-\u9fa5]/.test(p)) {
-            zhParts.push(p);
-          } else if (/[a-zA-Z]{4,}/.test(p)) {
-            ex = p;
-          } else {
-            zhParts.push(p);
-          }
-        }
-
-        let m = zhParts.join(' ').trim();
-        if (!m) continue;
-
-        if (/^[a-zA-Z]/.test(w) && !/[a-zA-Z]/.test(m)) {
-          parsed.push({ word: w, meaning: m, example: ex || '' });
-        }
-      }
-      if (parsed.length > bestResult.words.length) {
-        bestResult = { words: parsed, delimiter: delim };
-      }
+    const parsed = [];
+    for (const line of lines) {
+      const merged = smartMergeLine(line);
+      if (merged) { parsed.push(merged); continue; }
+      const p = tryParseLine(line);
+      if (p) parsed.push(p);
     }
 
-    if (bestResult.words.length === 0) {
-      const allText = lines.join(' ');
-      const pairs = allText.match(/([a-zA-Z][a-zA-Z\s\-']*[a-zA-Z])[^a-zA-Z\u4e00-\u9fa5]{0,5}([\u4e00-\u9fa5][\u4e00-\u9fa5，。；：、\s]*[\u4e00-\u9fa5])/g);
-      if (pairs) {
-        for (const p of pairs) {
-          const m = p.match(/^([a-zA-Z][a-zA-Z\s\-']*[a-zA-Z])[^a-zA-Z\u4e00-\u9fa5]{0,5}([\u4e00-\u9fa5][\u4e00-\u9fa5，。；：、\s]*[\u4e00-\u9fa5])$/);
-          if (m && !isPOS(m[1].trim())) {
-            bestResult.words.push({ word: m[1].trim(), meaning: m[2].trim(), example: '' });
-          }
-        }
-      }
-    }
-
-    words = bestResult.words.filter(w => !isPOS(w.word));
+    words = parsed.filter(w => !isPOS(w.word));
 
     const seen = new Set();
     words = words.filter(w => {
@@ -372,7 +376,7 @@ export default function WordListManage() {
     return {
       name,
       words,
-      format: bestResult.delimiter ? '文本' : 'JSON',
+      format: '文本',
       error: words.length === 0 ? '未解析到有效的单词，请检查格式' : null,
     };
   };
@@ -397,7 +401,8 @@ export default function WordListManage() {
         const res = await api.importWordsToList(selectedId, {
           words: importPreview.words,
         });
-        alert(`导入成功！已向当前词表追加 ${res.imported || importPreview.words.length} 个单词`);
+        const skipped = res.skipped || 0;
+        alert(`导入成功！已向当前词表追加 ${res.imported || 0} 个单词${skipped > 0 ? `，已跳过 ${skipped} 个重复/无效单词` : ''}`);
       } else {
         const res = await api.importWordList({
           name: importPreview.name,
@@ -405,7 +410,8 @@ export default function WordListManage() {
           words: importPreview.words,
           word_book_id: selectedBookId || null,
         });
-        alert(`导入成功！词表「${importPreview.name}」已添加，共 ${res.imported || importPreview.words.length} 个单词`);
+        const skipped = res.skipped || 0;
+        alert(`导入成功！词表「${importPreview.name}」已添加，共 ${res.imported || 0} 个单词${skipped > 0 ? `，已跳过 ${skipped} 个重复/无效单词` : ''}`);
       }
       setShowImport(false);
       setImportData('');

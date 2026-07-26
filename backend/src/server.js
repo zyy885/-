@@ -470,24 +470,32 @@ app.delete('/api/favorites/:wordId', authMiddleware, async (req, res) => {
 app.get('/api/wrong-book', authMiddleware, async (req, res) => {
   const { sort = 'error_count' } = req.query;
   const orderBy = sort === 'recent'
-    ? 'MAX(tr.tested_at) DESC'
+    ? 'MAX(all_rec.tested_at) DESC'
     : sort === 'word'
     ? 'w.word ASC'
-    : 'SUM(CASE WHEN tr.is_correct = 0 THEN 1 ELSE 0 END) DESC, MAX(tr.tested_at) DESC';
+    : 'SUM(CASE WHEN all_rec.is_correct = 0 THEN 1 ELSE 0 END) DESC, MAX(all_rec.tested_at) DESC';
   const rows = await db.prepare(
     `SELECT w.*, wl.name as word_list_name,
-       SUM(CASE WHEN tr.is_correct = 0 THEN 1 ELSE 0 END) as error_count,
-       SUM(CASE WHEN tr.is_correct = 1 THEN 1 ELSE 0 END) as correct_count,
-       MAX(tr.tested_at) as last_tested_at
-     FROM test_records tr
-     INNER JOIN words w ON w.id = tr.word_id
-     INNER JOIN task_students ts ON ts.id = tr.task_student_id
+       SUM(CASE WHEN all_rec.is_correct = 0 THEN 1 ELSE 0 END) as error_count,
+       SUM(CASE WHEN all_rec.is_correct = 1 THEN 1 ELSE 0 END) as correct_count,
+       MAX(all_rec.tested_at) as last_tested_at
+     FROM (
+       SELECT tr.word_id, tr.is_correct, tr.tested_at
+       FROM test_records tr
+       INNER JOIN task_students ts ON ts.id = tr.task_student_id
+       WHERE ts.student_id = ?
+       UNION ALL
+       SELECT str.word_id, str.is_correct, str.created_at as tested_at
+       FROM self_test_records str
+       INNER JOIN self_tests st ON st.id = str.self_test_id
+       WHERE st.student_id = ?
+     ) all_rec
+     INNER JOIN words w ON w.id = all_rec.word_id
      LEFT JOIN word_lists wl ON wl.id = w.word_list_id
-     WHERE ts.student_id = ?
      GROUP BY w.id, w.word, w.meaning, w.example, w.created_at, w.word_list_id, wl.name
-     HAVING SUM(CASE WHEN tr.is_correct = 0 THEN 1 ELSE 0 END) > 0
+     HAVING SUM(CASE WHEN all_rec.is_correct = 0 THEN 1 ELSE 0 END) > 0
      ORDER BY ${orderBy}`
-  ).all(req.user.id);
+  ).all(req.user.id, req.user.id);
   res.json({ wrongWords: rows });
 });
 
@@ -612,10 +620,16 @@ app.post('/api/word-lists/import', authMiddleware, requireRole('teacher'), async
     'INSERT INTO words (word_list_id, word, meaning, example) VALUES (?, ?, ?, ?)'
   );
   let count = 0;
+  const seen = new Set();
   for (const w of words) {
-    if (w.word && w.meaning) { await stmt.run(listId, w.word, w.meaning, w.example || ''); count++; }
+    if (!w.word || !w.meaning) continue;
+    const key = w.word.trim().toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    await stmt.run(listId, w.word.trim(), w.meaning.trim(), w.example || '');
+    count++;
   }
-  res.json({ id: listId, imported: count });
+  res.json({ id: listId, imported: count, skipped: words.length - count });
 });
 
 app.post('/api/word-lists/:id/import', authMiddleware, requireRole('teacher'), async (req, res) => {
@@ -623,14 +637,22 @@ app.post('/api/word-lists/:id/import', authMiddleware, requireRole('teacher'), a
   if (!words || !Array.isArray(words)) return res.status(400).json({ error: '参数错误' });
   const list = await db.prepare('SELECT * FROM word_lists WHERE id = ? AND teacher_id = ?').get(req.params.id, req.user.id);
   if (!list) return res.status(404).json({ error: '词表不存在或无权限' });
+  const existing = await db.prepare('SELECT word FROM words WHERE word_list_id = ?').all(req.params.id);
+  const existingSet = new Set(existing.map(w => w.word.trim().toLowerCase()));
   const stmt = db.prepare(
     'INSERT INTO words (word_list_id, word, meaning, example) VALUES (?, ?, ?, ?)'
   );
   let count = 0;
+  const seen = new Set();
   for (const w of words) {
-    if (w.word && w.meaning) { await stmt.run(req.params.id, w.word, w.meaning, w.example || ''); count++; }
+    if (!w.word || !w.meaning) continue;
+    const key = w.word.trim().toLowerCase();
+    if (existingSet.has(key) || seen.has(key)) continue;
+    seen.add(key);
+    await stmt.run(req.params.id, w.word.trim(), w.meaning.trim(), w.example || '');
+    count++;
   }
-  res.json({ id: req.params.id, imported: count });
+  res.json({ id: req.params.id, imported: count, skipped: words.length - count });
 });
 
 app.get('/api/comments', authMiddleware, async (req, res) => {
@@ -959,7 +981,7 @@ app.post('/api/checkins', authMiddleware, requireRole('student'), async (req, re
          VALUES (?, ?, ?, ?)`
   ).run(studentId, today, bestTest.type === 'task' ? bestTest.id : null, bestTest.score);
 
-  res.json({ ok: true, id: info.lastInsertRowid, test_score: bestTest.test_score });
+  res.json({ ok: true, id: info.lastInsertRowid, test_score: bestTest.score });
 });
 
 app.get('/api/checkins', authMiddleware, requireRole('student'), async (req, res) => {
@@ -1114,19 +1136,19 @@ app.post('/api/self-tests/submit', authMiddleware, requireRole('student'), async
     return s;
   };
   for (const a of answers) {
+    a.is_correct = false;
     const word = await db.prepare('SELECT * FROM words WHERE id = ?').get(a.word_id);
     if (!word) continue;
     const qType = a.question_type || 'en_to_zh';
     const userAns = (a.user_answer || '').trim().toLowerCase();
-    if (userAns.length > 0) {
-      if (qType === 'zh_to_en') {
-        const validWords = word.word.split(/[;,，；、\/\|]/).map(s => s.trim().toLowerCase()).filter(Boolean);
-        if (validWords.some(w => w === userAns || userAns.includes(w) || w.includes(userAns))) a.is_correct = true;
-      } else {
-        const rawMeanings = word.meaning.split(/[;,，；、\/\|]/).map(s => s.trim()).filter(Boolean);
-        const validMeanings = rawMeanings.map(cleanMeaning).filter(Boolean);
-        if (validMeanings.some(m => m === userAns || userAns.includes(m) || m.includes(userAns))) a.is_correct = true;
-      }
+    if (userAns.length === 0) continue;
+    if (qType === 'zh_to_en') {
+      const validWords = word.word.split(/[;,，；、\/\|]/).map(s => s.trim().toLowerCase()).filter(Boolean);
+      if (validWords.some(w => w === userAns || userAns.includes(w) || w.includes(userAns))) a.is_correct = true;
+    } else {
+      const rawMeanings = word.meaning.split(/[;,，；、\/\|]/).map(s => s.trim()).filter(Boolean);
+      const validMeanings = rawMeanings.map(cleanMeaning).filter(Boolean);
+      if (validMeanings.some(m => m === userAns || userAns.includes(m) || m.includes(userAns))) a.is_correct = true;
     }
     if (a.is_correct) correct++;
   }
