@@ -27,7 +27,6 @@ function Navbar() {
   const user = getCurrentUser();
   const navigate = useNavigate();
   const location = useLocation();
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   if (!user) return null;
 
   const logout = () => {
@@ -55,11 +54,6 @@ function Navbar() {
         { to: '/student/comments', label: '留言' },
       ];
 
-  const goTo = (to) => {
-    setMobileMenuOpen(false);
-    navigate(to);
-  };
-
   return (
     <nav className="navbar">
       <div className="nav-left">
@@ -78,24 +72,169 @@ function Navbar() {
         <button className="btn-link" onClick={() => navigate('/settings')} title="设置">⚙️</button>
         <span className="user-info">{user.role === 'teacher' ? '👨‍🏫' : '🎒'} {user.username}</span>
         <button className="btn-link" onClick={logout}>退出</button>
-        <button className="hamburger-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} title="菜单">
-          {mobileMenuOpen ? '✕' : '☰'}
-        </button>
       </div>
-      {mobileMenuOpen && (
-        <div className="mobile-menu">
-          {links.map(l => (
-            <div
-              key={l.to}
-              className={'mobile-menu-item' + (location.pathname === l.to ? ' active' : '')}
-              onClick={() => goTo(l.to)}
-            >{l.label}</div>
-          ))}
-          <div className="mobile-menu-item" onClick={() => { setMobileMenuOpen(false); navigate('/settings'); }}>⚙️ 设置</div>
-          <div className="mobile-menu-item" onClick={() => { setMobileMenuOpen(false); logout(); }}>🚪 退出登录</div>
-        </div>
-      )}
     </nav>
+  );
+}
+
+function BottomTabBar() {
+  const user = getCurrentUser();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [activeSheet, setActiveSheet] = useState(null);
+
+  if (!user) return null;
+
+  const logout = () => {
+    clearAuth();
+    navigate('/login');
+  };
+
+  const go = (to) => {
+    setActiveSheet(null);
+    navigate(to);
+  };
+
+  const toggleSheet = (key) => {
+    setActiveSheet(activeSheet === key ? null : key);
+  };
+
+  const studentTabs = [
+    {
+      key: 'task',
+      label: '任务',
+      icon: '📋',
+      single: { to: '/student', label: '我的任务' },
+      match: ['/student'],
+    },
+    {
+      key: 'study',
+      label: '学习',
+      icon: '📚',
+      items: [
+        { to: '/student/word-lists', label: '词表总览', icon: '📖' },
+        { to: '/student/sentence-practice', label: '长难句', icon: '📝' },
+        { to: '/student/wrong-book', label: '错题本', icon: '❌' },
+      ],
+      match: ['/student/word-lists', '/student/sentence-practice', '/student/wrong-book'],
+    },
+    {
+      key: 'discover',
+      label: '发现',
+      icon: '🎯',
+      items: [
+        { to: '/student/favorites', label: '收藏', icon: '⭐' },
+        { to: '/student/stats', label: '统计', icon: '📊' },
+        { to: '/student/leaderboard', label: '排行', icon: '🏆' },
+        { to: '/student/comments', label: '留言', icon: '💬' },
+      ],
+      match: ['/student/favorites', '/student/stats', '/student/leaderboard', '/student/comments'],
+    },
+    {
+      key: 'mine',
+      label: '我的',
+      icon: '👤',
+      items: [
+        { to: '/settings', label: '设置', icon: '⚙️' },
+        { action: logout, label: '退出登录', icon: '🚪' },
+      ],
+      match: ['/settings'],
+    },
+  ];
+
+  const teacherTabs = [
+    {
+      key: 'overview',
+      label: '总览',
+      icon: '🏠',
+      single: { to: '/teacher', label: '总览' },
+      match: ['/teacher'],
+    },
+    {
+      key: 'manage',
+      label: '管理',
+      icon: '📚',
+      items: [
+        { to: '/teacher/word-lists', label: '词表管理', icon: '📖' },
+        { to: '/teacher/sentence-lists', label: '长难句', icon: '📝' },
+        { to: '/teacher/tasks', label: '任务管理', icon: '📋' },
+      ],
+      match: ['/teacher/word-lists', '/teacher/sentence-lists', '/teacher/tasks'],
+    },
+    {
+      key: 'users',
+      label: '用户',
+      icon: '👥',
+      items: [
+        { to: '/teacher/users', label: '账号管理', icon: '👤' },
+        { to: '/teacher/comments', label: '留言', icon: '💬' },
+      ],
+      match: ['/teacher/users', '/teacher/comments'],
+    },
+    {
+      key: 'mine',
+      label: '我的',
+      icon: '👤',
+      items: [
+        { to: '/settings', label: '设置', icon: '⚙️' },
+        { action: logout, label: '退出登录', icon: '🚪' },
+      ],
+      match: ['/settings'],
+    },
+  ];
+
+  const tabs = user.role === 'teacher' ? teacherTabs : studentTabs;
+
+  const isActive = (tab) => {
+    return tab.match.some(p => location.pathname.startsWith(p));
+  };
+
+  return (
+    <>
+      {activeSheet && (
+        <div className="tab-overlay" onClick={() => setActiveSheet(null)} />
+      )}
+      <div className="bottom-tab-bar">
+        {tabs.map(tab => {
+          const active = isActive(tab);
+          const isOpen = activeSheet === tab.key;
+          return (
+            <div key={tab.key} className="tab-item-wrapper">
+              {isOpen && tab.items && (
+                <div className="tab-sheet">
+                  {tab.items.map((item, idx) => (
+                    <button
+                      key={idx}
+                      className="tab-sheet-item"
+                      onClick={() => {
+                        if (item.action) { item.action(); }
+                        else if (item.to) { go(item.to); }
+                      }}
+                    >
+                      <span className="tab-sheet-icon">{item.icon}</span>
+                      <span>{item.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+              <button
+                className={'tab-item' + (active ? ' active' : '') + (isOpen ? ' open' : '')}
+                onClick={() => {
+                  if (tab.single) {
+                    go(tab.single.to);
+                  } else {
+                    toggleSheet(tab.key);
+                  }
+                }}
+              >
+                <span className="tab-icon">{tab.icon}</span>
+                <span className="tab-label">{tab.label}</span>
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 }
 
@@ -149,6 +288,7 @@ export default function App() {
           <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
         </Routes>
       </main>
+      <BottomTabBar />
     </div>
   );
 }
