@@ -107,7 +107,7 @@ app.get('/api/word-books', authMiddleware, async (req, res) => {
          INNER JOIN word_lists wl ON wl.id = w.word_list_id 
          WHERE wl.word_book_id = wb.id) as word_count
        FROM word_books wb
-       WHERE wb.is_public = 1 OR wb.id IN (
+       WHERE wb.is_public OR wb.id IN (
          SELECT DISTINCT wl2.word_book_id FROM word_lists wl2
          INNER JOIN tasks t ON t.word_list_id = wl2.id
          INNER JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?
@@ -162,10 +162,10 @@ app.get('/api/word-lists', authMiddleware, async (req, res) => {
         INNER JOIN task_students ts ON ts.task_id = t.id
         WHERE t.word_list_id = wl.id AND ts.student_id = ?
       )
-      OR wb.is_public = ?
+      OR wb.is_public
       OR wl.teacher_id = ?
     )`;
-    params.push(req.user.id, 1, req.user.id);
+    params.push(req.user.id, req.user.id);
   }
 
   if (word_book_id) {
