@@ -219,6 +219,90 @@ export default function WordListManage() {
     } catch (e) { alert(e.message); }
   };
 
+  const chineseNumMap = { '零':0, '一':1, '二':2, '两':2, '三':3, '四':4, '五':5, '六':6, '七':7, '八':8, '九':9, '十':10, '百':100, '千':1000, '万':10000 };
+  const numToChinese = (n) => {
+    if (n === 0) return '零';
+    if (n < 10) return ['零','一','二','三','四','五','六','七','八','九'][n];
+    if (n < 20) return '十' + (n % 10 === 0 ? '' : numToChinese(n % 10));
+    if (n < 100) {
+      const tens = Math.floor(n / 10);
+      const ones = n % 10;
+      return numToChinese(tens) + '十' + (ones === 0 ? '' : numToChinese(ones));
+    }
+    if (n < 1000) {
+      const hundreds = Math.floor(n / 100);
+      const rest = n % 100;
+      let result = numToChinese(hundreds) + '百';
+      if (rest > 0) {
+        if (rest < 10) result += '零';
+        result += numToChinese(rest);
+      }
+      return result;
+    }
+    return String(n);
+  };
+  const chineseToNum = (s) => {
+    s = s.trim();
+    if (/^\d+$/.test(s)) return parseInt(s);
+    let total = 0, temp = 0, lastUnit = 1;
+    for (let i = 0; i < s.length; i++) {
+      const c = s[i];
+      const v = chineseNumMap[c];
+      if (v === undefined) continue;
+      if (v >= 10) {
+        if (temp === 0) temp = 1;
+        temp *= v;
+        if (v >= 100) { total += temp; temp = 0; }
+        lastUnit = v;
+      } else {
+        if (lastUnit > 10) { total += temp; temp = 0; }
+        temp = v;
+        lastUnit = 1;
+      }
+    }
+    return total + temp;
+  };
+  const parseSeqName = (name) => {
+    if (!name) return null;
+    const patterns = [
+      /^第([零一二三四五六七八九十百千万两\d]+)[页节章单元]$/,
+      /^第([零一二三四五六七八九十百千万两\d]+)$/,
+      /^([零一二三四五六七八九十百千万两\d]+)[页节章单元]$/,
+      /^List\s*(\d+)$/i,
+      /^Unit\s*(\d+)$/i,
+      /^Lesson\s*(\d+)$/i,
+    ];
+    for (const p of patterns) {
+      const m = name.match(p);
+      if (m) {
+        const n = chineseToNum(m[1]);
+        if (n > 0) return { num: n, baseName: name };
+      }
+    }
+    return null;
+  };
+  const getNextSeqName = () => {
+    const seqs = lists.map(l => parseSeqName(l.name)).filter(Boolean).sort((a, b) => b.num - a.num);
+    if (seqs.length === 0) return null;
+    const maxSeq = seqs[0];
+    const nextNum = maxSeq.num + 1;
+    const base = maxSeq.baseName;
+    const cnNum = numToChinese(nextNum);
+    if (/^第.+[页节章单元]$/.test(base)) {
+      const suffix = base.match(/[页节章单元]$/)[0];
+      return `第${cnNum}${suffix}`;
+    }
+    if (/^第.+$/.test(base)) return `第${cnNum}`;
+    if (/^.+[页节章单元]$/.test(base)) {
+      const suffix = base.match(/[页节章单元]$/)[0];
+      return `${cnNum}${suffix}`;
+    }
+    if (/^List\s*\d+$/i.test(base)) return `List ${nextNum}`;
+    if (/^Unit\s*\d+$/i.test(base)) return `Unit ${nextNum}`;
+    if (/^Lesson\s*\d+$/i.test(base)) return `Lesson ${nextNum}`;
+    return `第${cnNum}页`;
+  };
+
   const smartParse = (text, fileName = '') => {
     text = (text || '').trim();
     text = text.replace(/^\uFEFF/, '');
@@ -370,7 +454,8 @@ export default function WordListManage() {
     });
 
     if (!name) {
-      name = words.length > 0 ? `导入词表 (${words.length}词)` : '导入词表';
+      const autoSeq = getNextSeqName();
+      name = autoSeq || (words.length > 0 ? `导入词表 (${words.length}词)` : '导入词表');
     }
 
     return {
@@ -612,7 +697,13 @@ export default function WordListManage() {
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <h3>新建词表</h3>
             <div className="form-group">
-              <label>名称</label>
+              <label>名称 {getNextSeqName() && (
+                <button
+                  className="btn btn-outline btn-sm"
+                  style={{ marginLeft: 8, padding: '2px 8px', fontSize: 12 }}
+                  onClick={() => setNewList({ ...newList, name: getNextSeqName() })}
+                >⏩ 下一个：{getNextSeqName()}</button>
+              )}</label>
               <input value={newList.name} onChange={e => setNewList({ ...newList, name: e.target.value })} placeholder="如：Unit 1 词汇" />
             </div>
             <div className="form-group">
@@ -769,7 +860,13 @@ export default function WordListManage() {
                         <div className="form-row" style={{ marginTop: 8 }}>
                           {importMode === 'new' && (
                             <div className="form-group" style={{ marginBottom: 0 }}>
-                              <label>词表名称</label>
+                              <label>词表名称 {getNextSeqName() && (
+                                <button
+                                  className="btn btn-outline btn-sm"
+                                  style={{ marginLeft: 8, padding: '2px 8px', fontSize: 12 }}
+                                  onClick={() => setImportPreview({ ...importPreview, name: getNextSeqName() })}
+                                >⏩ 下一个：{getNextSeqName()}</button>
+                              )}</label>
                               <input
                                 value={importPreview.name || ''}
                                 onChange={e => setImportPreview({ ...importPreview, name: e.target.value })}
