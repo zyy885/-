@@ -1229,7 +1229,7 @@ app.post('/api/self-tests/submit', authMiddleware, requireRole('student'), async
   for (const a of answers) {
     await insertRec.run(selfTestId, a.word_id, a.user_answer || '', a.is_correct ? 1 : 0, a.question_type || 'en_to_zh');
   }
-  res.json({ self_test_id: selfTestId, score, correct, total: answers.length });
+  res.json({ self_test_id: selfTestId, score, correct, total: answers.length, answers });
 });
 
 app.get('/api/self-tests', authMiddleware, requireRole('student'), async (req, res) => {

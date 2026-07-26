@@ -58,9 +58,9 @@ export default function SelfTestPage() {
         word_list_id: wordListId || null,
         answers: ansArr
       });
-      const records = ansArr.map((a, i) => {
-        const q = questions[i];
-        return { ...q, user_answer: a.user_answer, is_correct: a.is_correct ? 1 : 0 };
+      const records = questions.map((q, i) => {
+        const a = data.answers?.[i] || {};
+        return { ...q, user_answer: answers[q.word_id] || '', is_correct: a.is_correct ? 1 : 0 };
       });
       setResult({ ...data, records });
       setPhase('result');
