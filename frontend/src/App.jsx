@@ -46,6 +46,7 @@ function Navbar() {
     : [
         { to: '/student', label: '我的任务' },
         { to: '/student/word-lists', label: '词表总览' },
+        { to: '/student/self-test', label: '单词自测' },
         { to: '/student/sentence-practice', label: '长难句' },
         { to: '/student/wrong-book', label: '错题本' },
         { to: '/student/favorites', label: '收藏' },
@@ -101,10 +102,10 @@ function BottomTabBar() {
 
   const studentTabs = [
     {
-      key: 'task',
-      label: '任务',
-      icon: '📋',
-      single: { to: '/student', label: '我的任务' },
+      key: 'home',
+      label: '首页',
+      icon: '🏠',
+      single: { to: '/student', label: '首页' },
       match: ['/student'],
     },
     {
@@ -113,15 +114,16 @@ function BottomTabBar() {
       icon: '📚',
       items: [
         { to: '/student/word-lists', label: '词表总览', icon: '📖' },
-        { to: '/student/sentence-practice', label: '长难句', icon: '📝' },
+        { to: '/student/self-test', label: '单词自测', icon: '📝' },
+        { to: '/student/sentence-practice', label: '长难句', icon: '📄' },
         { to: '/student/wrong-book', label: '错题本', icon: '❌' },
       ],
-      match: ['/student/word-lists', '/student/sentence-practice', '/student/wrong-book'],
+      match: ['/student/word-lists', '/student/self-test', '/student/sentence-practice', '/student/wrong-book'],
     },
     {
       key: 'discover',
       label: '发现',
-      icon: '🎯',
+      icon: '✨',
       items: [
         { to: '/student/favorites', label: '收藏', icon: '⭐' },
         { to: '/student/stats', label: '统计', icon: '📊' },
@@ -144,16 +146,16 @@ function BottomTabBar() {
 
   const teacherTabs = [
     {
-      key: 'overview',
-      label: '总览',
+      key: 'home',
+      label: '首页',
       icon: '🏠',
-      single: { to: '/teacher', label: '总览' },
+      single: { to: '/teacher', label: '首页' },
       match: ['/teacher'],
     },
     {
       key: 'manage',
       label: '管理',
-      icon: '📚',
+      icon: '📋',
       items: [
         { to: '/teacher/word-lists', label: '词表管理', icon: '📖' },
         { to: '/teacher/sentence-lists', label: '长难句', icon: '📝' },
