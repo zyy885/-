@@ -253,8 +253,16 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const theme = localStorage.getItem('vocab_theme');
-    if (theme === 'dark') document.body.classList.add('dark-theme');
+    const applyTheme = () => {
+      const theme = localStorage.getItem('vocab_theme') || 'light';
+      document.body.classList.remove('theme-light', 'theme-dark', 'theme-eye', 'dark-theme');
+      if (theme !== 'light') {
+        document.body.classList.add('theme-' + theme);
+      }
+    };
+    applyTheme();
+    window.addEventListener('theme-changed', applyTheme);
+    return () => window.removeEventListener('theme-changed', applyTheme);
   }, []);
 
   return (

@@ -11,6 +11,24 @@ app.use(cors());
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
 
+const loginAttempts = new Map();
+const RATE_LIMIT_WINDOW = 60000;
+const MAX_LOGIN_ATTEMPTS = 5;
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  let record = loginAttempts.get(ip);
+  if (!record || now - record.windowStart > RATE_LIMIT_WINDOW) {
+    record = { windowStart: now, count: 0 };
+    loginAttempts.set(ip, record);
+  }
+  record.count++;
+  if (record.count > MAX_LOGIN_ATTEMPTS) {
+    return false;
+  }
+  return true;
+}
+
 const FRONTEND_DIST = path.join(__dirname, '..', '..', 'frontend', 'dist');
 const fs = require('fs');
 if (fs.existsSync(FRONTEND_DIST)) {
@@ -20,29 +38,50 @@ if (fs.existsSync(FRONTEND_DIST)) {
 
 app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ error: '用户名和密码必填' });
+  }
+  if (typeof username !== 'string' || username.length > 50 || username.length < 2) {
+    return res.status(400).json({ error: '用户名格式不正确' });
+  }
+  if (typeof password !== 'string' || password.length > 100) {
+    return res.status(400).json({ error: '密码格式不正确' });
+  }
+  const ip = req.ip || req.connection.remoteAddress || 'unknown';
+  if (!checkRateLimit(ip)) {
+    return res.status(429).json({ error: '登录尝试过于频繁，请1分钟后再试' });
+  }
   const user = await db.prepare('SELECT * FROM users WHERE username = ?').get(username);
   if (!user || !bcrypt.compareSync(password, user.password_hash)) {
     return res.status(401).json({ error: '用户名或密码错误' });
   }
+  loginAttempts.delete(ip);
   const token = signToken(user);
   res.json({
     token,
-    user: { id: user.id, username: user.username, role: user.role }
+    user: { id: user.id, username: user.username, role: user.role, avatar: user.avatar }
   });
 });
 
 app.post('/api/auth/register', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, role } = req.body;
   if (!username || !password) {
-    return res.status(400).json({ error: '参数错误' });
+    return res.status(400).json({ error: '用户名和密码必填' });
   }
+  if (typeof username !== 'string' || username.length > 50 || username.length < 2) {
+    return res.status(400).json({ error: '用户名长度需在2-50之间' });
+  }
+  if (typeof password !== 'string' || password.length < 6 || password.length > 100) {
+    return res.status(400).json({ error: '密码长度需在6-100之间' });
+  }
+  const userRole = ['teacher', 'student'].includes(role) ? role : 'student';
   const exists = await db.prepare('SELECT id FROM users WHERE username = ?').get(username);
   if (exists) return res.status(400).json({ error: '用户名已存在' });
   const hash = bcrypt.hashSync(password, 10);
   const info = await db.prepare(
     'INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)'
-  ).run(username, hash, 'student');
-  const user = { id: info.lastInsertRowid, username, role: 'student' };
+  ).run(username, hash, userRole);
+  const user = { id: info.lastInsertRowid, username, role: userRole };
   res.json({ token: signToken(user), user });
 });
 

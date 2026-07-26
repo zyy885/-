@@ -4,10 +4,24 @@
   padding: 0;
 }
 
+:root {
+  --bg-body: #f5f7fa;
+  --text-primary: #1a1a2e;
+  --text-secondary: #6b7280;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f9fafb;
+  --border-color: #e5e7eb;
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --table-head-bg: #f3f4f6;
+  --table-row-alt: #f9fafb;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  background: #f5f7fa;
-  color: #1a1a2e;
+  background: var(--bg-body);
+  color: var(--text-primary);
   line-height: 1.6;
 }
 
@@ -1238,76 +1252,199 @@ body {
   transform: scale(1.1);
 }
 
-/* ===== 深色主题 ===== */
-body.dark-theme {
-  background: #0f172a;
-  color: #e2e8f0;
+/* ===== 主题系统：浅色 / 深色 / 护眼 ===== */
+body.theme-dark {
+  --bg-body: #0f172a;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --bg-card: #1e293b;
+  --bg-card-hover: #273548;
+  --border-color: #334155;
+  --input-bg: #334155;
+  --input-border: #475569;
+  --table-head-bg: #334155;
+  --table-row-alt: rgba(51, 65, 85, 0.5);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
-body.dark-theme .navbar {
+
+body.theme-eye {
+  --bg-body: #f2ecd8;
+  --text-primary: #3d2e1f;
+  --text-secondary: #6b5b47;
+  --bg-card: #faf5e6;
+  --bg-card-hover: #f5ecd0;
+  --border-color: #e0d5b8;
+  --input-bg: #faf5e6;
+  --input-border: #d4c8a8;
+  --table-head-bg: #ede4c8;
+  --table-row-alt: #f5ecd0;
+  --shadow: 0 2px 8px rgba(61, 46, 31, 0.08);
+}
+
+body.theme-dark {
+  background: var(--bg-body);
+  color: var(--text-primary);
+}
+body.theme-dark .navbar {
   background: linear-gradient(135deg, #4338ca 0%, #5b21b6 100%);
 }
-body.dark-theme .auth-card,
-body.dark-theme .flashcard,
-body.dark-theme .test-card,
-body.dark-theme .task-card,
-body.dark-theme .result-card,
-body.dark-theme .stat-card,
-body.dark-theme .sidebar,
-body.dark-theme .main-panel,
-body.dark-theme .progress-table table,
-body.dark-theme .comment-card,
-body.dark-theme .word-table table {
-  background: #1e293b;
-  color: #e2e8f0;
+body.theme-dark .auth-card,
+body.theme-dark .flashcard,
+body.theme-dark .test-card,
+body.theme-dark .task-card,
+body.theme-dark .result-card,
+body.theme-dark .stat-card,
+body.theme-dark .sidebar,
+body.theme-dark .main-panel,
+body.theme-dark .progress-table table,
+body.theme-dark .comment-card,
+body.theme-dark .word-table table,
+body.theme-dark .card,
+body.theme-dark .mine-stats-card,
+body.theme-dark .mine-menu-list,
+body.theme-dark .mine-stat-item,
+body.theme-dark .self-config-card,
+body.theme-dark .select-item,
+body.theme-dark .tab,
+body.theme-dark .modal-content {
+  background: var(--bg-card);
+  color: var(--text-primary);
 }
-body.dark-theme .muted {
-  color: #94a3b8;
+body.theme-dark .muted,
+body.theme-dark .mine-stat-label,
+body.theme-dark .mine-stat-unit,
+body.theme-dark .mine-menu-title,
+body.theme-dark .select-desc,
+body.theme-dark .config-row label {
+  color: var(--text-secondary);
 }
-body.dark-theme .page-header h2,
-body.dark-theme h3 {
-  color: #e2e8f0;
+body.theme-dark .page-header h2,
+body.theme-dark h3,
+body.theme-dark .select-title,
+body.theme-dark .mine-username,
+body.theme-dark .mine-stats-title,
+body.theme-dark .mine-menu-label,
+body.theme-dark .mine-stat-value {
+  color: var(--text-primary);
 }
-body.dark-theme input,
-body.dark-theme select,
-body.dark-theme textarea {
-  background: #334155;
-  color: #e2e8f0;
-  border-color: #475569;
+body.theme-dark input,
+body.theme-dark select,
+body.theme-dark textarea {
+  background: var(--input-bg);
+  color: var(--text-primary);
+  border-color: var(--input-border);
 }
-body.dark-theme .btn-outline {
+body.theme-dark .btn-outline {
   color: #93c5fd;
   border-color: #3b82f6;
 }
-body.dark-theme .btn-outline:hover {
+body.theme-dark .btn-outline:hover {
   background: rgba(59, 130, 246, 0.15);
 }
-body.dark-theme .list-item.active {
+body.theme-dark .list-item.active {
   background: rgba(59, 130, 246, 0.2);
   border-color: #3b82f6;
 }
-body.dark-theme .modal-content {
-  background: #1e293b;
-  color: #e2e8f0;
+body.theme-dark .progress-table th {
+  background: var(--table-head-bg);
 }
-body.dark-theme .progress-table th {
-  background: #334155;
+body.theme-dark .progress-table tr:nth-child(even) {
+  background: var(--table-row-alt);
 }
-body.dark-theme .progress-table tr:nth-child(even) {
-  background: rgba(51, 65, 85, 0.5);
-}
-body.dark-theme .icon-btn:hover {
+body.theme-dark .icon-btn:hover {
   background: rgba(59, 130, 246, 0.2);
 }
-body.dark-theme .hint-text {
+body.theme-dark .hint-text {
   color: #64748b;
 }
-body.dark-theme .studied-badge.unknown {
+body.theme-dark .studied-badge.unknown {
   background: rgba(239, 68, 68, 0.2);
   color: #fca5a5;
 }
-body.dark-theme .studied-badge.known {
+body.theme-dark .studied-badge.known {
   background: rgba(34, 197, 94, 0.2);
   color: #86efac;
+}
+body.theme-dark .comment-card.new-comment {
+  background: rgba(245, 158, 11, 0.1);
+}
+body.theme-dark .chip {
+  background: var(--bg-card);
+  border-color: var(--input-border);
+  color: var(--text-secondary);
+}
+body.theme-dark .chip:hover {
+  border-color: #818cf8;
+  color: #a5b4fc;
+}
+body.theme-dark .avatar-option {
+  background: var(--input-bg);
+}
+body.theme-dark .mine-menu-item:hover {
+  background: var(--bg-card-hover);
+}
+body.theme-dark .bottom-tab-bar {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+}
+
+/* ===== 护眼模式覆盖 ===== */
+body.theme-eye {
+  background: var(--bg-body);
+  color: var(--text-primary);
+}
+body.theme-eye .muted,
+body.theme-eye .mine-stat-label,
+body.theme-eye .mine-stat-unit,
+body.theme-eye .mine-menu-title,
+body.theme-eye .select-desc,
+body.theme-eye .config-row label {
+  color: var(--text-secondary);
+}
+body.theme-eye input,
+body.theme-eye select,
+body.theme-eye textarea {
+  background: var(--input-bg);
+  color: var(--text-primary);
+  border-color: var(--input-border);
+}
+body.theme-eye .card,
+body.theme-eye .auth-card,
+body.theme-eye .flashcard,
+body.theme-eye .test-card,
+body.theme-eye .task-card,
+body.theme-eye .result-card,
+body.theme-eye .stat-card,
+body.theme-eye .sidebar,
+body.theme-eye .main-panel,
+body.theme-eye .progress-table table,
+body.theme-eye .comment-card,
+body.theme-eye .word-table table,
+body.theme-eye .mine-stats-card,
+body.theme-eye .mine-menu-list,
+body.theme-eye .mine-stat-item,
+body.theme-eye .self-config-card,
+body.theme-eye .select-item,
+body.theme-eye .tab,
+body.theme-eye .modal-content,
+body.theme-eye .chip,
+body.theme-eye .avatar-option {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+body.theme-eye .progress-table th {
+  background: var(--table-head-bg);
+}
+body.theme-eye .progress-table tr:nth-child(even),
+body.theme-eye .mine-stat-item {
+  background: var(--table-row-alt);
+}
+body.theme-eye .bottom-tab-bar {
+  background: var(--bg-card);
+  border-color: var(--border-color);
+}
+body.theme-eye .mine-menu-item:hover {
+  background: var(--bg-card-hover);
 }
 
 /* ===== 评语卡片 ===== */

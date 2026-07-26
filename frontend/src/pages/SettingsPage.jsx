@@ -12,8 +12,9 @@ export default function SettingsPage() {
   useEffect(() => {
     const savedTheme = localStorage.getItem('vocab_theme') || 'light';
     setTheme(savedTheme);
-    if (savedTheme === 'dark') {
-      document.body.classList.add('dark-theme');
+    document.body.classList.remove('theme-light', 'theme-dark', 'theme-eye', 'dark-theme');
+    if (savedTheme !== 'light') {
+      document.body.classList.add('theme-' + savedTheme);
     }
   }, []);
 
@@ -22,11 +23,11 @@ export default function SettingsPage() {
       await api.saveSettings({ theme: newTheme });
       setTheme(newTheme);
       localStorage.setItem('vocab_theme', newTheme);
-      if (newTheme === 'dark') {
-        document.body.classList.add('dark-theme');
-      } else {
-        document.body.classList.remove('dark-theme');
+      document.body.classList.remove('theme-light', 'theme-dark', 'theme-eye', 'dark-theme');
+      if (newTheme !== 'light') {
+        document.body.classList.add('theme-' + newTheme);
       }
+      window.dispatchEvent(new CustomEvent('theme-changed'));
     } catch (e) {
       alert(e.message);
     }
@@ -74,7 +75,7 @@ export default function SettingsPage() {
 
       <div className="card" style={{ maxWidth: 480, margin: '24px auto' }}>
         <h3>主题切换</h3>
-        <div style={{ display: 'flex', gap: 12, marginTop: 12 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginTop: 12 }}>
           <button
             className={'btn ' + (theme === 'light' ? 'btn-primary' : 'btn-outline')}
             onClick={() => changeTheme('light')}
@@ -86,6 +87,12 @@ export default function SettingsPage() {
             onClick={() => changeTheme('dark')}
           >
             🌙 深色
+          </button>
+          <button
+            className={'btn ' + (theme === 'eye' ? 'btn-primary' : 'btn-outline')}
+            onClick={() => changeTheme('eye')}
+          >
+            👁️ 护眼
           </button>
         </div>
       </div>
