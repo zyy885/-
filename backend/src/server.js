@@ -105,29 +105,31 @@ app.get('/api/word-books', authMiddleware, async (req, res) => {
          INNER JOIN word_lists wl ON wl.id = w.word_list_id 
          WHERE wl.word_book_id = wb.id) as word_count
        FROM word_books wb
-       INNER JOIN word_lists wl ON wl.word_book_id = wb.id
-       INNER JOIN tasks t ON t.word_list_id = wl.id
-       INNER JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?
+       WHERE wb.is_public = 1 OR wb.id IN (
+         SELECT DISTINCT wl2.word_book_id FROM word_lists wl2
+         INNER JOIN tasks t ON t.word_list_id = wl2.id
+         INNER JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?
+       ) OR wb.teacher_id = ?
        ORDER BY wb.created_at DESC`
-    ).all(req.user.id);
+    ).all(req.user.id, req.user.id);
   }
   res.json({ wordBooks: rows });
 });
 
 app.post('/api/word-books', authMiddleware, requireRole('teacher'), async (req, res) => {
-  const { name, description } = req.body;
+  const { name, description, cover_color, is_public } = req.body;
   if (!name) return res.status(400).json({ error: '请输入单词书名称' });
   const info = await db.prepare(
-    'INSERT INTO word_books (name, description, teacher_id) VALUES (?, ?, ?)'
-  ).run(name, description || '', req.user.id);
+    'INSERT INTO word_books (name, description, cover_color, is_public, teacher_id) VALUES (?, ?, ?, ?, ?)'
+  ).run(name, description || '', cover_color || '#6366f1', is_public ? 1 : 0, req.user.id);
   res.json({ id: info.lastInsertRowid });
 });
 
 app.put('/api/word-books/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
-  const { name, description } = req.body;
+  const { name, description, cover_color, is_public } = req.body;
   await db.prepare(
-    'UPDATE word_books SET name = ?, description = ? WHERE id = ? AND teacher_id = ?'
-  ).run(name, description || '', req.params.id, req.user.id);
+    'UPDATE word_books SET name = ?, description = ?, cover_color = ?, is_public = ? WHERE id = ? AND teacher_id = ?'
+  ).run(name, description || '', cover_color || '#6366f1', is_public ? 1 : 0, req.params.id, req.user.id);
   res.json({ ok: true });
 });
 
@@ -149,10 +151,11 @@ app.get('/api/word-lists', authMiddleware, async (req, res) => {
     whereSQL = ' WHERE wl.teacher_id = ?';
     params.push(req.user.id);
   } else {
-    baseSQL += ` INNER JOIN tasks t ON t.word_list_id = wl.id
-                 INNER JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?`;
-    whereSQL = ' WHERE 1=1';
-    params.push(req.user.id);
+    baseSQL += ` LEFT JOIN tasks t ON t.word_list_id = wl.id
+                 LEFT JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?
+                 LEFT JOIN word_books wb ON wb.id = wl.word_book_id`;
+    whereSQL = ' WHERE (ts.id IS NOT NULL OR wb.is_public = 1 OR wl.teacher_id = ?)';
+    params.push(req.user.id, req.user.id);
   }
 
   if (word_book_id) {

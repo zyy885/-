@@ -13,7 +13,8 @@ export default function WordListManage() {
   const [showAddWord, setShowAddWord] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [newList, setNewList] = useState({ name: '', description: '' });
-  const [newBook, setNewBook] = useState({ name: '', description: '' });
+  const [newBook, setNewBook] = useState({ name: '', description: '', cover_color: '#6366f1', is_public: false });
+  const [editBook, setEditBook] = useState(null);
   const [newWord, setNewWord] = useState({ word: '', meaning: '', example: '' });
   const [editingWord, setEditingWord] = useState(null);
   const [renamingId, setRenamingId] = useState(null);
@@ -56,8 +57,27 @@ export default function WordListManage() {
     try {
       const data = await api.createWordBook(newBook);
       setSelectedBookId(data.id);
-      setNewBook({ name: '', description: '' });
+      setNewBook({ name: '', description: '', cover_color: '#6366f1', is_public: false });
       setShowCreateBook(false);
+      loadWordBooks();
+    } catch (e) { alert(e.message); }
+  };
+
+  const openEditBook = (b) => {
+    setEditBook({
+      id: b.id,
+      name: b.name,
+      description: b.description || '',
+      cover_color: b.cover_color || '#6366f1',
+      is_public: b.is_public ? true : false,
+    });
+  };
+
+  const saveEditBook = async () => {
+    if (!editBook.name.trim()) return alert('请输入单词书名称');
+    try {
+      await api.updateWordBook(editBook.id, editBook);
+      setEditBook(null);
       loadWordBooks();
     } catch (e) { alert(e.message); }
   };
@@ -417,9 +437,87 @@ export default function WordListManage() {
               <label>描述（可选）</label>
               <input value={newBook.description} onChange={e => setNewBook({ ...newBook, description: e.target.value })} />
             </div>
+            <div className="form-group">
+              <label>封面颜色</label>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {['#6366f1','#8b5cf6','#ec4899','#ef4444','#f59e0b','#10b981','#06b6d4','#3b82f6'].map(c => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setNewBook({ ...newBook, cover_color: c })}
+                    style={{
+                      width: 32, height: 32, borderRadius: '50%',
+                      background: c,
+                      border: newBook.cover_color === c ? '3px solid #1a1a2e' : '2px solid #e5e7eb',
+                      cursor: 'pointer'
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="form-group">
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <input
+                  type="checkbox"
+                  checked={newBook.is_public}
+                  onChange={e => setNewBook({ ...newBook, is_public: e.target.checked })}
+                  style={{ width: 18, height: 18 }}
+                />
+                公开给所有用户（开启后，所有登录用户都可以看到这本单词书）
+              </label>
+            </div>
             <div className="modal-actions">
               <button className="btn btn-outline" onClick={() => setShowCreateBook(false)}>取消</button>
               <button className="btn btn-primary" onClick={createBook}>创建</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {editBook && (
+        <div className="modal" onClick={() => setEditBook(null)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h3>编辑单词书</h3>
+            <div className="form-group">
+              <label>名称</label>
+              <input value={editBook.name} onChange={e => setEditBook({ ...editBook, name: e.target.value })} />
+            </div>
+            <div className="form-group">
+              <label>描述（可选）</label>
+              <input value={editBook.description} onChange={e => setEditBook({ ...editBook, description: e.target.value })} />
+            </div>
+            <div className="form-group">
+              <label>封面颜色</label>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {['#6366f1','#8b5cf6','#ec4899','#ef4444','#f59e0b','#10b981','#06b6d4','#3b82f6'].map(c => (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setEditBook({ ...editBook, cover_color: c })}
+                    style={{
+                      width: 32, height: 32, borderRadius: '50%',
+                      background: c,
+                      border: editBook.cover_color === c ? '3px solid #1a1a2e' : '2px solid #e5e7eb',
+                      cursor: 'pointer'
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="form-group">
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <input
+                  type="checkbox"
+                  checked={editBook.is_public}
+                  onChange={e => setEditBook({ ...editBook, is_public: e.target.checked })}
+                  style={{ width: 18, height: 18 }}
+                />
+                公开给所有用户
+              </label>
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-outline" onClick={() => setEditBook(null)}>取消</button>
+              <button className="btn btn-primary" onClick={saveEditBook}>保存</button>
             </div>
           </div>
         </div>
@@ -461,34 +559,18 @@ export default function WordListManage() {
             <div
               key={b.id}
               className={'list-item' + (selectedBookId === b.id ? ' active' : '')}
-              onClick={() => !renamingBookId && setSelectedBookId(b.id)}
+              onClick={() => setSelectedBookId(b.id)}
+              style={{ borderLeft: `4px solid ${b.cover_color || '#6366f1'}` }}
             >
               <div className="list-item-info" style={{ flex: 1, minWidth: 0 }}>
-                {renamingBookId === b.id ? (
-                  <input
-                    autoFocus
-                    value={renamingBookValue}
-                    onChange={e => setRenamingBookValue(e.target.value)}
-                    onClick={e => e.stopPropagation()}
-                    onKeyDown={e => { if (e.key === 'Enter') saveRenameBook(); if (e.key === 'Escape') { setRenamingBookId(null); setRenamingBookValue(''); } }}
-                    style={{ width: '100%', padding: 4, fontSize: 14, borderRadius: 4, border: '1px solid #3b82f6' }}
-                  />
-                ) : (
-                  <div className="list-item-name">📚 {b.name}</div>
-                )}
+                <div className="list-item-name">
+                  📚 {b.name}
+                  {b.is_public && <span className="badge badge-green" style={{ marginLeft: 6, fontSize: 10 }}>公开</span>}
+                </div>
                 <div className="muted small">{b.list_count || 0} 个词表 · {b.word_count || 0} 词</div>
               </div>
-              {renamingBookId === b.id ? (
-                <>
-                  <button className="icon-btn" onClick={e => { e.stopPropagation(); saveRenameBook(); }} title="保存">✓</button>
-                  <button className="icon-btn" onClick={e => { e.stopPropagation(); setRenamingBookId(null); setRenamingBookValue(''); }} title="取消">✕</button>
-                </>
-              ) : (
-                <>
-                  <button className="icon-btn" onClick={e => { e.stopPropagation(); startRenameBook(b); }} title="重命名">✏️</button>
-                  <button className="icon-btn" onClick={e => { e.stopPropagation(); deleteBook(b.id); }} title="删除">🗑</button>
-                </>
-              )}
+              <button className="icon-btn" onClick={e => { e.stopPropagation(); openEditBook(b); }} title="编辑">✏️</button>
+              <button className="icon-btn" onClick={e => { e.stopPropagation(); deleteBook(b.id); }} title="删除">🗑</button>
             </div>
           ))}
         </div>

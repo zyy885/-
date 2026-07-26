@@ -112,8 +112,15 @@ export default function StudentWordLists() {
                     key={book.id}
                     className="browse-card book-card"
                     onClick={() => selectBook(book)}
+                    style={{
+                      background: `linear-gradient(135deg, ${book.cover_color || '#6366f1'}22 0%, ${book.cover_color || '#6366f1'}11 100%)`,
+                      borderTop: `4px solid ${book.cover_color || '#6366f1'}`
+                    }}
                   >
-                    <div className="browse-icon">📚</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div className="browse-icon">📚</div>
+                      {book.is_public && <span className="badge badge-green">公开</span>}
+                    </div>
                     <div className="browse-title">{book.name}</div>
                     {book.description && <div className="browse-desc">{book.description}</div>}
                     <div className="browse-meta">
