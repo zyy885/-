@@ -477,6 +477,7 @@ body {
   margin: 0;
 }
 
+.word-browse-page,
 .study-page,
 .test-page,
 .progress-view,
@@ -486,6 +487,143 @@ body {
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.browse-section {
+  margin-bottom: 28px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1a1a2e;
+}
+
+.browse-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.browse-card {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #e2e8f0;
+}
+
+.browse-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  border-color: #c7d2fe;
+}
+
+.book-card {
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+}
+
+.list-card {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+.browse-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.browse-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #1a1a2e;
+}
+
+.browse-desc {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+.browse-meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.empty-state-small {
+  text-align: center;
+  padding: 32px;
+  color: #9ca3af;
+  font-size: 14px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.word-list-header {
+  margin-bottom: 12px;
+}
+
+.word-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.word-card {
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.15s;
+}
+
+.word-card:hover {
+  border-color: #c7d2fe;
+  background: #f8faff;
+}
+
+.word-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.word-index {
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.word-card-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.word-card-word {
+  font-size: 22px;
+  font-weight: 700;
+  color: #4f46e5;
+  margin-bottom: 6px;
+}
+
+.word-card-meaning {
+  font-size: 15px;
+  color: #1a1a2e;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.word-card-example {
+  font-size: 13px;
+  color: #6b7280;
+  font-style: italic;
+  line-height: 1.5;
 }
 
 .flashcard {
@@ -1038,6 +1176,34 @@ body {
   }
   .page-header h2 {
     font-size: 18px;
+  }
+  .word-browse-page,
+  .study-page,
+  .test-page,
+  .progress-view,
+  .word-manage,
+  .task-manage {
+    padding: 16px;
+  }
+  .browse-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .word-cards {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .section-title {
+    font-size: 16px;
+  }
+  .browse-card {
+    padding: 16px;
+  }
+  .browse-icon {
+    font-size: 28px;
+  }
+  .word-card-word {
+    font-size: 20px;
   }
   .btn {
     padding: 8px 14px;

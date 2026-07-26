@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
 
 function speak(word) {
@@ -8,26 +8,18 @@ function speak(word) {
 
 export default function StudentWordLists() {
   const navigate = useNavigate();
-  const [wordBooks, setWordBooks] = useState([]);
-  const [selectedBookId, setSelectedBookId] = useState(null);
-  const [lists, setLists] = useState([]);
-  const [selectedId, setSelectedId] = useState(null);
-  const [words, setWords] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [wordBooks, setWordBooks] = useState([]);
+  const [allLists, setAllLists] = useState([]);
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [selectedList, setSelectedList] = useState(null);
+  const [words, setWords] = useState([]);
   const [favMap, setFavMap] = useState({});
 
   useEffect(() => {
-    loadWordBooks();
+    loadAll();
     loadFavs();
   }, []);
-
-  useEffect(() => {
-    loadLists(selectedBookId);
-  }, [selectedBookId]);
-
-  useEffect(() => {
-    if (selectedId) loadWords(selectedId);
-  }, [selectedId]);
 
   const loadFavs = async () => {
     try {
@@ -50,122 +42,176 @@ export default function StudentWordLists() {
     } catch (e) {}
   };
 
-  const loadWordBooks = async () => {
+  const loadAll = async () => {
     try {
-      const data = await api.getWordBooks();
-      setWordBooks(data.wordBooks);
+      const [wbData, wlData] = await Promise.all([
+        api.getWordBooks(),
+        api.getWordLists(),
+      ]);
+      setWordBooks(wbData.wordBooks);
+      setAllLists(wlData.wordLists);
     } catch (e) {}
     setLoading(false);
   };
 
-  const loadLists = async (bookId) => {
-    try {
-      const data = await api.getWordLists(bookId || undefined);
-      setLists(data.wordLists);
-      if (data.wordLists.length > 0) setSelectedId(data.wordLists[0].id);
-      else setSelectedId(null);
-    } catch (e) {}
+  const selectBook = async (book) => {
+    setSelectedBook(book);
+    setSelectedList(null);
+    setWords([]);
   };
 
-  const loadWords = async (id) => {
-    const data = await api.getWords(id);
+  const selectList = async (list) => {
+    setSelectedList(list);
+    const data = await api.getWords(list.id);
     setWords(data.words);
+  };
+
+  const goBack = () => {
+    if (selectedList) {
+      setSelectedList(null);
+      setWords([]);
+    } else if (selectedBook) {
+      setSelectedBook(null);
+    } else {
+      navigate(-1);
+    }
+  };
+
+  const getListsForBook = (bookId) => {
+    if (bookId === null) return allLists.filter(l => l.word_book_id == null);
+    return allLists.filter(l => l.word_book_id === bookId);
   };
 
   if (loading) return <div className="loading">加载中...</div>;
 
   return (
-    <div className="word-manage">
+    <div className="word-browse-page">
       <div className="page-header">
-        <button className="btn-link" onClick={() => navigate(-1)}>← 返回</button>
-        <h2>词表总览</h2>
+        <button className="btn-link" onClick={goBack}>
+          {selectedList ? '← 返回词表' : selectedBook ? '← 返回单词书' : '← 返回'}
+        </button>
+        <h2>
+          {selectedList ? selectedList.name : selectedBook ? selectedBook.name : '词表总览'}
+        </h2>
         <div />
       </div>
 
-      <div className="manage-layout" style={{ gridTemplateColumns: '240px 280px 1fr' }}>
-        <div className="sidebar">
-          <h3>单词书</h3>
-          <div
-            className={'list-item' + (selectedBookId === null ? ' active' : '')}
-            onClick={() => { setSelectedBookId(null); setSelectedId(null); }}
-          >
-            <div className="list-item-info">
-              <div className="list-item-name">📁 全部词表</div>
-              <div className="muted small">查看所有词表</div>
-            </div>
+      {!selectedBook && !selectedList && (
+        <>
+          <div className="browse-section">
+            <h3 className="section-title">
+              📚 我的单词书
+              <span className="muted small" style={{ marginLeft: 8 }}>共 {wordBooks.length} 本</span>
+            </h3>
+            {wordBooks.length === 0 ? (
+              <div className="empty-state-small">暂无单词书</div>
+            ) : (
+              <div className="browse-grid">
+                {wordBooks.map(book => (
+                  <div
+                    key={book.id}
+                    className="browse-card book-card"
+                    onClick={() => selectBook(book)}
+                  >
+                    <div className="browse-icon">📚</div>
+                    <div className="browse-title">{book.name}</div>
+                    {book.description && <div className="browse-desc">{book.description}</div>}
+                    <div className="browse-meta">
+                      <span>📋 {book.list_count || 0} 个词表</span>
+                      <span>🔤 {book.word_count || 0} 词</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-          {wordBooks.map(b => (
-            <div
-              key={b.id}
-              className={'list-item' + (selectedBookId === b.id ? ' active' : '')}
-              onClick={() => setSelectedBookId(b.id)}
-            >
-              <div className="list-item-info">
-                <div className="list-item-name">📚 {b.name}</div>
-                <div className="muted small">{b.list_count || 0} 个词表 · {b.word_count || 0} 词</div>
+
+          {getListsForBook(null).length > 0 && (
+            <div className="browse-section">
+              <h3 className="section-title">
+                📁 未分类词表
+                <span className="muted small" style={{ marginLeft: 8 }}>共 {getListsForBook(null).length} 个</span>
+              </h3>
+              <div className="browse-grid">
+                {getListsForBook(null).map(list => (
+                  <div
+                    key={list.id}
+                    className="browse-card list-card"
+                    onClick={() => selectList(list)}
+                  >
+                    <div className="browse-icon">📋</div>
+                    <div className="browse-title">{list.name}</div>
+                    <div className="browse-meta">
+                      <span>🔤 {list.word_count || 0} 词</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
+          )}
+        </>
+      )}
 
-        <div className="sidebar">
-          <h3>词表列表</h3>
-          {lists.length === 0 && <div className="muted small">暂无词表</div>}
-          {lists.map(l => (
-            <div
-              key={l.id}
-              className={'list-item' + (selectedId === l.id ? ' active' : '')}
-              onClick={() => setSelectedId(l.id)}
-            >
-              <div className="list-item-info">
-                <div className="list-item-name">{l.name}</div>
-                <div className="muted small">{l.word_count || 0} 个单词</div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="main-panel">
-          {selectedId ? (
-            <>
-              <div className="panel-header">
-                <h3>{lists.find(l => l.id === selectedId)?.name} · 单词 ({words.length})</h3>
-                <div />
-              </div>
-              <div className="word-table">
-                <table>
-                  <thead>
-                    <tr><th>#</th><th>单词</th><th>释义</th><th>例句</th><th>操作</th></tr>
-                  </thead>
-                  <tbody>
-                    {words.map((w, i) => (
-                      <tr key={w.id}>
-                        <td>{i + 1}</td>
-                        <td><strong>{w.word}</strong></td>
-                        <td>{w.meaning}</td>
-                        <td className="muted small">{w.example || '-'}</td>
-                        <td>
-                          <button className="icon-btn" onClick={() => speak(w.word)} title="发音">🔊</button>
-                          <button
-                            className="icon-btn"
-                            onClick={() => toggleFav(w)}
-                            title={favMap[w.id] ? '取消收藏' : '收藏'}
-                          >
-                            {favMap[w.id] ? '⭐' : '☆'}
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                    {words.length === 0 && <tr><td colSpan="5" className="empty-state">暂无单词</td></tr>}
-                  </tbody>
-                </table>
-              </div>
-            </>
+      {selectedBook && !selectedList && (
+        <div className="browse-section">
+          {selectedBook.description && (
+            <p className="muted" style={{ marginBottom: 16 }}>{selectedBook.description}</p>
+          )}
+          <h3 className="section-title">
+            📋 词表列表
+            <span className="muted small" style={{ marginLeft: 8 }}>共 {getListsForBook(selectedBook.id).length} 个</span>
+          </h3>
+          {getListsForBook(selectedBook.id).length === 0 ? (
+            <div className="empty-state-small">该书下暂无词表</div>
           ) : (
-            <div className="empty-state">请选择一个词表</div>
+            <div className="browse-grid">
+              {getListsForBook(selectedBook.id).map(list => (
+                <div
+                  key={list.id}
+                  className="browse-card list-card"
+                  onClick={() => selectList(list)}
+                >
+                  <div className="browse-icon">📋</div>
+                  <div className="browse-title">{list.name}</div>
+                  {list.description && <div className="browse-desc">{list.description}</div>}
+                  <div className="browse-meta">
+                    <span>🔤 {list.word_count || 0} 词</span>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
-      </div>
+      )}
+
+      {selectedList && (
+        <div className="browse-section">
+          <div className="word-list-header">
+            <span className="muted small">共 {words.length} 个单词</span>
+          </div>
+          <div className="word-cards">
+            {words.map((w, i) => (
+              <div key={w.id} className="word-card">
+                <div className="word-card-top">
+                  <span className="word-index">{i + 1}</span>
+                  <div className="word-card-actions">
+                    <button className="icon-btn" onClick={() => speak(w.word)} title="发音">🔊</button>
+                    <button
+                      className="icon-btn"
+                      onClick={() => toggleFav(w)}
+                      title={favMap[w.id] ? '取消收藏' : '收藏'}
+                    >{favMap[w.id] ? '⭐' : '☆'}</button>
+                  </div>
+                </div>
+                <div className="word-card-word">{w.word}</div>
+                <div className="word-card-meaning">{w.meaning}</div>
+                {w.example && <div className="word-card-example">📝 {w.example}</div>}
+              </div>
+            ))}
+            {words.length === 0 && <div className="empty-state-small">该词表暂无单词</div>}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
