@@ -30,12 +30,19 @@ async function request(method, path, body) {
   const token = getToken();
   if (token) opts.headers.Authorization = 'Bearer ' + token;
   if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(BASE + path, opts);
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) {
-    throw new Error(data.error || '请求失败');
+  try {
+    const res = await fetch(BASE + path, opts);
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.error || (res.status === 502 ? '服务器正在部署，请稍后再试' : '请求失败 (' + res.status + ')'));
+    }
+    return data;
+  } catch (e) {
+    if (e.message === 'Failed to fetch' || e.message.includes('NetworkError')) {
+      throw new Error('网络连接失败，请检查网络');
+    }
+    throw e;
   }
-  return data;
 }
 
 export const api = {
