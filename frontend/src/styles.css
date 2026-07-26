@@ -26,6 +26,50 @@ body {
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 100;
+}
+
+.hamburger-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px 8px;
+  margin-left: 4px;
+}
+
+.mobile-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  color: #1a1a2e;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-top: 1px solid #e5e7eb;
+  z-index: 99;
+}
+
+.mobile-menu-item {
+  padding: 14px 20px;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.15s;
+}
+
+.mobile-menu-item:hover {
+  background: #f9fafb;
+}
+
+.mobile-menu-item.active {
+  background: #eef2ff;
+  color: #4f46e5;
+  font-weight: 500;
 }
 
 .nav-left .logo {
@@ -939,38 +983,27 @@ body {
 @media (max-width: 768px) {
   .navbar {
     padding: 0 12px;
-    height: auto;
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px;
+    height: 60px;
+    flex-direction: row;
+    gap: 0;
   }
   .nav-left {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex: 1;
   }
   .nav-center {
-    display: flex;
-    width: 100%;
-    overflow-x: auto;
-    gap: 4px;
-    padding-bottom: 4px;
-    justify-content: flex-start;
-    -webkit-overflow-scrolling: touch;
-  }
-  .nav-center::-webkit-scrollbar {
     display: none;
   }
-  .nav-link {
-    padding: 6px 12px;
-    font-size: 13px;
-    white-space: nowrap;
-  }
   .nav-right {
-    width: 100%;
-    justify-content: flex-end;
-    gap: 8px;
+    gap: 4px;
+  }
+  .nav-right .user-info {
+    display: none;
+  }
+  .hamburger-btn {
+    display: block;
+  }
+  .mobile-menu {
+    display: block;
   }
   .main-content {
     padding: 12px;

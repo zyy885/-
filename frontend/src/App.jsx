@@ -25,6 +25,7 @@ function Navbar() {
   const user = getCurrentUser();
   const navigate = useNavigate();
   const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   if (!user) return null;
 
   const logout = () => {
@@ -52,6 +53,11 @@ function Navbar() {
         { to: '/student/comments', label: '留言' },
       ];
 
+  const goTo = (to) => {
+    setMobileMenuOpen(false);
+    navigate(to);
+  };
+
   return (
     <nav className="navbar">
       <div className="nav-left">
@@ -70,7 +76,23 @@ function Navbar() {
         <button className="btn-link" onClick={() => navigate('/settings')} title="设置">⚙️</button>
         <span className="user-info">{user.role === 'teacher' ? '👨‍🏫' : '🎒'} {user.username}</span>
         <button className="btn-link" onClick={logout}>退出</button>
+        <button className="hamburger-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} title="菜单">
+          {mobileMenuOpen ? '✕' : '☰'}
+        </button>
       </div>
+      {mobileMenuOpen && (
+        <div className="mobile-menu">
+          {links.map(l => (
+            <div
+              key={l.to}
+              className={'mobile-menu-item' + (location.pathname === l.to ? ' active' : '')}
+              onClick={() => goTo(l.to)}
+            >{l.label}</div>
+          ))}
+          <div className="mobile-menu-item" onClick={() => { setMobileMenuOpen(false); navigate('/settings'); }}>⚙️ 设置</div>
+          <div className="mobile-menu-item" onClick={() => { setMobileMenuOpen(false); logout(); }}>🚪 退出登录</div>
+        </div>
+      )}
     </nav>
   );
 }
