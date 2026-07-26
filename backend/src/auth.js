@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const SECRET = 'vocab-app-secret-key-change-in-production';
+const SECRET = process.env.JWT_SECRET || 'vocab-app-secret-key-change-in-production';
 
 function signToken(user) {
   return jwt.sign(

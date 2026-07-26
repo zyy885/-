@@ -22,6 +22,13 @@ export function getCurrentUser() {
   }
 }
 
+function handleAuthError() {
+  clearAuth();
+  if (window.location.pathname !== '/login') {
+    window.location.href = '/login';
+  }
+}
+
 async function request(method, path, body) {
   const opts = {
     method,
@@ -32,6 +39,10 @@ async function request(method, path, body) {
   if (body) opts.body = JSON.stringify(body);
   try {
     const res = await fetch(BASE + path, opts);
+    if (res.status === 401) {
+      handleAuthError();
+      throw new Error('登录已过期，请重新登录');
+    }
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
       throw new Error(data.error || (res.status === 502 ? '服务器正在部署，请稍后再试' : '请求失败 (' + res.status + ')'));

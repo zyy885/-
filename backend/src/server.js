@@ -7,7 +7,33 @@ const { isPG } = require('./db');
 const { signToken, authMiddleware, requireRole } = require('./auth');
 
 const app = express();
-app.use(cors());
+
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',')
+  : null;
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || !allowedOrigins || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('不允许的跨域请求'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  next();
+});
+
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
 
@@ -251,6 +277,25 @@ app.delete('/api/word-lists/:id', authMiddleware, requireRole('teacher'), async 
 });
 
 app.get('/api/word-lists/:id/words', authMiddleware, async (req, res) => {
+  const list = await db.prepare('SELECT * FROM word_lists WHERE id = ?').get(req.params.id);
+  if (!list) return res.status(404).json({ error: '词表不存在' });
+  if (req.user.role === 'teacher') {
+    if (list.teacher_id !== req.user.id) return res.status(403).json({ error: '无权限' });
+  } else {
+    const canAccess = await db.prepare(
+      `SELECT 1 FROM word_lists wl
+       LEFT JOIN word_books wb ON wb.id = wl.word_book_id
+       WHERE wl.id = ? AND (
+         wl.teacher_id = ? OR wb.is_public = 1 OR wb.is_public IS TRUE OR
+         EXISTS (
+           SELECT 1 FROM tasks t
+           INNER JOIN task_students ts ON ts.task_id = t.id
+           WHERE t.word_list_id = wl.id AND ts.student_id = ?
+         )
+       )`
+    ).get(req.params.id, req.user.id, req.user.id);
+    if (!canAccess) return res.status(403).json({ error: '无权限' });
+  }
   const words = await db.prepare(
     'SELECT * FROM words WHERE word_list_id = ? ORDER BY id'
   ).all(req.params.id);
@@ -268,6 +313,12 @@ app.post('/api/word-lists/:id/words', authMiddleware, requireRole('teacher'), as
 
 app.put('/api/words/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
   const { word, meaning, example } = req.body;
+  const w = await db.prepare(
+    `SELECT w.* FROM words w
+     INNER JOIN word_lists wl ON wl.id = w.word_list_id
+     WHERE w.id = ? AND wl.teacher_id = ?`
+  ).get(req.params.id, req.user.id);
+  if (!w) return res.status(404).json({ error: '单词不存在或无权限' });
   await db.prepare(
     'UPDATE words SET word = ?, meaning = ?, example = ? WHERE id = ?'
   ).run(word, meaning, example || '', req.params.id);
@@ -275,6 +326,12 @@ app.put('/api/words/:id', authMiddleware, requireRole('teacher'), async (req, re
 });
 
 app.delete('/api/words/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const w = await db.prepare(
+    `SELECT w.* FROM words w
+     INNER JOIN word_lists wl ON wl.id = w.word_list_id
+     WHERE w.id = ? AND wl.teacher_id = ?`
+  ).get(req.params.id, req.user.id);
+  if (!w) return res.status(404).json({ error: '单词不存在或无权限' });
   await db.prepare('DELETE FROM words WHERE id = ?').run(req.params.id);
   res.json({ ok: true });
 });
@@ -678,6 +735,8 @@ app.post('/api/users/batch', authMiddleware, requireRole('teacher'), async (req,
 });
 
 app.get('/api/tasks/:id/export', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const task = await db.prepare('SELECT * FROM tasks WHERE id = ? AND teacher_id = ?').get(req.params.id, req.user.id);
+  if (!task) return res.status(404).json({ error: '任务不存在或无权限' });
   const rows = await db.prepare(
     `SELECT u.username, ts.status, ts.study_progress, ts.test_score, ts.last_studied_at
      FROM task_students ts
@@ -685,7 +744,6 @@ app.get('/api/tasks/:id/export', authMiddleware, requireRole('teacher'), async (
      WHERE ts.task_id = ?
      ORDER BY u.username`
   ).all(req.params.id);
-  const task = await db.prepare('SELECT name FROM tasks WHERE id = ?').get(req.params.id);
   const csv = [
     ['用户名', '状态', '学习进度%', '测试分数', '最后学习时间'].join(','),
     ...rows.map(r => [
@@ -702,8 +760,12 @@ app.get('/api/tasks/:id/export', authMiddleware, requireRole('teacher'), async (
 });
 
 app.post('/api/task-students/:id/reset', authMiddleware, requireRole('teacher'), async (req, res) => {
-  const ts = await db.prepare('SELECT * FROM task_students WHERE id = ?').get(req.params.id);
-  if (!ts) return res.status(404).json({ error: '未找到' });
+  const ts = await db.prepare(
+    `SELECT ts.* FROM task_students ts
+     INNER JOIN tasks t ON t.id = ts.task_id
+     WHERE ts.id = ? AND t.teacher_id = ?`
+  ).get(req.params.id, req.user.id);
+  if (!ts) return res.status(404).json({ error: '未找到或无权限' });
   await db.prepare('DELETE FROM study_records WHERE task_student_id = ?').run(ts.id);
   await db.prepare('DELETE FROM test_records WHERE task_student_id = ?').run(ts.id);
   await db.prepare(
@@ -715,8 +777,24 @@ app.post('/api/task-students/:id/reset', authMiddleware, requireRole('teacher'),
 app.get('/api/word-lists/:id/export', authMiddleware, async (req, res) => {
   const list = await db.prepare('SELECT * FROM word_lists WHERE id = ?').get(req.params.id);
   if (!list) return res.status(404).json({ error: '未找到' });
-  if (req.user.role === 'teacher' && list.teacher_id !== req.user.id) {
-    return res.status(403).json({ error: '无权限' });
+  if (req.user.role === 'teacher') {
+    if (list.teacher_id !== req.user.id) {
+      return res.status(403).json({ error: '无权限' });
+    }
+  } else {
+    const canAccess = await db.prepare(
+      `SELECT 1 FROM word_lists wl
+       LEFT JOIN word_books wb ON wb.id = wl.word_book_id
+       WHERE wl.id = ? AND (
+         wl.teacher_id = ? OR wb.is_public = 1 OR wb.is_public IS TRUE OR
+         EXISTS (
+           SELECT 1 FROM tasks t
+           INNER JOIN task_students ts ON ts.task_id = t.id
+           WHERE t.word_list_id = wl.id AND ts.student_id = ?
+         )
+       )`
+    ).get(req.params.id, req.user.id, req.user.id);
+    if (!canAccess) return res.status(403).json({ error: '无权限' });
   }
   const words = await db.prepare('SELECT word, meaning, example FROM words WHERE word_list_id = ? ORDER BY id').all(req.params.id);
   res.json({ name: list.name, description: list.description, words });
@@ -820,9 +898,20 @@ app.put('/api/settings', authMiddleware, async (req, res) => {
 });
 
 app.get('/api/sentence-lists', authMiddleware, async (req, res) => {
-  const where = req.user.role === 'teacher' ? 'WHERE teacher_id = ?' : '';
-  const params = req.user.role === 'teacher' ? [req.user.id] : [];
-  const rows = await db.prepare(`SELECT * FROM sentence_lists ${where} ORDER BY created_at DESC`).all(...params);
+  let rows;
+  if (req.user.role === 'teacher') {
+    rows = await db.prepare(
+      'SELECT * FROM sentence_lists WHERE teacher_id = ? ORDER BY created_at DESC'
+    ).all(req.user.id);
+  } else {
+    rows = await db.prepare(
+      `SELECT DISTINCT sl.* FROM sentence_lists sl
+       LEFT JOIN tasks t ON t.sentence_list_id = sl.id
+       LEFT JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?
+       WHERE sl.teacher_id = ? OR ts.id IS NOT NULL
+       ORDER BY sl.created_at DESC`
+    ).all(req.user.id, req.user.id);
+  }
   res.json({ sentenceLists: rows });
 });
 
@@ -845,6 +934,19 @@ app.delete('/api/sentence-lists/:id', authMiddleware, requireRole('teacher'), as
 });
 
 app.get('/api/sentence-lists/:id/sentences', authMiddleware, async (req, res) => {
+  const list = await db.prepare('SELECT * FROM sentence_lists WHERE id = ?').get(req.params.id);
+  if (!list) return res.status(404).json({ error: '句子列表不存在' });
+  if (req.user.role === 'teacher') {
+    if (list.teacher_id !== req.user.id) return res.status(403).json({ error: '无权限' });
+  } else {
+    const canAccess = await db.prepare(
+      `SELECT 1 FROM sentence_lists sl
+       LEFT JOIN tasks t ON t.sentence_list_id = sl.id
+       LEFT JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?
+       WHERE sl.id = ? AND (sl.teacher_id = ? OR ts.id IS NOT NULL)`
+    ).get(req.user.id, req.params.id, req.user.id);
+    if (!canAccess) return res.status(403).json({ error: '无权限' });
+  }
   const rows = await db.prepare('SELECT * FROM sentences WHERE sentence_list_id = ? ORDER BY id').all(req.params.id);
   res.json({ sentences: rows });
 });
@@ -860,11 +962,23 @@ app.post('/api/sentence-lists/:id/sentences', authMiddleware, requireRole('teach
 
 app.put('/api/sentences/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
   const { sentence_en, sentence_zh, analysis } = req.body;
+  const s = await db.prepare(
+    `SELECT s.* FROM sentences s
+     INNER JOIN sentence_lists sl ON sl.id = s.sentence_list_id
+     WHERE s.id = ? AND sl.teacher_id = ?`
+  ).get(req.params.id, req.user.id);
+  if (!s) return res.status(404).json({ error: '句子不存在或无权限' });
   await db.prepare('UPDATE sentences SET sentence_en = ?, sentence_zh = ?, analysis = ? WHERE id = ?').run(sentence_en, sentence_zh, analysis || '', req.params.id);
   res.json({ ok: true });
 });
 
 app.delete('/api/sentences/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const s = await db.prepare(
+    `SELECT s.* FROM sentences s
+     INNER JOIN sentence_lists sl ON sl.id = s.sentence_list_id
+     WHERE s.id = ? AND sl.teacher_id = ?`
+  ).get(req.params.id, req.user.id);
+  if (!s) return res.status(404).json({ error: '句子不存在或无权限' });
   await db.prepare('DELETE FROM sentences WHERE id = ?').run(req.params.id);
   res.json({ ok: true });
 });
@@ -872,6 +986,17 @@ app.delete('/api/sentences/:id', authMiddleware, requireRole('teacher'), async (
 app.get('/api/sentence-lists/:id/export', authMiddleware, async (req, res) => {
   const list = await db.prepare('SELECT * FROM sentence_lists WHERE id = ?').get(req.params.id);
   if (!list) return res.status(404).json({ error: '不存在' });
+  if (req.user.role === 'teacher') {
+    if (list.teacher_id !== req.user.id) return res.status(403).json({ error: '无权限' });
+  } else {
+    const canAccess = await db.prepare(
+      `SELECT 1 FROM sentence_lists sl
+       LEFT JOIN tasks t ON t.sentence_list_id = sl.id
+       LEFT JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?
+       WHERE sl.id = ? AND (sl.teacher_id = ? OR ts.id IS NOT NULL)`
+    ).get(req.user.id, req.params.id, req.user.id);
+    if (!canAccess) return res.status(403).json({ error: '无权限' });
+  }
   const sentences = await db.prepare('SELECT sentence_en, sentence_zh, analysis FROM sentences WHERE sentence_list_id = ? ORDER BY id').all(req.params.id);
   res.json({ name: list.name, description: list.description, sentences });
 });
@@ -1275,8 +1400,34 @@ app.get('/api/self-tests/words', authMiddleware, requireRole('student'), async (
   const { word_book_id, word_list_id, count = 20, mode = 'mixed' } = req.query;
   let words = [];
   if (word_list_id) {
+    const canAccess = await db.prepare(
+      `SELECT 1 FROM word_lists wl
+       LEFT JOIN word_books wb ON wb.id = wl.word_book_id
+       WHERE wl.id = ? AND (
+         wl.teacher_id = ? OR wb.is_public = 1 OR wb.is_public IS TRUE OR
+         EXISTS (
+           SELECT 1 FROM tasks t
+           INNER JOIN task_students ts ON ts.task_id = t.id
+           WHERE t.word_list_id = wl.id AND ts.student_id = ?
+         )
+       )`
+    ).get(word_list_id, req.user.id, req.user.id);
+    if (!canAccess) return res.status(403).json({ error: '无权限访问该词表' });
     words = await db.prepare('SELECT * FROM words WHERE word_list_id = ? ORDER BY RANDOM() LIMIT ?').all(word_list_id, Math.min(Number(count), 100));
   } else if (word_book_id) {
+    const canAccess = await db.prepare(
+      `SELECT 1 FROM word_books wb
+       WHERE wb.id = ? AND (
+         wb.is_public = 1 OR wb.is_public IS TRUE OR wb.teacher_id = ? OR
+         EXISTS (
+           SELECT 1 FROM word_lists wl2
+           INNER JOIN tasks t ON t.word_list_id = wl2.id
+           INNER JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?
+           WHERE wl2.word_book_id = wb.id
+         )
+       )`
+    ).get(word_book_id, req.user.id, req.user.id);
+    if (!canAccess) return res.status(403).json({ error: '无权限访问该单词书' });
     words = await db.prepare(
       `SELECT w.* FROM words w
        INNER JOIN word_lists wl ON wl.id = w.word_list_id
