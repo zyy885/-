@@ -114,8 +114,8 @@ export default function WrongBook() {
 
   if (loading) return <div className="loading">加载中...</div>;
 
-  const totalErrors = words.reduce((s, w) => s + (w.error_count || 0), 0);
-  const totalTests = words.reduce((s, w) => s + (w.error_count || 0) + (w.correct_count || 0), 0);
+  const totalErrors = words.reduce((s, w) => s + (Number(w.error_count) || 0), 0);
+  const totalTests = words.reduce((s, w) => s + (Number(w.error_count) || 0) + (Number(w.correct_count) || 0), 0);
 
   return (
     <div className="word-manage">
