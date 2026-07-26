@@ -473,7 +473,7 @@ app.get('/api/wrong-book', authMiddleware, async (req, res) => {
     ? 'MAX(tr.tested_at) DESC'
     : sort === 'word'
     ? 'w.word ASC'
-    : 'error_count DESC, MAX(tr.tested_at) DESC';
+    : 'SUM(CASE WHEN tr.is_correct = 0 THEN 1 ELSE 0 END) DESC, MAX(tr.tested_at) DESC';
   const rows = await db.prepare(
     `SELECT w.*, wl.name as word_list_name,
        SUM(CASE WHEN tr.is_correct = 0 THEN 1 ELSE 0 END) as error_count,
@@ -484,8 +484,8 @@ app.get('/api/wrong-book', authMiddleware, async (req, res) => {
      INNER JOIN task_students ts ON ts.id = tr.task_student_id
      LEFT JOIN word_lists wl ON wl.id = w.word_list_id
      WHERE ts.student_id = ?
-     GROUP BY w.id
-     HAVING error_count > 0
+     GROUP BY w.id, w.word, w.meaning, w.example, w.created_at, w.word_list_id, wl.name
+     HAVING SUM(CASE WHEN tr.is_correct = 0 THEN 1 ELSE 0 END) > 0
      ORDER BY ${orderBy}`
   ).all(req.user.id);
   res.json({ wrongWords: rows });
