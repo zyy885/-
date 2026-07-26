@@ -216,6 +216,43 @@ const buildDDL = () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UNIQUE (student_id, checkin_date)
       );
+
+      CREATE TABLE IF NOT EXISTS tags (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        color TEXT DEFAULT '#6366f1',
+        teacher_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS student_tags (
+        id SERIAL PRIMARY KEY,
+        student_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        tag_id INTEGER NOT NULL REFERENCES tags(id) ON DELETE CASCADE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE (student_id, tag_id)
+      );
+
+      CREATE TABLE IF NOT EXISTS self_tests (
+        id SERIAL PRIMARY KEY,
+        student_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        word_book_id INTEGER REFERENCES word_books(id) ON DELETE SET NULL,
+        word_list_id INTEGER REFERENCES word_lists(id) ON DELETE SET NULL,
+        total_words INTEGER,
+        correct_count INTEGER,
+        score REAL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE IF NOT EXISTS self_test_records (
+        id SERIAL PRIMARY KEY,
+        self_test_id INTEGER NOT NULL REFERENCES self_tests(id) ON DELETE CASCADE,
+        word_id INTEGER NOT NULL REFERENCES words(id) ON DELETE CASCADE,
+        user_answer TEXT,
+        is_correct INTEGER,
+        question_type TEXT DEFAULT 'en_to_zh',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
     `;
   }
 
@@ -377,6 +414,51 @@ const buildDDL = () => {
       UNIQUE (student_id, checkin_date),
       FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
       FOREIGN KEY (task_student_id) REFERENCES task_students(id) ON DELETE SET NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS tags (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      color TEXT DEFAULT '#6366f1',
+      teacher_id INTEGER NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS student_tags (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      student_id INTEGER NOT NULL,
+      tag_id INTEGER NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE (student_id, tag_id),
+      FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS self_tests (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      student_id INTEGER NOT NULL,
+      word_book_id INTEGER,
+      word_list_id INTEGER,
+      total_words INTEGER,
+      correct_count INTEGER,
+      score REAL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (word_book_id) REFERENCES word_books(id) ON DELETE SET NULL,
+      FOREIGN KEY (word_list_id) REFERENCES word_lists(id) ON DELETE SET NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS self_test_records (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      self_test_id INTEGER NOT NULL,
+      word_id INTEGER NOT NULL,
+      user_answer TEXT,
+      is_correct INTEGER,
+      question_type TEXT DEFAULT 'en_to_zh',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (self_test_id) REFERENCES self_tests(id) ON DELETE CASCADE,
+      FOREIGN KEY (word_id) REFERENCES words(id) ON DELETE CASCADE
     );
   `;
 };

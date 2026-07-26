@@ -21,6 +21,7 @@ import CommentsTeacher from './pages/CommentsTeacher.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 import SentenceListManage from './pages/SentenceListManage.jsx';
 import SentencePractice from './pages/SentencePractice.jsx';
+import SelfTestPage from './pages/SelfTestPage.jsx';
 
 function Navbar() {
   const user = getCurrentUser();
@@ -131,6 +132,7 @@ export default function App() {
           <Route path="/student/task/:id/study" element={<ProtectedRoute role="student"><StudyPage /></ProtectedRoute>} />
           <Route path="/student/task/:id/test" element={<ProtectedRoute role="student"><TestPage /></ProtectedRoute>} />
           <Route path="/student/word-lists" element={<ProtectedRoute role="student"><StudentWordLists /></ProtectedRoute>} />
+          <Route path="/student/self-test" element={<ProtectedRoute role="student"><SelfTestPage /></ProtectedRoute>} />
           <Route path="/student/sentence-practice" element={<ProtectedRoute role="student"><SentencePractice /></ProtectedRoute>} />
           <Route path="/teacher" element={<ProtectedRoute role="teacher"><TeacherDashboard /></ProtectedRoute>} />
           <Route path="/teacher/word-lists" element={<ProtectedRoute role="teacher"><WordListManage /></ProtectedRoute>} />

@@ -101,4 +101,18 @@ export const api = {
   getCheckinStatus: () => request('GET', '/checkins/status'),
   doCheckin: () => request('POST', '/checkins'),
   getCheckins: () => request('GET', '/checkins'),
+  getAllCheckins: (date) => request('GET', `/checkins/all${date ? '?date=' + date : ''}`),
+  getTags: () => request('GET', '/tags'),
+  createTag: (data) => request('POST', '/tags', data),
+  updateTag: (id, data) => request('PUT', '/tags/' + id, data),
+  deleteTag: (id) => request('DELETE', '/tags/' + id),
+  getStudentTags: (studentId) => request('GET', `/students/${studentId}/tags`),
+  setStudentTags: (studentId, tag_ids) => request('POST', `/students/${studentId}/tags`, { tag_ids }),
+  getTagStudents: (tagId) => request('GET', `/tags/${tagId}/students`),
+  getSelfTestWords: (params) => {
+    const qs = new URLSearchParams(params).toString();
+    return request('GET', `/self-tests/words?${qs}`);
+  },
+  submitSelfTest: (data) => request('POST', '/self-tests/submit', data),
+  getSelfTests: () => request('GET', '/self-tests'),
 };

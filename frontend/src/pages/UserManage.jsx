@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
 
+const TAG_COLORS = ['#6366f1', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#8b5cf6', '#14b8a6'];
+
 function roleLabel(role) {
-  return role === 'teacher' ? '👨‍🏫 老师' : '🎒 学生';
+  return role === 'teacher' ? '👨‍🏫' : '🎒';
 }
 
 function roleBadge(role) {
@@ -15,74 +17,129 @@ function roleBadge(role) {
 export default function UserManage() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [checkins, setCheckins] = useState([]);
+  const [allStudents, setAllStudents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('users');
   const [showAdd, setShowAdd] = useState(false);
   const [showBatch, setShowBatch] = useState(false);
+  const [showTagModal, setShowTagModal] = useState(false);
+  const [showStudentTagModal, setShowStudentTagModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [editingTag, setEditingTag] = useState(null);
+  const [studentTagIds, setStudentTagIds] = useState([]);
   const [batchText, setBatchText] = useState('');
   const [form, setForm] = useState({ username: '', password: '', role: 'student' });
+  const [tagForm, setTagForm] = useState({ name: '', color: TAG_COLORS[0] });
 
   useEffect(() => { load(); }, []);
 
   const load = async () => {
     try {
-      const data = await api.getUsers();
-      setUsers(data.users);
+      const [usersData, tagsData, checkinData] = await Promise.all([
+        api.getUsers(),
+        api.getTags().catch(() => ({ tags: [] })),
+        api.getAllCheckins().catch(() => ({ checkins: [], all_students: [] })),
+      ]);
+      setUsers(usersData.users);
+      setTags(tagsData.tags || []);
+      setCheckins(checkinData.checkins || []);
+      setAllStudents(checkinData.all_students || []);
     } finally {
       setLoading(false);
     }
   };
 
   const addUser = async () => {
-    if (!form.username.trim() || !form.password.trim()) {
-      return alert('请输入用户名和密码');
-    }
+    if (!form.username.trim() || !form.password.trim()) return alert('请输入用户名和密码');
     try {
       await api.createUser(form);
       setForm({ username: '', password: '', role: 'student' });
       setShowAdd(false);
       load();
-    } catch (e) {
-      alert(e.message);
-    }
+    } catch (e) { alert(e.message); }
   };
 
   const handleBatchImport = async () => {
     if (!batchText.trim()) return alert('请输入用户数据');
     const lines = batchText.trim().split('\n').filter(l => l.trim());
-    const users = [];
+    const us = [];
     for (const line of lines) {
       const parts = line.split(',').map(s => s.trim());
       if (parts.length >= 2) {
         const [username, password, role] = parts;
-        users.push({ username, password, role: role || 'student' });
+        us.push({ username, password, role: role || 'student' });
       }
     }
-    if (users.length === 0) return alert('未解析到有效用户');
+    if (us.length === 0) return alert('未解析到有效用户');
     try {
-      const res = await api.batchCreateUsers(users);
+      const res = await api.batchCreateUsers(us);
       alert(`成功添加 ${res.added || 0} 个，跳过 ${res.skipped || 0} 个`);
       setBatchText('');
       setShowBatch(false);
       load();
-    } catch (e) {
-      alert(e.message);
-    }
+    } catch (e) { alert(e.message); }
   };
 
   const removeUser = async (u) => {
     if (!confirm(`确定删除用户「${u.username}」？`)) return;
+    try { await api.deleteUser(u.id); load(); } catch (e) { alert(e.message); }
+  };
+
+  const openTagModal = (tag = null) => {
+    setEditingTag(tag);
+    setTagForm(tag ? { name: tag.name, color: tag.color } : { name: '', color: TAG_COLORS[0] });
+    setShowTagModal(true);
+  };
+
+  const saveTag = async () => {
+    if (!tagForm.name.trim()) return alert('请输入标签名称');
     try {
-      await api.deleteUser(u.id);
+      if (editingTag) {
+        await api.updateTag(editingTag.id, tagForm);
+      } else {
+        await api.createTag(tagForm);
+      }
+      setShowTagModal(false);
       load();
-    } catch (e) {
-      alert(e.message);
-    }
+    } catch (e) { alert(e.message); }
+  };
+
+  const deleteTag = async (tag) => {
+    if (!confirm(`确定删除标签「${tag.name}」？`)) return;
+    try { await api.deleteTag(tag.id); load(); } catch (e) { alert(e.message); }
+  };
+
+  const openStudentTagModal = async (student) => {
+    setSelectedStudent(student);
+    try {
+      const data = await api.getStudentTags(student.id);
+      setStudentTagIds((data.tags || []).map(t => t.id));
+    } catch (e) { setStudentTagIds([]); }
+    setShowStudentTagModal(true);
+  };
+
+  const saveStudentTags = async () => {
+    if (!selectedStudent) return;
+    try {
+      await api.setStudentTags(selectedStudent.id, studentTagIds);
+      setShowStudentTagModal(false);
+      setSelectedStudent(null);
+    } catch (e) { alert(e.message); }
+  };
+
+  const toggleStudentTag = (tagId) => {
+    setStudentTagIds(prev =>
+      prev.includes(tagId) ? prev.filter(id => id !== tagId) : [...prev, tagId]
+    );
   };
 
   if (loading) return <div className="loading">加载中...</div>;
 
   const teachers = users.filter(u => u.role === 'teacher');
   const students = users.filter(u => u.role === 'student');
+  const checkedInStudentIds = new Set(checkins.map(c => c.student_id));
 
   return (
     <div className="task-manage">
@@ -95,24 +152,117 @@ export default function UserManage() {
         </div>
       </div>
 
-      {showBatch && (
-        <div className="modal" onClick={() => setShowBatch(false)}>
-          <div className="modal-content modal-lg" onClick={e => e.stopPropagation()}>
-            <h3>批量导入账号</h3>
-            <div className="form-group"><label>用户数据</label>
-              <textarea
-                rows={8}
-                value={batchText}
-                onChange={e => setBatchText(e.target.value)}
-                placeholder={'每行一个，格式：用户名,密码,身份（身份可选，默认student）\n\n例：\nzhangsan,123456\nlisi,123456,student\nwangwu,123456,teacher'}
-              />
-            </div>
-            <div className="modal-actions">
-              <button className="btn btn-outline" onClick={() => setShowBatch(false)}>取消</button>
-              <button className="btn btn-primary" onClick={handleBatchImport}>开始导入</button>
-            </div>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16, borderBottom: '1px solid #e5e7eb' }}>
+        <button className={'btn ' + (activeTab === 'users' ? 'btn-primary' : 'btn-outline')} onClick={() => setActiveTab('users')}>👥 用户</button>
+        <button className={'btn ' + (activeTab === 'tags' ? 'btn-primary' : 'btn-outline')} onClick={() => setActiveTab('tags')}>🏷️ 标签</button>
+        <button className={'btn ' + (activeTab === 'checkins' ? 'btn-primary' : 'btn-outline')} onClick={() => setActiveTab('checkins')}>✅ 打卡</button>
+      </div>
+
+      {activeTab === 'users' && (
+        <>
+          <div className="stats-grid">
+            <div className="stat-card"><div className="stat-num">{users.length}</div><div className="stat-label">总账号</div></div>
+            <div className="stat-card"><div className="stat-num">{teachers.length}</div><div className="stat-label">老师</div></div>
+            <div className="stat-card"><div className="stat-num">{students.length}</div><div className="stat-label">学生</div></div>
           </div>
-        </div>
+
+          <h3 style={{ marginTop: 24 }}>全部用户</h3>
+          <div className="progress-table">
+            <table>
+              <thead>
+                <tr><th>#</th><th>用户名</th><th>身份</th><th>标签</th><th>创建时间</th><th>操作</th></tr>
+              </thead>
+              <tbody>
+                {users.map((u, i) => (
+                  <tr key={u.id}>
+                    <td>{i + 1}</td>
+                    <td>{roleLabel(u.role)} {u.username}</td>
+                    <td>{roleBadge(u.role)}</td>
+                    <td>
+                      {u.role === 'student' ? (
+                        <button className="btn btn-outline btn-sm" onClick={() => openStudentTagModal(u)}>
+                          🏷️ 打标签
+                        </button>
+                      ) : '-'}
+                    </td>
+                    <td className="muted small">{new Date(u.created_at).toLocaleString()}</td>
+                    <td>
+                      <button className="btn btn-danger btn-sm" onClick={() => removeUser(u)}>删除</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
+
+      {activeTab === 'tags' && (
+        <>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <h3 style={{ margin: 0 }}>标签管理</h3>
+            <button className="btn btn-primary btn-sm" onClick={() => openTagModal(null)}>+ 新建标签</button>
+          </div>
+          {tags.length === 0 ? (
+            <div className="empty-state">暂无标签，点击右上角新建</div>
+          ) : (
+            <div className="card-grid">
+              {tags.map(tag => (
+                <div key={tag.id} className="card" style={{ borderLeft: `4px solid ${tag.color}` }}>
+                  <div className="card-header">
+                    <h3 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ width: 12, height: 12, borderRadius: '50%', background: tag.color }} />
+                      {tag.name}
+                    </h3>
+                    <span className="badge badge-blue">{tag.student_count || 0} 人</span>
+                  </div>
+                  <div className="card-footer">
+                    <button className="btn btn-outline btn-sm" onClick={() => openTagModal(tag)}>编辑</button>
+                    <button className="btn btn-danger btn-sm" onClick={() => deleteTag(tag)}>删除</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      {activeTab === 'checkins' && (
+        <>
+          <h3 style={{ marginTop: 0 }}>今日打卡情况（{new Date().toISOString().split('T')[0]}）</h3>
+          <div className="stats-grid">
+            <div className="stat-card"><div className="stat-num">{allStudents.length}</div><div className="stat-label">学生总数</div></div>
+            <div className="stat-card"><div className="stat-num" style={{ color: '#10b981' }}>{checkins.length}</div><div className="stat-label">已打卡</div></div>
+            <div className="stat-card"><div className="stat-num" style={{ color: '#ef4444' }}>{allStudents.length - checkins.length}</div><div className="stat-label">未打卡</div></div>
+          </div>
+
+          <h3 style={{ marginTop: 24 }}>打卡明细</h3>
+          <div className="progress-table">
+            <table>
+              <thead>
+                <tr><th>#</th><th>学生</th><th>状态</th><th>打卡时间</th><th>测试成绩</th></tr>
+              </thead>
+              <tbody>
+                {allStudents.map((s, i) => {
+                  const cin = checkins.find(c => c.student_id === s.id);
+                  return (
+                    <tr key={s.id}>
+                      <td>{i + 1}</td>
+                      <td>🎒 {s.username}</td>
+                      <td>
+                        {cin
+                          ? <span className="badge badge-green">✅ 已打卡</span>
+                          : <span className="badge badge-gray">⏳ 未打卡</span>}
+                      </td>
+                      <td className="muted small">{cin ? new Date(cin.created_at).toLocaleString() : '-'}</td>
+                      <td className="muted small">{cin && cin.test_score != null ? `${Math.round(cin.test_score)} 分` : '-'}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       {showAdd && (
@@ -139,33 +289,78 @@ export default function UserManage() {
         </div>
       )}
 
-      <div className="stats-grid">
-        <div className="stat-card"><div className="stat-num">{users.length}</div><div className="stat-label">总账号</div></div>
-        <div className="stat-card"><div className="stat-num">{teachers.length}</div><div className="stat-label">老师</div></div>
-        <div className="stat-card"><div className="stat-num">{students.length}</div><div className="stat-label">学生</div></div>
-      </div>
+      {showBatch && (
+        <div className="modal" onClick={() => setShowBatch(false)}>
+          <div className="modal-content modal-lg" onClick={e => e.stopPropagation()}>
+            <h3>批量导入账号</h3>
+            <div className="form-group"><label>用户数据</label>
+              <textarea rows={8} value={batchText} onChange={e => setBatchText(e.target.value)}
+                placeholder={'每行一个，格式：用户名,密码,身份（身份可选，默认student）\n\n例：\nzhangsan,123456\nlisi,123456,student\nwangwu,123456,teacher'} />
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-outline" onClick={() => setShowBatch(false)}>取消</button>
+              <button className="btn btn-primary" onClick={handleBatchImport}>开始导入</button>
+            </div>
+          </div>
+        </div>
+      )}
 
-      <h3 style={{ marginTop: 24 }}>全部用户</h3>
-      <div className="progress-table">
-        <table>
-          <thead>
-            <tr><th>#</th><th>用户名</th><th>身份</th><th>创建时间</th><th>操作</th></tr>
-          </thead>
-          <tbody>
-            {users.map((u, i) => (
-              <tr key={u.id}>
-                <td>{i + 1}</td>
-                <td>{roleLabel(u.role)} {u.username}</td>
-                <td>{roleBadge(u.role)}</td>
-                <td className="muted small">{new Date(u.created_at).toLocaleString()}</td>
-                <td>
-                  <button className="btn btn-danger btn-sm" onClick={() => removeUser(u)}>删除</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {showTagModal && (
+        <div className="modal" onClick={() => setShowTagModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h3>{editingTag ? '编辑标签' : '新建标签'}</h3>
+            <div className="form-group"><label>标签名称</label>
+              <input value={tagForm.name} onChange={e => setTagForm({ ...tagForm, name: e.target.value })} placeholder="如：一班、考研组" />
+            </div>
+            <div className="form-group"><label>标签颜色</label>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {TAG_COLORS.map(c => (
+                  <button key={c} type="button" onClick={() => setTagForm({ ...tagForm, color: c })}
+                    style={{
+                      width: 32, height: 32, borderRadius: '50%', background: c,
+                      border: tagForm.color === c ? '3px solid #1a1a2e' : '2px solid transparent',
+                      cursor: 'pointer'
+                    }} />
+                ))}
+              </div>
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-outline" onClick={() => setShowTagModal(false)}>取消</button>
+              <button className="btn btn-primary" onClick={saveTag}>保存</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showStudentTagModal && selectedStudent && (
+        <div className="modal" onClick={() => setShowStudentTagModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h3>为「{selectedStudent.username}」打标签</h3>
+            {tags.length === 0 ? (
+              <p className="muted">暂无标签，请先到「标签」页面创建</p>
+            ) : (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                {tags.map(tag => (
+                  <label key={tag.id} className="checkbox-item" style={{
+                    padding: '8px 14px', borderRadius: 20, border: `2px solid ${tag.color}`,
+                    background: studentTagIds.includes(tag.id) ? tag.color : 'transparent',
+                    color: studentTagIds.includes(tag.id) ? 'white' : tag.color,
+                    cursor: 'pointer', userSelect: 'none'
+                  }}>
+                    <input type="checkbox" checked={studentTagIds.includes(tag.id)}
+                      onChange={() => toggleStudentTag(tag.id)} style={{ marginRight: 6 }} />
+                    {tag.name}
+                  </label>
+                ))}
+              </div>
+            )}
+            <div className="modal-actions">
+              <button className="btn btn-outline" onClick={() => setShowStudentTagModal(false)}>取消</button>
+              <button className="btn btn-primary" onClick={saveStudentTags}>保存</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

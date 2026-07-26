@@ -8,6 +8,7 @@ export default function TaskManage() {
   const [lists, setLists] = useState([]);
   const [selectedBookId, setSelectedBookId] = useState(null);
   const [students, setStudents] = useState([]);
+  const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({
@@ -17,11 +18,12 @@ export default function TaskManage() {
   useEffect(() => { loadLists(); }, [selectedBookId]);
 
   const load = async () => {
-    Promise.all([api.getTasks(), api.getWordBooks(), api.getStudents()])
-      .then(([t, wb, s]) => {
+    Promise.all([api.getTasks(), api.getWordBooks(), api.getStudents(), api.getTags().catch(() => ({ tags: [] }))])
+      .then(([t, wb, s, tg]) => {
         setTasks(t.tasks);
         setWordBooks(wb.wordBooks);
         setStudents(s.students);
+        setTags(tg.tags || []);
       })
       .finally(() => setLoading(false));
   };
@@ -49,6 +51,17 @@ export default function TaskManage() {
     } else {
       setForm(f => ({ ...f, student_ids: students.map(s => s.id) }));
     }
+  };
+
+  const selectByTag = async (tagId) => {
+    try {
+      const data = await api.getTagStudents(tagId);
+      const tagStudentIds = (data.students || []).map(s => s.id);
+      setForm(f => {
+        const merged = [...new Set([...f.student_ids, ...tagStudentIds])];
+        return { ...f, student_ids: merged };
+      });
+    } catch (e) { alert(e.message); }
   };
 
   const create = async () => {
@@ -123,6 +136,20 @@ export default function TaskManage() {
                 <input type="checkbox" checked={form.student_ids.length === students.length && students.length > 0} onChange={toggleAllStudents} />
                 选择学生（全选）
               </label>
+              {tags.length > 0 && (
+                <div style={{ marginBottom: 10 }}>
+                  <span className="muted small" style={{ marginRight: 8 }}>按标签选择：</span>
+                  {tags.map(tag => (
+                    <button
+                      key={tag.id}
+                      type="button"
+                      className="btn btn-outline btn-sm"
+                      style={{ marginRight: 6, marginBottom: 4, borderColor: tag.color, color: tag.color }}
+                      onClick={() => selectByTag(tag.id)}
+                    >+ {tag.name}（{tag.student_count || 0}人）</button>
+                  ))}
+                </div>
+              )}
               <div className="student-checkboxes">
                 {students.map(s => (
                   <label key={s.id} className="checkbox-item">

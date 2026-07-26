@@ -892,6 +892,202 @@ app.get('/api/checkins', authMiddleware, requireRole('student'), async (req, res
   res.json({ checkins: rows });
 });
 
+app.get('/api/tags', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const rows = await db.prepare(
+    isPG
+      ? `SELECT t.*, (SELECT COUNT(*) FROM student_tags st WHERE st.tag_id = t.id) as student_count
+         FROM tags t WHERE t.teacher_id = $1 ORDER BY t.created_at DESC`
+      : `SELECT t.*, (SELECT COUNT(*) FROM student_tags st WHERE st.tag_id = t.id) as student_count
+         FROM tags t WHERE t.teacher_id = ? ORDER BY t.created_at DESC`
+  ).all(req.user.id);
+  res.json({ tags: rows });
+});
+
+app.post('/api/tags', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const { name, color } = req.body;
+  if (!name || !name.trim()) return res.status(400).json({ error: '请输入标签名称' });
+  const info = await db.prepare(
+    isPG
+      ? 'INSERT INTO tags (name, color, teacher_id) VALUES ($1, $2, $3)'
+      : 'INSERT INTO tags (name, color, teacher_id) VALUES (?, ?, ?)'
+  ).run(name.trim(), color || '#6366f1', req.user.id);
+  res.json({ id: info.lastInsertRowid, ok: true });
+});
+
+app.put('/api/tags/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const { name, color } = req.body;
+  const tag = await db.prepare('SELECT * FROM tags WHERE id = ?').get(req.params.id);
+  if (!tag) return res.status(404).json({ error: '标签不存在' });
+  if (tag.teacher_id !== req.user.id) return res.status(403).json({ error: '无权限' });
+  await db.prepare(
+    isPG
+      ? 'UPDATE tags SET name = $1, color = $2 WHERE id = $3'
+      : 'UPDATE tags SET name = ?, color = ? WHERE id = ?'
+  ).run(name || tag.name, color || tag.color, req.params.id);
+  res.json({ ok: true });
+});
+
+app.delete('/api/tags/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const tag = await db.prepare('SELECT * FROM tags WHERE id = ?').get(req.params.id);
+  if (!tag) return res.status(404).json({ error: '标签不存在' });
+  if (tag.teacher_id !== req.user.id) return res.status(403).json({ error: '无权限' });
+  await db.prepare('DELETE FROM tags WHERE id = ?').run(req.params.id);
+  res.json({ ok: true });
+});
+
+app.get('/api/students/:id/tags', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const rows = await db.prepare(
+    isPG
+      ? `SELECT t.* FROM tags t
+         INNER JOIN student_tags st ON st.tag_id = t.id
+         WHERE st.student_id = $1 AND t.teacher_id = $2`
+      : `SELECT t.* FROM tags t
+         INNER JOIN student_tags st ON st.tag_id = t.id
+         WHERE st.student_id = ? AND t.teacher_id = ?`
+  ).all(req.params.id, req.user.id);
+  res.json({ tags: rows });
+});
+
+app.post('/api/students/:id/tags', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const { tag_ids } = req.body;
+  const studentId = req.params.id;
+  await db.prepare('DELETE FROM student_tags WHERE student_id = ?').run(studentId);
+  if (tag_ids && tag_ids.length > 0) {
+    const insert = db.prepare(
+      isPG
+        ? 'INSERT INTO student_tags (student_id, tag_id) VALUES ($1, $2)'
+        : 'INSERT INTO student_tags (student_id, tag_id) VALUES (?, ?)'
+    );
+    for (const tagId of tag_ids) {
+      const tag = await db.prepare('SELECT * FROM tags WHERE id = ?').get(tagId);
+      if (tag && tag.teacher_id === req.user.id) {
+        try { await insert.run(studentId, tagId); } catch (e) {}
+      }
+    }
+  }
+  res.json({ ok: true });
+});
+
+app.get('/api/tags/:id/students', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const rows = await db.prepare(
+    isPG
+      ? `SELECT u.* FROM users u
+         INNER JOIN student_tags st ON st.student_id = u.id
+         WHERE st.tag_id = $1`
+      : `SELECT u.* FROM users u
+         INNER JOIN student_tags st ON st.student_id = u.id
+         WHERE st.tag_id = ?`
+  ).all(req.params.id);
+  res.json({ students: rows });
+});
+
+app.get('/api/checkins/all', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const date = req.query.date || new Date().toISOString().split('T')[0];
+  const rows = await db.prepare(
+    isPG
+      ? `SELECT c.*, u.username
+         FROM checkins c
+         LEFT JOIN users u ON u.id = c.student_id
+         WHERE c.checkin_date = $1
+         ORDER BY c.created_at DESC`
+      : `SELECT c.*, u.username
+         FROM checkins c
+         LEFT JOIN users u ON u.id = c.student_id
+         WHERE c.checkin_date = ?
+         ORDER BY c.created_at DESC`
+  ).all(date);
+  const allStudents = await db.prepare("SELECT id, username FROM users WHERE role = 'student'").all();
+  res.json({ checkins: rows, all_students: allStudents, date });
+});
+
+app.get('/api/self-tests/words', authMiddleware, requireRole('student'), async (req, res) => {
+  const { word_book_id, word_list_id, count = 20, mode = 'mixed' } = req.query;
+  let words = [];
+  if (word_list_id) {
+    words = await db.prepare('SELECT * FROM words WHERE word_list_id = ? ORDER BY RANDOM() LIMIT ?').all(word_list_id, Math.min(Number(count), 100));
+  } else if (word_book_id) {
+    words = await db.prepare(
+      `SELECT w.* FROM words w
+       INNER JOIN word_lists wl ON wl.id = w.word_list_id
+       WHERE wl.word_book_id = ?
+       ORDER BY RANDOM() LIMIT ?`
+    ).all(word_book_id, Math.min(Number(count), 100));
+  }
+  const qMode = mode === 'en_to_zh' ? 'en_to_zh' : mode === 'zh_to_en' ? 'zh_to_en' : 'mixed';
+  const questions = words.map(w => ({
+    word_id: w.id,
+    word: w.word,
+    meaning: w.meaning,
+    question_type: qMode === 'mixed' ? (Math.random() > 0.5 ? 'en_to_zh' : 'zh_to_en') : qMode,
+  }));
+  res.json({ questions, total: questions.length });
+});
+
+app.post('/api/self-tests/submit', authMiddleware, requireRole('student'), async (req, res) => {
+  const { word_book_id, word_list_id, answers } = req.body;
+  if (!answers || !answers.length) return res.status(400).json({ error: '参数错误' });
+  let correct = 0;
+  const cleanMeaning = (s) => {
+    s = s.trim().toLowerCase();
+    s = s.replace(/\(.*?\)/g, '').trim();
+    s = s.replace(/^[a-z]+\.\s*/, '').trim();
+    s = s.replace(/^[（(][^）)]*[）)]\s*/, '').trim();
+    return s;
+  };
+  for (const a of answers) {
+    const word = await db.prepare('SELECT * FROM words WHERE id = ?').get(a.word_id);
+    if (!word) continue;
+    const qType = a.question_type || 'en_to_zh';
+    const userAns = (a.user_answer || '').trim().toLowerCase();
+    if (userAns.length > 0) {
+      if (qType === 'zh_to_en') {
+        const validWords = word.word.split(/[;,，；、\/\|]/).map(s => s.trim().toLowerCase()).filter(Boolean);
+        if (validWords.some(w => w === userAns || userAns.includes(w) || w.includes(userAns))) a.is_correct = true;
+      } else {
+        const rawMeanings = word.meaning.split(/[;,，；、\/\|]/).map(s => s.trim()).filter(Boolean);
+        const validMeanings = rawMeanings.map(cleanMeaning).filter(Boolean);
+        if (validMeanings.some(m => m === userAns || userAns.includes(m) || m.includes(userAns))) a.is_correct = true;
+      }
+    }
+    if (a.is_correct) correct++;
+  }
+  const score = (correct / answers.length) * 100;
+  const info = await db.prepare(
+    isPG
+      ? 'INSERT INTO self_tests (student_id, word_book_id, word_list_id, total_words, correct_count, score) VALUES ($1, $2, $3, $4, $5, $6)'
+      : 'INSERT INTO self_tests (student_id, word_book_id, word_list_id, total_words, correct_count, score) VALUES (?, ?, ?, ?, ?, ?)'
+  ).run(req.user.id, word_book_id || null, word_list_id || null, answers.length, correct, score);
+  const selfTestId = info.lastInsertRowid;
+  const insertRec = db.prepare(
+    isPG
+      ? 'INSERT INTO self_test_records (self_test_id, word_id, user_answer, is_correct, question_type) VALUES ($1, $2, $3, $4, $5)'
+      : 'INSERT INTO self_test_records (self_test_id, word_id, user_answer, is_correct, question_type) VALUES (?, ?, ?, ?, ?)'
+  );
+  for (const a of answers) {
+    await insertRec.run(selfTestId, a.word_id, a.user_answer || '', a.is_correct ? 1 : 0, a.question_type || 'en_to_zh');
+  }
+  res.json({ self_test_id: selfTestId, score, correct, total: answers.length });
+});
+
+app.get('/api/self-tests', authMiddleware, requireRole('student'), async (req, res) => {
+  const rows = await db.prepare(
+    isPG
+      ? `SELECT st.*, wb.name as word_book_name, wl.name as word_list_name
+         FROM self_tests st
+         LEFT JOIN word_books wb ON wb.id = st.word_book_id
+         LEFT JOIN word_lists wl ON wl.id = st.word_list_id
+         WHERE st.student_id = $1
+         ORDER BY st.created_at DESC LIMIT 50`
+      : `SELECT st.*, wb.name as word_book_name, wl.name as word_list_name
+         FROM self_tests st
+         LEFT JOIN word_books wb ON wb.id = st.word_book_id
+         LEFT JOIN word_lists wl ON wl.id = st.word_list_id
+         WHERE st.student_id = ?
+         ORDER BY st.created_at DESC LIMIT 50`
+  ).all(req.user.id);
+  res.json({ self_tests: rows });
+});
+
 if (fs.existsSync(FRONTEND_DIST)) {
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api/')) return next();

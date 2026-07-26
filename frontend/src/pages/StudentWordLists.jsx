@@ -181,10 +181,16 @@ export default function StudentWordLists() {
           {selectedBook.description && (
             <p className="muted" style={{ marginBottom: 16 }}>{selectedBook.description}</p>
           )}
-          <h3 className="section-title">
-            📋 词表列表
-            <span className="muted small" style={{ marginLeft: 8 }}>共 {getListsForBook(selectedBook.id).length} 个</span>
-          </h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+            <h3 className="section-title" style={{ margin: 0 }}>
+              📋 词表列表
+              <span className="muted small" style={{ marginLeft: 8 }}>共 {getListsForBook(selectedBook.id).length} 个</span>
+            </h3>
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={() => navigate(`/student/self-test?word_book_id=${selectedBook.id}`)}
+            >📝 整本书自测</button>
+          </div>
           {getListsForBook(selectedBook.id).length === 0 ? (
             <div className="empty-state-small">该书下暂无词表</div>
           ) : (
@@ -212,6 +218,10 @@ export default function StudentWordLists() {
         <div className="browse-section">
           <div className="word-list-header">
             <span className="muted small">共 {words.length} 个单词</span>
+            <button
+              className="btn btn-primary btn-sm"
+              onClick={() => navigate(`/student/self-test?word_list_id=${selectedList.id}`)}
+            >📝 开始自测</button>
           </div>
           <div className="word-cards">
             {words.map((w, i) => (
