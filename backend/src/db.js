@@ -206,6 +206,16 @@ const buildDDL = () => {
         is_correct INTEGER,
         translated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+
+      CREATE TABLE IF NOT EXISTS checkins (
+        id SERIAL PRIMARY KEY,
+        student_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        checkin_date DATE NOT NULL,
+        task_student_id INTEGER REFERENCES task_students(id) ON DELETE SET NULL,
+        test_score REAL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE (student_id, checkin_date)
+      );
     `;
   }
 
@@ -355,6 +365,18 @@ const buildDDL = () => {
       translated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
       FOREIGN KEY (sentence_id) REFERENCES sentences(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS checkins (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      student_id INTEGER NOT NULL,
+      checkin_date TEXT NOT NULL,
+      task_student_id INTEGER,
+      test_score REAL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE (student_id, checkin_date),
+      FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
+      FOREIGN KEY (task_student_id) REFERENCES task_students(id) ON DELETE SET NULL
     );
   `;
 };

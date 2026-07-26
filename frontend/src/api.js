@@ -98,4 +98,7 @@ export const api = {
   getTranslationRecords: () => request('GET', '/translation/records'),
   getTestRecords: (tsId) => request('GET', `/task-students/${tsId}/test-records`),
   updateTestRecord: (recId, is_correct) => request('PUT', `/test-records/${recId}`, { is_correct }),
+  getCheckinStatus: () => request('GET', '/checkins/status'),
+  doCheckin: () => request('POST', '/checkins'),
+  getCheckins: () => request('GET', '/checkins'),
 };

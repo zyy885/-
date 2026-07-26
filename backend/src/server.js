@@ -775,6 +775,123 @@ app.put('/api/test-records/:id', authMiddleware, requireRole('teacher'), async (
   res.json({ ok: true, score });
 });
 
+app.get('/api/checkins/status', authMiddleware, requireRole('student'), async (req, res) => {
+  const today = new Date().toISOString().split('T')[0];
+  const studentId = req.user.id;
+
+  const todayCheckin = await db.prepare(
+    isPG
+      ? "SELECT * FROM checkins WHERE student_id = $1 AND checkin_date = $2"
+      : "SELECT * FROM checkins WHERE student_id = ? AND checkin_date = ?"
+  ).get(studentId, today);
+
+  const totalCheckins = await db.prepare(
+    isPG
+      ? "SELECT COUNT(*) as cnt FROM checkins WHERE student_id = $1"
+      : "SELECT COUNT(*) as cnt FROM checkins WHERE student_id = ?"
+  ).get(studentId);
+
+  let canCheckin = false;
+  let checkinReason = '';
+  let todayTest = null;
+
+  const recentTests = await db.prepare(
+    isPG
+      ? `SELECT ts.*, t.name as task_name
+         FROM task_students ts
+         LEFT JOIN tasks t ON t.id = ts.task_id
+         WHERE ts.student_id = $1 AND ts.status = 'tested'
+         ORDER BY ts.last_studied_at DESC LIMIT 20`
+      : `SELECT ts.*, t.name as task_name
+         FROM task_students ts
+         LEFT JOIN tasks t ON t.id = ts.task_id
+         WHERE ts.student_id = ? AND ts.status = 'tested'
+         ORDER BY ts.last_studied_at DESC LIMIT 20`
+  ).all(studentId);
+
+  const todayTests = recentTests.filter(ts => {
+    if (!ts.last_studied_at) return false;
+    const testDate = new Date(ts.last_studied_at).toISOString().split('T')[0];
+    return testDate === today;
+  });
+
+  if (todayTests.length > 0) {
+    const bestScore = Math.max(...todayTests.map(t => t.test_score || 0));
+    todayTest = { score: bestScore, task_name: todayTests[0].task_name };
+    if (bestScore >= 70) {
+      canCheckin = !todayCheckin;
+      checkinReason = canCheckin ? `今日测试正确率 ${Math.round(bestScore)}%，可以打卡！` : '今日已打卡';
+    } else {
+      checkinReason = `今日测试正确率仅 ${Math.round(bestScore)}%，需达到 70% 才能打卡`;
+    }
+  } else {
+    checkinReason = '今日还没有完成测试，完成测试且正确率 ≥ 70% 即可打卡';
+  }
+
+  res.json({
+    checked_in: !!todayCheckin,
+    can_checkin: canCheckin,
+    checkin_reason: checkinReason,
+    today_test: todayTest,
+    total_checkins: totalCheckins.cnt || 0,
+    today_checkin: todayCheckin,
+  });
+});
+
+app.post('/api/checkins', authMiddleware, requireRole('student'), async (req, res) => {
+  const today = new Date().toISOString().split('T')[0];
+  const studentId = req.user.id;
+
+  const todayCheckin = await db.prepare(
+    isPG
+      ? "SELECT * FROM checkins WHERE student_id = $1 AND checkin_date = $2"
+      : "SELECT * FROM checkins WHERE student_id = ? AND checkin_date = ?"
+  ).get(studentId, today);
+
+  if (todayCheckin) {
+    return res.status(400).json({ error: '今日已打卡' });
+  }
+
+  const todayTests = await db.prepare(
+    isPG
+      ? `SELECT ts.* FROM task_students ts
+         WHERE ts.student_id = $1 AND ts.status = 'tested'`
+      : `SELECT ts.* FROM task_students ts
+         WHERE ts.student_id = ? AND ts.status = 'tested'`
+  ).all(studentId);
+
+  const todayValidTests = todayTests.filter(ts => {
+    if (!ts.last_studied_at) return false;
+    const testDate = new Date(ts.last_studied_at).toISOString().split('T')[0];
+    return testDate === today && (ts.test_score || 0) >= 70;
+  });
+
+  if (todayValidTests.length === 0) {
+    return res.status(400).json({ error: '今日没有符合条件的测试记录（需正确率 ≥ 70%）' });
+  }
+
+  const bestTest = todayValidTests.reduce((a, b) => (a.test_score || 0) > (b.test_score || 0) ? a : b);
+
+  const info = await db.prepare(
+    isPG
+      ? `INSERT INTO checkins (student_id, checkin_date, task_student_id, test_score)
+         VALUES ($1, $2, $3, $4)`
+      : `INSERT INTO checkins (student_id, checkin_date, task_student_id, test_score)
+         VALUES (?, ?, ?, ?)`
+  ).run(studentId, today, bestTest.id, bestTest.test_score);
+
+  res.json({ ok: true, id: info.lastInsertRowid, test_score: bestTest.test_score });
+});
+
+app.get('/api/checkins', authMiddleware, requireRole('student'), async (req, res) => {
+  const rows = await db.prepare(
+    isPG
+      ? `SELECT * FROM checkins WHERE student_id = $1 ORDER BY checkin_date DESC LIMIT 30`
+      : `SELECT * FROM checkins WHERE student_id = ? ORDER BY checkin_date DESC LIMIT 30`
+  ).all(req.user.id);
+  res.json({ checkins: rows });
+});
+
 if (fs.existsSync(FRONTEND_DIST)) {
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api/')) return next();

@@ -15,17 +15,36 @@ function statusBadge(status) {
 export default function StudentDashboard() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [checkinStatus, setCheckinStatus] = useState(null);
+  const [checkingIn, setCheckingIn] = useState(false);
 
   useEffect(() => {
-    loadTasks();
+    loadAll();
   }, []);
 
-  const loadTasks = async () => {
+  const loadAll = async () => {
     try {
-      const data = await api.getTasks();
-      setTasks(data.tasks);
+      const [tasksData, checkinData] = await Promise.all([
+        api.getTasks(),
+        api.getCheckinStatus().catch(() => null),
+      ]);
+      setTasks(tasksData.tasks);
+      setCheckinStatus(checkinData);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCheckin = async () => {
+    if (!checkinStatus?.can_checkin || checkingIn) return;
+    setCheckingIn(true);
+    try {
+      await api.doCheckin();
+      await loadAll();
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      setCheckingIn(false);
     }
   };
 
@@ -33,6 +52,36 @@ export default function StudentDashboard() {
 
   return (
     <div className="dashboard">
+      <div className="checkin-section">
+        <div className="checkin-card">
+          <div className="checkin-card-left">
+            <div className="checkin-emoji">
+              {checkinStatus?.checked_in ? '✅' : '🔥'}
+            </div>
+            <div>
+              <div className="checkin-title">
+                {checkinStatus?.checked_in ? '今日已打卡' : '每日打卡'}
+              </div>
+              <div className="checkin-reason">
+                {checkinStatus?.checkin_reason || '加载中...'}
+              </div>
+              <div className="checkin-total">
+                累计打卡 {checkinStatus?.total_checkins || 0} 天
+              </div>
+            </div>
+          </div>
+          <div className="checkin-card-right">
+            <button
+              className={'btn checkin-btn' + (checkinStatus?.can_checkin ? ' btn-primary' : ' btn-disabled')}
+              onClick={handleCheckin}
+              disabled={!checkinStatus?.can_checkin || checkingIn}
+            >
+              {checkingIn ? '打卡中...' : checkinStatus?.checked_in ? '✓ 已打卡' : '立即打卡'}
+            </button>
+          </div>
+        </div>
+      </div>
+
       <h2>我的任务</h2>
       {tasks.length === 0 ? (
         <div className="empty-state">暂无任务，请等待老师发布</div>
