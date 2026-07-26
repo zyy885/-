@@ -172,11 +172,15 @@ app.get('/api/word-books', authMiddleware, async (req, res) => {
          INNER JOIN word_lists wl ON wl.id = w.word_list_id 
          WHERE wl.word_book_id = wb.id) as word_count
        FROM word_books wb
-       WHERE wb.is_public OR wb.id IN (
-         SELECT DISTINCT wl2.word_book_id FROM word_lists wl2
-         INNER JOIN tasks t ON t.word_list_id = wl2.id
-         INNER JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?
-       ) OR wb.teacher_id = ?
+       WHERE (
+         wb.is_public = 1 OR wb.is_public IS TRUE
+         OR wb.id IN (
+           SELECT DISTINCT wl2.word_book_id FROM word_lists wl2
+           INNER JOIN tasks t ON t.word_list_id = wl2.id
+           INNER JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?
+         )
+         OR wb.teacher_id = ?
+       )
        ORDER BY wb.created_at DESC`
     ).all(req.user.id, req.user.id);
   }
@@ -222,12 +226,13 @@ app.get('/api/word-lists', authMiddleware, async (req, res) => {
   } else {
     baseSQL += ' LEFT JOIN word_books wb ON wb.id = wl.word_book_id';
     whereSQL = ` WHERE (
-      EXISTS (
+      wl.word_book_id IS NULL
+      OR wb.is_public = 1 OR wb.is_public IS TRUE
+      OR EXISTS (
         SELECT 1 FROM tasks t
         INNER JOIN task_students ts ON ts.task_id = t.id
         WHERE t.word_list_id = wl.id AND ts.student_id = ?
       )
-      OR wb.is_public
       OR wl.teacher_id = ?
     )`;
     params.push(req.user.id, req.user.id);
@@ -286,8 +291,10 @@ app.get('/api/word-lists/:id/words', authMiddleware, async (req, res) => {
       `SELECT 1 FROM word_lists wl
        LEFT JOIN word_books wb ON wb.id = wl.word_book_id
        WHERE wl.id = ? AND (
-         wl.teacher_id = ? OR wb.is_public = 1 OR wb.is_public IS TRUE OR
-         EXISTS (
+         wl.word_book_id IS NULL
+         OR wl.teacher_id = ?
+         OR wb.is_public = 1 OR wb.is_public IS TRUE
+         OR EXISTS (
            SELECT 1 FROM tasks t
            INNER JOIN task_students ts ON ts.task_id = t.id
            WHERE t.word_list_id = wl.id AND ts.student_id = ?
@@ -786,8 +793,10 @@ app.get('/api/word-lists/:id/export', authMiddleware, async (req, res) => {
       `SELECT 1 FROM word_lists wl
        LEFT JOIN word_books wb ON wb.id = wl.word_book_id
        WHERE wl.id = ? AND (
-         wl.teacher_id = ? OR wb.is_public = 1 OR wb.is_public IS TRUE OR
-         EXISTS (
+         wl.word_book_id IS NULL
+         OR wl.teacher_id = ?
+         OR wb.is_public = 1 OR wb.is_public IS TRUE
+         OR EXISTS (
            SELECT 1 FROM tasks t
            INNER JOIN task_students ts ON ts.task_id = t.id
            WHERE t.word_list_id = wl.id AND ts.student_id = ?
@@ -1404,8 +1413,10 @@ app.get('/api/self-tests/words', authMiddleware, requireRole('student'), async (
       `SELECT 1 FROM word_lists wl
        LEFT JOIN word_books wb ON wb.id = wl.word_book_id
        WHERE wl.id = ? AND (
-         wl.teacher_id = ? OR wb.is_public = 1 OR wb.is_public IS TRUE OR
-         EXISTS (
+         wl.word_book_id IS NULL
+         OR wl.teacher_id = ?
+         OR wb.is_public = 1 OR wb.is_public IS TRUE
+         OR EXISTS (
            SELECT 1 FROM tasks t
            INNER JOIN task_students ts ON ts.task_id = t.id
            WHERE t.word_list_id = wl.id AND ts.student_id = ?
