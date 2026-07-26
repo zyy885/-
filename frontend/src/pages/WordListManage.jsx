@@ -24,6 +24,7 @@ export default function WordListManage() {
   const [importData, setImportData] = useState('');
   const [importPreview, setImportPreview] = useState(null);
   const [importFileName, setImportFileName] = useState('');
+  const [importMode, setImportMode] = useState('new');
 
   useEffect(() => { loadWordBooks(); }, []);
   useEffect(() => { loadLists(selectedBookId); }, [selectedBookId]);
@@ -392,18 +393,26 @@ export default function WordListManage() {
       return alert('没有可导入的单词');
     }
     try {
-      const res = await api.importWordList({
-        name: importPreview.name,
-        description: '',
-        words: importPreview.words,
-        word_book_id: selectedBookId || null,
-      });
-      alert(`导入成功！词表「${importPreview.name}」已添加，共 ${res.imported || importPreview.words.length} 个单词`);
+      if (importMode === 'append' && selectedId) {
+        const res = await api.importWordsToList(selectedId, {
+          words: importPreview.words,
+        });
+        alert(`导入成功！已向当前词表追加 ${res.imported || importPreview.words.length} 个单词`);
+      } else {
+        const res = await api.importWordList({
+          name: importPreview.name,
+          description: '',
+          words: importPreview.words,
+          word_book_id: selectedBookId || null,
+        });
+        alert(`导入成功！词表「${importPreview.name}」已添加，共 ${res.imported || importPreview.words.length} 个单词`);
+      }
       setShowImport(false);
       setImportData('');
       setImportPreview(null);
       setImportFileName('');
       loadLists(selectedBookId);
+      if (selectedId) loadWords(selectedId);
     } catch (e) {
       alert('导入失败：' + e.message);
     }
@@ -700,7 +709,7 @@ export default function WordListManage() {
               </div>
 
               {showImport && (
-                <div className="modal" onClick={() => { setShowImport(false); setImportPreview(null); setImportData(''); setImportFileName(''); }}>
+                <div className="modal" onClick={() => { setShowImport(false); setImportPreview(null); setImportData(''); setImportFileName(''); setImportMode('new'); }}>
                   <div className="modal-content modal-lg" onClick={e => e.stopPropagation()} style={{ maxWidth: 720 }}>
                     <h3>📥 智能导入词表</h3>
 
@@ -728,15 +737,40 @@ export default function WordListManage() {
                           </div>
                         </div>
 
-                        <div className="form-row" style={{ marginTop: 8 }}>
-                          <div className="form-group" style={{ marginBottom: 0 }}>
-                            <label>词表名称</label>
-                            <input
-                              value={importPreview.name || ''}
-                              onChange={e => setImportPreview({ ...importPreview, name: e.target.value })}
-                              placeholder="词表名称"
-                            />
+                        {selectedId && (
+                          <div style={{ display: 'flex', gap: 12, marginBottom: 12, padding: 10, background: '#fff', borderRadius: 6, border: '1px solid #e5e7eb' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                              <input
+                                type="radio"
+                                checked={importMode === 'new'}
+                                onChange={() => setImportMode('new')}
+                                style={{ width: 16, height: 16 }}
+                              />
+                              <span>🆕 新建词表导入</span>
+                            </label>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
+                              <input
+                                type="radio"
+                                checked={importMode === 'append'}
+                                onChange={() => setImportMode('append')}
+                                style={{ width: 16, height: 16 }}
+                              />
+                              <span>➕ 追加到当前词表「{lists.find(l => l.id === selectedId)?.name}」</span>
+                            </label>
                           </div>
+                        )}
+
+                        <div className="form-row" style={{ marginTop: 8 }}>
+                          {importMode === 'new' && (
+                            <div className="form-group" style={{ marginBottom: 0 }}>
+                              <label>词表名称</label>
+                              <input
+                                value={importPreview.name || ''}
+                                onChange={e => setImportPreview({ ...importPreview, name: e.target.value })}
+                                placeholder="词表名称"
+                              />
+                            </div>
+                          )}
                         </div>
 
                         {importPreview.words.length > 0 && (
@@ -799,13 +833,13 @@ export default function WordListManage() {
                     )}
 
                     <div className="modal-actions">
-                      <button className="btn btn-outline" onClick={() => { setShowImport(false); setImportPreview(null); setImportData(''); setImportFileName(''); }}>取消</button>
+                      <button className="btn btn-outline" onClick={() => { setShowImport(false); setImportPreview(null); setImportData(''); setImportFileName(''); setImportMode('new'); }}>取消</button>
                       <button
                         className="btn btn-primary"
                         onClick={confirmImport}
                         disabled={!importPreview || !importPreview.words || importPreview.words.length === 0}
                       >
-                        ✅ 确认导入 ({importPreview?.words?.length || 0}词)
+                        ✅ {importMode === 'append' && selectedId ? '追加到当前词表' : '新建词表导入'} ({importPreview?.words?.length || 0}词)
                       </button>
                     </div>
                   </div>

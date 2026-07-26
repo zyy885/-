@@ -79,6 +79,7 @@ export const api = {
   resetTaskStudent: (tsId) => request('POST', '/task-students/' + tsId + '/reset'),
   exportWordList: (listId) => fetch(`/api/word-lists/${listId}/export`, { headers: { Authorization: 'Bearer ' + getToken() } }).then(r => r.json()),
   importWordList: (data) => request('POST', '/word-lists/import', data),
+  importWordsToList: (listId, data) => request('POST', `/word-lists/${listId}/import`, data),
   getComments: () => request('GET', '/comments'),
   addComment: (data) => request('POST', '/comments', data),
   deleteComment: (id) => request('DELETE', '/comments/' + id),

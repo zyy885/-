@@ -165,8 +165,6 @@ app.get('/api/word-lists', authMiddleware, async (req, res) => {
   if (word_book_id) {
     whereSQL += ' AND wl.word_book_id = ?';
     params.push(word_book_id);
-  } else if (req.user.role === 'teacher') {
-    whereSQL += ' AND wl.word_book_id IS NULL';
   }
 
   const finalSQL = baseSQL + whereSQL + ' GROUP BY wl.id ORDER BY wl.created_at DESC';
@@ -601,6 +599,21 @@ app.post('/api/word-lists/import', authMiddleware, requireRole('teacher'), async
     if (w.word && w.meaning) { await stmt.run(listId, w.word, w.meaning, w.example || ''); count++; }
   }
   res.json({ id: listId, imported: count });
+});
+
+app.post('/api/word-lists/:id/import', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const { words } = req.body;
+  if (!words || !Array.isArray(words)) return res.status(400).json({ error: '参数错误' });
+  const list = await db.prepare('SELECT * FROM word_lists WHERE id = ? AND teacher_id = ?').get(req.params.id, req.user.id);
+  if (!list) return res.status(404).json({ error: '词表不存在或无权限' });
+  const stmt = db.prepare(
+    'INSERT INTO words (word_list_id, word, meaning, example) VALUES (?, ?, ?, ?)'
+  );
+  let count = 0;
+  for (const w of words) {
+    if (w.word && w.meaning) { await stmt.run(req.params.id, w.word, w.meaning, w.example || ''); count++; }
+  }
+  res.json({ id: req.params.id, imported: count });
 });
 
 app.get('/api/comments', authMiddleware, async (req, res) => {
