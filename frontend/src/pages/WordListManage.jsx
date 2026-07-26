@@ -323,7 +323,7 @@ export default function WordListManage() {
     };
 
     const smartMergeLine = (line) => {
-      const segs = line.split(/\s*((?:n|v|vt|vi|adj|adv|prep|conj|pron|intj|abbr|aux|art|num)\.?)\s+/i).map(s => s.trim()).filter(Boolean);
+      const segs = line.split(/\s*\b((?:n|v|vt|vi|adj|adv|prep|conj|pron|intj|abbr|aux|art|num)\.?)\s+/i).map(s => s.trim()).filter(Boolean);
       if (segs.length <= 2) return null;
 
       let engWord = '';
