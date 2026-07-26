@@ -155,11 +155,17 @@ app.get('/api/word-lists', authMiddleware, async (req, res) => {
     whereSQL = ' WHERE wl.teacher_id = ?';
     params.push(req.user.id);
   } else {
-    baseSQL += ` LEFT JOIN tasks t ON t.word_list_id = wl.id
-                 LEFT JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?
-                 LEFT JOIN word_books wb ON wb.id = wl.word_book_id`;
-    whereSQL = ' WHERE (ts.id IS NOT NULL OR wb.is_public = 1 OR wl.teacher_id = ?)';
-    params.push(req.user.id, req.user.id);
+    baseSQL += ' LEFT JOIN word_books wb ON wb.id = wl.word_book_id';
+    whereSQL = ` WHERE (
+      EXISTS (
+        SELECT 1 FROM tasks t
+        INNER JOIN task_students ts ON ts.task_id = t.id
+        WHERE t.word_list_id = wl.id AND ts.student_id = ?
+      )
+      OR wb.is_public = ?
+      OR wl.teacher_id = ?
+    )`;
+    params.push(req.user.id, 1, req.user.id);
   }
 
   if (word_book_id) {
@@ -167,7 +173,7 @@ app.get('/api/word-lists', authMiddleware, async (req, res) => {
     params.push(word_book_id);
   }
 
-  const finalSQL = baseSQL + whereSQL + ' GROUP BY wl.id ORDER BY wl.created_at DESC';
+  const finalSQL = baseSQL + whereSQL + ' ORDER BY wl.created_at DESC';
   rows = await db.prepare(finalSQL).all(...params);
   res.json({ wordLists: rows });
 });
