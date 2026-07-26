@@ -795,7 +795,7 @@ app.get('/api/checkins/status', authMiddleware, requireRole('student'), async (r
   let checkinReason = '';
   let todayTest = null;
 
-  const recentTests = await db.prepare(
+  const recentTasks = await db.prepare(
     isPG
       ? `SELECT ts.*, t.name as task_name
          FROM task_students ts
@@ -809,23 +809,51 @@ app.get('/api/checkins/status', authMiddleware, requireRole('student'), async (r
          ORDER BY ts.last_studied_at DESC LIMIT 20`
   ).all(studentId);
 
-  const todayTests = recentTests.filter(ts => {
+  const todayTaskTests = recentTasks.filter(ts => {
     if (!ts.last_studied_at) return false;
     const testDate = new Date(ts.last_studied_at).toISOString().split('T')[0];
     return testDate === today;
   });
 
-  if (todayTests.length > 0) {
-    const bestScore = Math.max(...todayTests.map(t => t.test_score || 0));
-    todayTest = { score: bestScore, task_name: todayTests[0].task_name };
+  const recentSelfTests = await db.prepare(
+    isPG
+      ? `SELECT st.*, wb.name as word_book_name, wl.name as word_list_name
+         FROM self_tests st
+         LEFT JOIN word_books wb ON wb.id = st.word_book_id
+         LEFT JOIN word_lists wl ON wl.id = st.word_list_id
+         WHERE st.student_id = $1
+         ORDER BY st.created_at DESC LIMIT 20`
+      : `SELECT st.*, wb.name as word_book_name, wl.name as word_list_name
+         FROM self_tests st
+         LEFT JOIN word_books wb ON wb.id = st.word_book_id
+         LEFT JOIN word_lists wl ON wl.id = st.word_list_id
+         WHERE st.student_id = ?
+         ORDER BY st.created_at DESC LIMIT 20`
+  ).all(studentId);
+
+  const todaySelfTests = recentSelfTests.filter(st => {
+    if (!st.created_at) return false;
+    const testDate = new Date(st.created_at).toISOString().split('T')[0];
+    return testDate === today;
+  });
+
+  const allTodayScores = [
+    ...todayTaskTests.map(t => ({ score: t.test_score || 0, name: t.task_name || '任务测试', type: 'task' })),
+    ...todaySelfTests.map(t => ({ score: t.score || 0, name: t.word_book_name || t.word_list_name || '自测', type: 'self' })),
+  ];
+
+  if (allTodayScores.length > 0) {
+    const bestScore = Math.max(...allTodayScores.map(t => t.score));
+    const bestTest = allTodayScores.find(t => t.score === bestScore);
+    todayTest = { score: bestScore, name: bestTest.name, type: bestTest.type };
     if (bestScore >= 70) {
       canCheckin = !todayCheckin;
-      checkinReason = canCheckin ? `今日测试正确率 ${Math.round(bestScore)}%，可以打卡！` : '今日已打卡';
+      checkinReason = canCheckin ? `今日最佳成绩 ${Math.round(bestScore)}%（${bestTest.name}），可以打卡！` : '今日已打卡';
     } else {
-      checkinReason = `今日测试正确率仅 ${Math.round(bestScore)}%，需达到 70% 才能打卡`;
+      checkinReason = `今日最高正确率仅 ${Math.round(bestScore)}%，需达到 70% 才能打卡`;
     }
   } else {
-    checkinReason = '今日还没有完成测试，完成测试且正确率 ≥ 70% 即可打卡';
+    checkinReason = '今日还没有完成测试，完成测试且正确率 ≥ 70% 即可打卡（任务测试或自测均可）';
   }
 
   res.json({
@@ -852,7 +880,7 @@ app.post('/api/checkins', authMiddleware, requireRole('student'), async (req, re
     return res.status(400).json({ error: '今日已打卡' });
   }
 
-  const todayTests = await db.prepare(
+  const taskTests = await db.prepare(
     isPG
       ? `SELECT ts.* FROM task_students ts
          WHERE ts.student_id = $1 AND ts.status = 'tested'`
@@ -860,17 +888,34 @@ app.post('/api/checkins', authMiddleware, requireRole('student'), async (req, re
          WHERE ts.student_id = ? AND ts.status = 'tested'`
   ).all(studentId);
 
-  const todayValidTests = todayTests.filter(ts => {
+  const todayValidTasks = taskTests.filter(ts => {
     if (!ts.last_studied_at) return false;
     const testDate = new Date(ts.last_studied_at).toISOString().split('T')[0];
     return testDate === today && (ts.test_score || 0) >= 70;
   });
 
-  if (todayValidTests.length === 0) {
-    return res.status(400).json({ error: '今日没有符合条件的测试记录（需正确率 ≥ 70%）' });
+  const selfTests = await db.prepare(
+    isPG
+      ? `SELECT * FROM self_tests WHERE student_id = $1`
+      : `SELECT * FROM self_tests WHERE student_id = ?`
+  ).all(studentId);
+
+  const todayValidSelf = selfTests.filter(st => {
+    if (!st.created_at) return false;
+    const testDate = new Date(st.created_at).toISOString().split('T')[0];
+    return testDate === today && (st.score || 0) >= 70;
+  });
+
+  const allValid = [
+    ...todayValidTasks.map(t => ({ id: t.id, score: t.test_score || 0, type: 'task' })),
+    ...todayValidSelf.map(t => ({ id: t.id, score: t.score || 0, type: 'self' })),
+  ];
+
+  if (allValid.length === 0) {
+    return res.status(400).json({ error: '今日没有符合条件的测试记录（需正确率 ≥ 70%，任务测试或自测均可）' });
   }
 
-  const bestTest = todayValidTests.reduce((a, b) => (a.test_score || 0) > (b.test_score || 0) ? a : b);
+  const bestTest = allValid.reduce((a, b) => a.score > b.score ? a : b);
 
   const info = await db.prepare(
     isPG
@@ -878,7 +923,7 @@ app.post('/api/checkins', authMiddleware, requireRole('student'), async (req, re
          VALUES ($1, $2, $3, $4)`
       : `INSERT INTO checkins (student_id, checkin_date, task_student_id, test_score)
          VALUES (?, ?, ?, ?)`
-  ).run(studentId, today, bestTest.id, bestTest.test_score);
+  ).run(studentId, today, bestTest.type === 'task' ? bestTest.id : null, bestTest.score);
 
   res.json({ ok: true, id: info.lastInsertRowid, test_score: bestTest.test_score });
 });
