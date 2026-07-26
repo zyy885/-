@@ -22,6 +22,8 @@ import SettingsPage from './pages/SettingsPage.jsx';
 import SentenceListManage from './pages/SentenceListManage.jsx';
 import SentencePractice from './pages/SentencePractice.jsx';
 import SelfTestPage from './pages/SelfTestPage.jsx';
+import SelfTestSelect from './pages/SelfTestSelect.jsx';
+import MinePage from './pages/MinePage.jsx';
 
 function Navbar() {
   const user = getCurrentUser();
@@ -114,11 +116,11 @@ function BottomTabBar() {
       icon: '📚',
       items: [
         { to: '/student/word-lists', label: '词表总览', icon: '📖' },
-        { to: '/student/self-test', label: '单词自测', icon: '📝' },
+        { to: '/student/self-test-select', label: '单词自测', icon: '📝' },
         { to: '/student/sentence-practice', label: '长难句', icon: '📄' },
         { to: '/student/wrong-book', label: '错题本', icon: '❌' },
       ],
-      match: ['/student/word-lists', '/student/self-test', '/student/sentence-practice', '/student/wrong-book'],
+      match: ['/student/word-lists', '/student/self-test', '/student/self-test-select', '/student/sentence-practice', '/student/wrong-book'],
     },
     {
       key: 'discover',
@@ -136,11 +138,8 @@ function BottomTabBar() {
       key: 'mine',
       label: '我的',
       icon: '👤',
-      items: [
-        { to: '/settings', label: '设置', icon: '⚙️' },
-        { action: logout, label: '退出登录', icon: '🚪' },
-      ],
-      match: ['/settings'],
+      single: { to: '/student/mine', label: '我的' },
+      match: ['/student/mine', '/settings'],
     },
   ];
 
@@ -177,11 +176,8 @@ function BottomTabBar() {
       key: 'mine',
       label: '我的',
       icon: '👤',
-      items: [
-        { to: '/settings', label: '设置', icon: '⚙️' },
-        { action: logout, label: '退出登录', icon: '🚪' },
-      ],
-      match: ['/settings'],
+      single: { to: '/teacher/mine', label: '我的' },
+      match: ['/teacher/mine', '/settings'],
     },
   ];
 
@@ -274,6 +270,9 @@ export default function App() {
           <Route path="/student/task/:id/test" element={<ProtectedRoute role="student"><TestPage /></ProtectedRoute>} />
           <Route path="/student/word-lists" element={<ProtectedRoute role="student"><StudentWordLists /></ProtectedRoute>} />
           <Route path="/student/self-test" element={<ProtectedRoute role="student"><SelfTestPage /></ProtectedRoute>} />
+          <Route path="/student/self-test-select" element={<ProtectedRoute role="student"><SelfTestSelect /></ProtectedRoute>} />
+          <Route path="/student/mine" element={<ProtectedRoute role="student"><MinePage /></ProtectedRoute>} />
+          <Route path="/teacher/mine" element={<ProtectedRoute role="teacher"><MinePage /></ProtectedRoute>} />
           <Route path="/student/sentence-practice" element={<ProtectedRoute role="student"><SentencePractice /></ProtectedRoute>} />
           <Route path="/teacher" element={<ProtectedRoute role="teacher"><TeacherDashboard /></ProtectedRoute>} />
           <Route path="/teacher/word-lists" element={<ProtectedRoute role="teacher"><WordListManage /></ProtectedRoute>} />

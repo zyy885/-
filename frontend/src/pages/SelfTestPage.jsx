@@ -17,6 +17,7 @@ export default function SelfTestPage() {
   const [answers, setAnswers] = useState({});
   const [idx, setIdx] = useState(0);
   const [result, setResult] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => { load(); }, []);
 
@@ -25,8 +26,8 @@ export default function SelfTestPage() {
       const params = {};
       if (wordBookId) params.word_book_id = wordBookId;
       if (wordListId) params.word_list_id = wordListId;
-      params.count = 20;
-      params.mode = 'mixed';
+      params.count = sp.get('count') || 20;
+      params.mode = sp.get('mode') || 'mixed';
       const data = await api.getSelfTestWords(params);
       if (!data.questions || data.questions.length === 0) {
         alert('该词表/单词书下暂无单词');
@@ -45,8 +46,7 @@ export default function SelfTestPage() {
     }
   };
 
-  const submit = async () => {
-    if (!confirm('确认提交自测？')) return;
+  const doSubmit = async () => {
     try {
       const ansArr = questions.map(q => ({
         word_id: q.word_id,
@@ -66,6 +66,8 @@ export default function SelfTestPage() {
       setPhase('result');
     } catch (e) {
       alert(e.message);
+    } finally {
+      setShowConfirm(false);
     }
   };
 
@@ -117,7 +119,7 @@ export default function SelfTestPage() {
       <div className="page-header">
         <Link to="/student/word-lists" className="btn-link">← 返回词表</Link>
         <h2>自测 ({idx + 1}/{questions.length})</h2>
-        <button className="btn btn-primary btn-sm" onClick={submit} disabled={answeredCount === 0}>
+        <button className="btn btn-primary btn-sm" onClick={() => setShowConfirm(true)} disabled={answeredCount === 0}>
           提交 ({answeredCount}/{questions.length})
         </button>
       </div>
@@ -154,6 +156,19 @@ export default function SelfTestPage() {
           >{i + 1}</button>
         ))}
       </div>
+
+      {showConfirm && (
+        <div className="modal-overlay" onClick={() => setShowConfirm(false)}>
+          <div className="modal-content confirm-modal" onClick={e => e.stopPropagation()}>
+            <h3>确认提交</h3>
+            <p>你已完成 {answeredCount}/{questions.length} 题，确定要提交吗？</p>
+            <div className="modal-actions">
+              <button className="btn btn-outline" onClick={() => setShowConfirm(false)}>取消</button>
+              <button className="btn btn-primary" onClick={doSubmit}>确认提交</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

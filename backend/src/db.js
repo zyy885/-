@@ -84,6 +84,7 @@ const buildDDL = () => {
         username TEXT UNIQUE NOT NULL,
         password_hash TEXT NOT NULL,
         role TEXT NOT NULL CHECK (role IN ('teacher', 'student')),
+        avatar TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
@@ -253,6 +254,16 @@ const buildDDL = () => {
         question_type TEXT DEFAULT 'en_to_zh',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+
+      CREATE TABLE IF NOT EXISTS study_sessions (
+        id SERIAL PRIMARY KEY,
+        student_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        session_date DATE NOT NULL,
+        duration_seconds INTEGER DEFAULT 0,
+        words_studied INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE (student_id, session_date)
+      );
     `;
   }
 
@@ -262,6 +273,7 @@ const buildDDL = () => {
       username TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
       role TEXT NOT NULL CHECK (role IN ('teacher', 'student')),
+      avatar TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
@@ -459,6 +471,17 @@ const buildDDL = () => {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (self_test_id) REFERENCES self_tests(id) ON DELETE CASCADE,
       FOREIGN KEY (word_id) REFERENCES words(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS study_sessions (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      student_id INTEGER NOT NULL,
+      session_date TEXT NOT NULL,
+      duration_seconds INTEGER DEFAULT 0,
+      words_studied INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE (student_id, session_date),
+      FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE
     );
   `;
 };

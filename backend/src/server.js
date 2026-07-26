@@ -444,6 +444,13 @@ app.put('/api/me/password', authMiddleware, async (req, res) => {
   res.json({ ok: true });
 });
 
+app.put('/api/me/avatar', authMiddleware, async (req, res) => {
+  const { avatar } = req.body;
+  if (avatar === undefined) return res.status(400).json({ error: '参数错误' });
+  await db.prepare('UPDATE users SET avatar = ? WHERE id = ?').run(avatar, req.user.id);
+  res.json({ ok: true });
+});
+
 app.get('/api/favorites', authMiddleware, async (req, res) => {
   const rows = await db.prepare(
     `SELECT f.*, w.word, w.meaning, w.example, w.word_list_id, wl.name as word_list_name
@@ -531,6 +538,68 @@ app.get('/api/stats/me', authMiddleware, async (req, res) => {
     totalTasks, testedTasks, avgScore: Math.round(avgScore),
     studyDays, totalWords, wrongCount
   });
+});
+
+app.get('/api/study-stats', authMiddleware, async (req, res) => {
+  const today = new Date().toISOString().slice(0, 10);
+  const uid = req.user.id;
+
+  const todaySession = await db.prepare(
+    'SELECT * FROM study_sessions WHERE student_id = ? AND session_date = ?'
+  ).get(uid, today);
+
+  const totalDurationRow = await db.prepare(
+    'SELECT COALESCE(SUM(duration_seconds), 0) as s FROM study_sessions WHERE student_id = ?'
+  ).get(uid);
+
+  const totalWordsRow = await db.prepare(
+    'SELECT COALESCE(SUM(words_studied), 0) as w FROM study_sessions WHERE student_id = ?'
+  ).get(uid);
+
+  const checkinRows = await db.prepare(
+    'SELECT checkin_date FROM checkins WHERE student_id = ? ORDER BY checkin_date DESC'
+  ).all(uid);
+
+  let streak = 0;
+  const dates = checkinRows.map(r => r.checkin_date);
+  let cursor = new Date();
+  cursor.setHours(0, 0, 0, 0);
+  while (true) {
+    const d = cursor.toISOString().slice(0, 10);
+    if (dates.includes(d)) { streak++; cursor.setDate(cursor.getDate() - 1); }
+    else break;
+  }
+
+  res.json({
+    todayDuration: todaySession?.duration_seconds || 0,
+    totalDuration: totalDurationRow.s || 0,
+    todayWords: todaySession?.words_studied || 0,
+    totalWords: totalWordsRow.w || 0,
+    checkinDays: checkinRows.length,
+    streakDays: streak,
+  });
+});
+
+app.post('/api/study-sessions/track', authMiddleware, async (req, res) => {
+  const { duration_seconds = 0, words_studied = 0 } = req.body;
+  const today = new Date().toISOString().slice(0, 10);
+  const uid = req.user.id;
+
+  const exists = await db.prepare(
+    'SELECT * FROM study_sessions WHERE student_id = ? AND session_date = ?'
+  ).get(uid, today);
+
+  if (exists) {
+    await db.prepare(
+      `UPDATE study_sessions SET duration_seconds = duration_seconds + ?,
+        words_studied = words_studied + ? WHERE id = ?`
+    ).run(duration_seconds, words_studied, exists.id);
+  } else {
+    await db.prepare(
+      'INSERT INTO study_sessions (student_id, session_date, duration_seconds, words_studied) VALUES (?, ?, ?, ?)'
+    ).run(uid, today, duration_seconds, words_studied);
+  }
+  res.json({ ok: true });
 });
 
 app.get('/api/leaderboard', authMiddleware, async (req, res) => {

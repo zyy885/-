@@ -16,6 +16,7 @@ export default function TestPage() {
   const [answers, setAnswers] = useState({});
   const [idx, setIdx] = useState(0);
   const [result, setResult] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     load();
@@ -37,8 +38,7 @@ export default function TestPage() {
     }
   };
 
-  const submit = async () => {
-    if (!confirm('确认提交测试？')) return;
+  const doSubmit = async () => {
     try {
       const ansArr = words.map(w => ({ word_id: w.id, user_answer: answers[w.id] || '', question_type: w.question_type || 'en_to_zh' }));
       const data = await api.submitTest({ task_student_id: tsId, answers: ansArr });
@@ -47,6 +47,8 @@ export default function TestPage() {
       setPhase('result');
     } catch (e) {
       alert(e.message);
+    } finally {
+      setShowConfirm(false);
     }
   };
 
@@ -96,7 +98,7 @@ export default function TestPage() {
       <div className="page-header">
         <Link to="/student" className="btn-link">← 返回任务列表</Link>
         <h2>单词测试 ({idx + 1}/{words.length})</h2>
-        <button className="btn btn-primary btn-sm" onClick={submit} disabled={answeredCount === 0}>
+        <button className="btn btn-primary btn-sm" onClick={() => setShowConfirm(true)} disabled={answeredCount === 0}>
           提交 ({answeredCount}/{words.length})
         </button>
       </div>
@@ -139,6 +141,19 @@ export default function TestPage() {
           >{i + 1}</button>
         ))}
       </div>
+
+      {showConfirm && (
+        <div className="modal-overlay" onClick={() => setShowConfirm(false)}>
+          <div className="modal-content confirm-modal" onClick={e => e.stopPropagation()}>
+            <h3>确认提交</h3>
+            <p>你已完成 {answeredCount}/{words.length} 题，确定要提交吗？</p>
+            <div className="modal-actions">
+              <button className="btn btn-outline" onClick={() => setShowConfirm(false)}>取消</button>
+              <button className="btn btn-primary" onClick={doSubmit}>确认提交</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

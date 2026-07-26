@@ -123,4 +123,7 @@ export const api = {
   },
   submitSelfTest: (data) => request('POST', '/self-tests/submit', data),
   getSelfTests: () => request('GET', '/self-tests'),
+  getStudyStats: () => request('GET', '/study-stats'),
+  trackStudySession: (data) => request('POST', '/study-sessions/track', data),
+  updateAvatar: (avatar) => request('PUT', '/me/avatar', { avatar }),
 };
