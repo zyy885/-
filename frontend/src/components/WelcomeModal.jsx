@@ -3,16 +3,30 @@ import { getCurrentUser } from '../api.js';
 
 export default function WelcomeModal() {
   const [show, setShow] = useState(false);
-  const user = getCurrentUser();
+  const [user, setUser] = useState(getCurrentUser());
 
   useEffect(() => {
-    const key = 'welcome_shown_' + new Date().toDateString();
-    if (!sessionStorage.getItem(key)) {
-      setTimeout(() => {
-        setShow(true);
-        sessionStorage.setItem(key, '1');
-      }, 400);
-    }
+    const checkUser = () => {
+      const currentUser = getCurrentUser();
+      setUser(currentUser);
+      if (currentUser) {
+        const key = 'welcome_shown_' + new Date().toDateString();
+        if (!sessionStorage.getItem(key)) {
+          setTimeout(() => {
+            setShow(true);
+            sessionStorage.setItem(key, '1');
+          }, 500);
+        }
+      }
+    };
+
+    checkUser();
+    window.addEventListener('storage', checkUser);
+    const interval = setInterval(checkUser, 1000);
+    return () => {
+      window.removeEventListener('storage', checkUser);
+      clearInterval(interval);
+    };
   }, []);
 
   if (!show || !user) return null;

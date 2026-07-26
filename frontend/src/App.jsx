@@ -121,6 +121,7 @@ export default function App() {
 
   return (
     <div className="app">
+      <WelcomeModal />
       <Navbar />
       <main className="main-content">
         <Routes>
