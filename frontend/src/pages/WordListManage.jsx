@@ -13,7 +13,7 @@ export default function WordListManage() {
   const [showAddWord, setShowAddWord] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [newList, setNewList] = useState({ name: '', description: '' });
-  const [newBook, setNewBook] = useState({ name: '', description: '', cover_color: '#6366f1', cover_image: '', is_public: false });
+  const [newBook, setNewBook] = useState({ name: '', description: '', cover_color: '#6366f1', cover_image: '', is_public: true });
   const [editBook, setEditBook] = useState(null);
   const [newWord, setNewWord] = useState({ word: '', meaning: '', example: '' });
   const [editingWord, setEditingWord] = useState(null);
@@ -57,7 +57,7 @@ export default function WordListManage() {
     try {
       const data = await api.createWordBook(newBook);
       setSelectedBookId(data.id);
-      setNewBook({ name: '', description: '', cover_color: '#6366f1', cover_image: '', is_public: false });
+      setNewBook({ name: '', description: '', cover_color: '#6366f1', cover_image: '', is_public: true });
       setShowCreateBook(false);
       loadWordBooks();
     } catch (e) { alert(e.message); }
