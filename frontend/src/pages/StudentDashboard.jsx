@@ -12,15 +12,36 @@ function statusBadge(status) {
   return <span className={'badge ' + s.cls}>{s.text}</span>;
 }
 
+function getKaoyanDate() {
+  const saved = localStorage.getItem('kaoyan_date');
+  if (saved) return saved;
+  return '2026-12-21';
+}
+
+function calcCountdown(targetDateStr) {
+  const target = new Date(targetDateStr);
+  target.setHours(0, 0, 0, 0);
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+  return diff;
+}
+
 export default function StudentDashboard() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [checkinStatus, setCheckinStatus] = useState(null);
   const [checkingIn, setCheckingIn] = useState(false);
+  const [kaoyanDate, setKaoyanDate] = useState(getKaoyanDate());
+  const [showKaoyanEdit, setShowKaoyanEdit] = useState(false);
+  const [kaoyanInput, setKaoyanInput] = useState(kaoyanDate);
+  const [countdown, setCountdown] = useState(calcCountdown(kaoyanDate));
 
   useEffect(() => {
     loadAll();
-  }, []);
+    const t = setInterval(() => setCountdown(calcCountdown(kaoyanDate)), 60000);
+    return () => clearInterval(t);
+  }, [kaoyanDate]);
 
   const loadAll = async () => {
     try {
@@ -48,39 +69,100 @@ export default function StudentDashboard() {
     }
   };
 
+  const saveKaoyanDate = () => {
+    if (!kaoyanInput) return;
+    setKaoyanDate(kaoyanInput);
+    localStorage.setItem('kaoyan_date', kaoyanInput);
+    setCountdown(calcCountdown(kaoyanInput));
+    setShowKaoyanEdit(false);
+  };
+
+  const rank = checkinStatus?.rank;
+  const streak = checkinStatus?.streak || 0;
+
   if (loading) return <div className="loading">加载中...</div>;
 
   return (
     <div className="dashboard">
-      <div className="checkin-section">
-        <div className="checkin-card">
-          <div className="checkin-card-left">
-            <div className="checkin-emoji">
-              {checkinStatus?.checked_in ? '✅' : '🔥'}
+      <div className="top-row">
+        <div className="checkin-section" style={{ flex: 1, minWidth: 0 }}>
+          <div className="checkin-card" style={{ background: rank ? `linear-gradient(135deg, ${rank.color} 0%, #764ba2 100%)` : undefined }}>
+            <div className="checkin-card-left">
+              <div className="rank-icon-wrap">
+                <span className="rank-emoji">{rank?.icon || '🌱'}</span>
+                {rank && (
+                  <div className="rank-badge-sm" style={{ background: rank.color }}>
+                    Lv.{rank.level}
+                  </div>
+                )}
+              </div>
+              <div>
+                <div className="checkin-title">
+                  {checkinStatus?.checked_in ? '今日已打卡' : '每日打卡'}
+                  <span className="rank-name" style={{ marginLeft: 8 }}>{rank?.name || '初学者'}</span>
+                </div>
+                <div className="checkin-reason">
+                  {checkinStatus?.checkin_reason || '加载中...'}
+                </div>
+                <div className="streak-row">
+                  <span className="streak-item">🔥 连续 <strong>{streak}</strong> 天</span>
+                  <span className="streak-divider">·</span>
+                  <span className="streak-item">📅 累计 <strong>{checkinStatus?.total_checkins || 0}</strong> 天</span>
+                </div>
+              </div>
             </div>
-            <div>
-              <div className="checkin-title">
-                {checkinStatus?.checked_in ? '今日已打卡' : '每日打卡'}
-              </div>
-              <div className="checkin-reason">
-                {checkinStatus?.checkin_reason || '加载中...'}
-              </div>
-              <div className="checkin-total">
-                累计打卡 {checkinStatus?.total_checkins || 0} 天
-              </div>
+            <div className="checkin-card-right">
+              <button
+                className={'btn checkin-btn' + (checkinStatus?.can_checkin ? ' btn-primary' : ' btn-disabled')}
+                onClick={handleCheckin}
+                disabled={!checkinStatus?.can_checkin || checkingIn}
+              >
+                {checkingIn ? '打卡中...' : checkinStatus?.checked_in ? '✓ 已打卡' : '立即打卡'}
+              </button>
             </div>
           </div>
-          <div className="checkin-card-right">
-            <button
-              className={'btn checkin-btn' + (checkinStatus?.can_checkin ? ' btn-primary' : ' btn-disabled')}
-              onClick={handleCheckin}
-              disabled={!checkinStatus?.can_checkin || checkingIn}
-            >
-              {checkingIn ? '打卡中...' : checkinStatus?.checked_in ? '✓ 已打卡' : '立即打卡'}
-            </button>
+        </div>
+
+        <div className="kaoyan-card" onClick={() => setShowKaoyanEdit(true)}>
+          <div className="kaoyan-icon">📚</div>
+          <div className="kaoyan-content">
+            <div className="kaoyan-label">考研倒计时</div>
+            <div className="kaoyan-count">
+              {countdown > 0 ? (
+                <>
+                  <span className="kaoyan-num">{countdown}</span>
+                  <span className="kaoyan-unit">天</span>
+                </>
+              ) : countdown === 0 ? (
+                <span className="kaoyan-today">今天是考研日！加油！</span>
+              ) : (
+                <span className="kaoyan-past">考研已结束</span>
+              )}
+            </div>
+            <div className="kaoyan-date">目标：{kaoyanDate}（点击修改）</div>
           </div>
         </div>
       </div>
+
+      {showKaoyanEdit && (
+        <div className="modal" onClick={() => setShowKaoyanEdit(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h3>设置考研日期</h3>
+            <div className="form-group">
+              <label>考研日期</label>
+              <input
+                type="date"
+                value={kaoyanInput}
+                onChange={e => setKaoyanInput(e.target.value)}
+              />
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-outline" onClick={() => setShowKaoyanEdit(false)}>取消</button>
+              <button className="btn btn-primary" onClick={saveKaoyanDate}>保存</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <h2>我的任务</h2>
       {tasks.length === 0 ? (

@@ -917,13 +917,70 @@ app.get('/api/checkins/status', authMiddleware, requireRole('student'), async (r
     checkinReason = '今日还没有完成测试，完成测试且正确率 ≥ 70% 即可打卡（任务测试或自测均可）';
   }
 
+  const allCheckins = await db.prepare(
+    isPG
+      ? "SELECT checkin_date FROM checkins WHERE student_id = $1 ORDER BY checkin_date DESC"
+      : "SELECT checkin_date FROM checkins WHERE student_id = ? ORDER BY checkin_date DESC"
+  ).all(studentId);
+
+  const calcStreak = (dates) => {
+    if (!dates || dates.length === 0) return 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayStr = today.toISOString().split('T')[0];
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+    const dateSet = new Set(dates.map(d => typeof d === 'string' ? d : d.checkin_date));
+
+    if (!dateSet.has(todayStr) && !dateSet.has(yesterdayStr)) return 0;
+
+    let streak = 0;
+    let cursor = new Date(today);
+    if (!dateSet.has(todayStr)) cursor.setDate(cursor.getDate() - 1);
+    while (true) {
+      const cursorStr = cursor.toISOString().split('T')[0];
+      if (dateSet.has(cursorStr)) {
+        streak++;
+        cursor.setDate(cursor.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+    return streak;
+  };
+
+  const streak = calcStreak(allCheckins);
+  const total = totalCheckins.cnt || 0;
+
+  const getRank = (days) => {
+    if (days >= 366) return { name: '传奇', icon: '🌟', color: '#dc2626', level: 9 };
+    if (days >= 201) return { name: '宗师', icon: '👑', color: '#7c3aed', level: 8 };
+    if (days >= 101) return { name: '大师', icon: '🏆', color: '#ea580c', level: 7 };
+    if (days >= 61) return { name: '钻石', icon: '💠', color: '#2563eb', level: 6 };
+    if (days >= 31) return { name: '铂金', icon: '💎', color: '#0891b2', level: 5 };
+    if (days >= 15) return { name: '黄金', icon: '🥇', color: '#d97706', level: 4 };
+    if (days >= 8) return { name: '白银', icon: '🥈', color: '#6b7280', level: 3 };
+    if (days >= 4) return { name: '青铜', icon: '🥉', color: '#92400e', level: 2 };
+    return { name: '初学者', icon: '🌱', color: '#65a30d', level: 1 };
+  };
+
+  const rankByStreak = getRank(streak);
+  const rankByTotal = getRank(total);
+  const nextRank = getRank((streak > total ? streak : total) + 1);
+
   res.json({
     checked_in: !!todayCheckin,
     can_checkin: canCheckin,
     checkin_reason: checkinReason,
     today_test: todayTest,
-    total_checkins: totalCheckins.cnt || 0,
+    total_checkins: total,
     today_checkin: todayCheckin,
+    streak: streak,
+    rank: rankByStreak,
+    rank_total: rankByTotal,
+    next_rank: nextRank,
   });
 });
 
