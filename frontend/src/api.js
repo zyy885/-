@@ -78,7 +78,7 @@ export const api = {
   getFavorites: () => request('GET', '/favorites'),
   addFavorite: (word_id) => request('POST', '/favorites', { word_id }),
   deleteFavorite: (word_id) => request('DELETE', '/favorites/' + word_id),
-  getWrongBook: () => request('GET', '/wrong-book'),
+  getWrongBook: (sort) => request('GET', '/wrong-book' + (sort ? '?sort=' + sort : '')),
   getMyStats: () => request('GET', '/stats/me'),
   getLeaderboard: () => request('GET', '/leaderboard'),
   batchCreateUsers: (users) => request('POST', '/users/batch', { users }),

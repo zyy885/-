@@ -468,14 +468,25 @@ app.delete('/api/favorites/:wordId', authMiddleware, async (req, res) => {
 });
 
 app.get('/api/wrong-book', authMiddleware, async (req, res) => {
+  const { sort = 'error_count' } = req.query;
+  const orderBy = sort === 'recent'
+    ? 'MAX(tr.tested_at) DESC'
+    : sort === 'word'
+    ? 'w.word ASC'
+    : 'error_count DESC, MAX(tr.tested_at) DESC';
   const rows = await db.prepare(
-    `SELECT DISTINCT w.*, tr.is_correct, tr.tested_at, wl.name as word_list_name
+    `SELECT w.*, wl.name as word_list_name,
+       SUM(CASE WHEN tr.is_correct = 0 THEN 1 ELSE 0 END) as error_count,
+       SUM(CASE WHEN tr.is_correct = 1 THEN 1 ELSE 0 END) as correct_count,
+       MAX(tr.tested_at) as last_tested_at
      FROM test_records tr
      INNER JOIN words w ON w.id = tr.word_id
      INNER JOIN task_students ts ON ts.id = tr.task_student_id
      LEFT JOIN word_lists wl ON wl.id = w.word_list_id
-     WHERE ts.student_id = ? AND tr.is_correct = 0
-     ORDER BY tr.tested_at DESC`
+     WHERE ts.student_id = ?
+     GROUP BY w.id
+     HAVING error_count > 0
+     ORDER BY ${orderBy}`
   ).all(req.user.id);
   res.json({ wrongWords: rows });
 });
