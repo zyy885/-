@@ -1460,3 +1460,217 @@ body.dark-theme .comment-card.new-comment {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* ===== 欢迎弹窗 ===== */
+.welcome-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+  animation: welcomeFadeIn 0.4s ease-out;
+}
+
+@keyframes welcomeFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.welcome-modal {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  animation: welcomeSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes welcomeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.welcome-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.welcome-bg-circle {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.5;
+  animation: welcomeFloat 8s ease-in-out infinite;
+}
+
+.welcome-bg-circle.c1 {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  top: -60px;
+  right: -60px;
+  animation-delay: 0s;
+}
+
+.welcome-bg-circle.c2 {
+  width: 150px;
+  height: 150px;
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  bottom: -40px;
+  left: -40px;
+  animation-delay: 2s;
+}
+
+.welcome-bg-circle.c3 {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  top: 40%;
+  left: 60%;
+  animation-delay: 4s;
+}
+
+@keyframes welcomeFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(20px, -20px) scale(1.1); }
+}
+
+.welcome-content {
+  position: relative;
+  padding: 40px 32px 32px;
+  text-align: center;
+}
+
+.welcome-emoji {
+  font-size: 64px;
+  line-height: 1;
+  margin-bottom: 16px;
+  animation: welcomeBounce 2s ease-in-out infinite;
+}
+
+@keyframes welcomeBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.welcome-greeting {
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.welcome-name {
+  font-size: 22px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin-bottom: 12px;
+}
+
+.welcome-role-tag {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  color: #4f46e5;
+  margin-bottom: 20px;
+}
+
+.welcome-divider {
+  width: 60px;
+  height: 3px;
+  margin: 0 auto 20px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 2px;
+}
+
+.welcome-quote {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #374151;
+  font-style: italic;
+  margin-bottom: 8px;
+  padding: 0 8px;
+}
+
+.quote-mark {
+  color: #667eea;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 4px;
+}
+
+.welcome-quote-author {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-bottom: 20px;
+}
+
+.welcome-tip {
+  font-size: 14px;
+  color: #6b7280;
+  background: #f9fafb;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  border: 1px solid #e5e7eb;
+}
+
+.welcome-btn {
+  width: 100%;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.welcome-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.welcome-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 480px) {
+  .welcome-content {
+    padding: 32px 24px 24px;
+  }
+  .welcome-emoji {
+    font-size: 52px;
+  }
+  .welcome-greeting {
+    font-size: 24px;
+  }
+  .welcome-name {
+    font-size: 18px;
+  }
+}

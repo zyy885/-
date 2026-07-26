@@ -92,6 +92,7 @@ const buildDDL = () => {
         name TEXT NOT NULL,
         description TEXT,
         cover_color TEXT DEFAULT '#6366f1',
+        cover_image TEXT,
         is_public BOOLEAN DEFAULT FALSE,
         teacher_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -222,6 +223,7 @@ const buildDDL = () => {
       name TEXT NOT NULL,
       description TEXT,
       cover_color TEXT DEFAULT '#6366f1',
+      cover_image TEXT,
       is_public INTEGER DEFAULT 0,
       teacher_id INTEGER NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -367,6 +369,7 @@ const buildDDL = () => {
       await db.query(`ALTER TABLE test_records ADD COLUMN IF NOT EXISTS question_type TEXT DEFAULT 'en_to_zh'`);
       await db.query(`ALTER TABLE word_lists ADD COLUMN IF NOT EXISTS word_book_id INTEGER REFERENCES word_books(id) ON DELETE SET NULL`);
       await db.query(`ALTER TABLE word_books ADD COLUMN IF NOT EXISTS cover_color TEXT DEFAULT '#6366f1'`);
+      await db.query(`ALTER TABLE word_books ADD COLUMN IF NOT EXISTS cover_image TEXT`);
       await db.query(`ALTER TABLE word_books ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE`);
       await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS idx_study_records_unique ON study_records (task_student_id, word_id)`);
     } else {
@@ -375,6 +378,7 @@ const buildDDL = () => {
       try { db.prepare('ALTER TABLE test_records ADD COLUMN question_type TEXT DEFAULT "en_to_zh"').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE word_lists ADD COLUMN word_book_id INTEGER').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE word_books ADD COLUMN cover_color TEXT DEFAULT "#6366f1"').run(); } catch (e) {}
+      try { db.prepare('ALTER TABLE word_books ADD COLUMN cover_image TEXT').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE word_books ADD COLUMN is_public INTEGER DEFAULT 0').run(); } catch (e) {}
       try { db.prepare('CREATE UNIQUE INDEX IF NOT EXISTS idx_study_records_unique ON study_records (task_student_id, word_id)').run(); } catch (e) {}
     }

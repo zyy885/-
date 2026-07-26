@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useNavigate, Link, useLocation } from 'react-router-dom';
 import { api, getCurrentUser, clearAuth, setAuth } from './api.js';
+import WelcomeModal from './components/WelcomeModal.jsx';
 import Login from './pages/Login.jsx';
 import StudentDashboard from './pages/StudentDashboard.jsx';
 import StudyPage from './pages/StudyPage.jsx';

@@ -13,7 +13,7 @@ export default function WordListManage() {
   const [showAddWord, setShowAddWord] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [newList, setNewList] = useState({ name: '', description: '' });
-  const [newBook, setNewBook] = useState({ name: '', description: '', cover_color: '#6366f1', is_public: false });
+  const [newBook, setNewBook] = useState({ name: '', description: '', cover_color: '#6366f1', cover_image: '', is_public: false });
   const [editBook, setEditBook] = useState(null);
   const [newWord, setNewWord] = useState({ word: '', meaning: '', example: '' });
   const [editingWord, setEditingWord] = useState(null);
@@ -57,7 +57,7 @@ export default function WordListManage() {
     try {
       const data = await api.createWordBook(newBook);
       setSelectedBookId(data.id);
-      setNewBook({ name: '', description: '', cover_color: '#6366f1', is_public: false });
+      setNewBook({ name: '', description: '', cover_color: '#6366f1', cover_image: '', is_public: false });
       setShowCreateBook(false);
       loadWordBooks();
     } catch (e) { alert(e.message); }
@@ -69,8 +69,26 @@ export default function WordListManage() {
       name: b.name,
       description: b.description || '',
       cover_color: b.cover_color || '#6366f1',
+      cover_image: b.cover_image || '',
       is_public: b.is_public ? true : false,
     });
+  };
+
+  const handleImageUpload = (e, target) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) return alert('请选择图片文件');
+    if (file.size > 2 * 1024 * 1024) return alert('图片不能超过 2MB');
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const img = ev.target.result;
+      if (target === 'new') {
+        setNewBook({ ...newBook, cover_image: img });
+      } else {
+        setEditBook({ ...editBook, cover_image: img });
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const saveEditBook = async () => {
@@ -456,6 +474,32 @@ export default function WordListManage() {
               </div>
             </div>
             <div className="form-group">
+              <label>封面图片（可选，支持 JPG/PNG，最大 2MB）</label>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                {newBook.cover_image ? (
+                  <div style={{ position: 'relative' }}>
+                    <img src={newBook.cover_image} alt="封面预览" style={{ width: 120, height: 80, objectFit: 'cover', borderRadius: 8 }} />
+                    <button
+                      className="icon-btn"
+                      onClick={() => setNewBook({ ...newBook, cover_image: '' })}
+                      style={{ position: 'absolute', top: -8, right: -8, background: '#ef4444', color: 'white', borderRadius: '50%', width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12 }}
+                    >✕</button>
+                  </div>
+                ) : (
+                  <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer' }}>
+                    📷 选择图片
+                    <input
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={e => handleImageUpload(e, 'new')}
+                    />
+                  </label>
+                )}
+              </div>
+              <div className="muted small" style={{ marginTop: 6 }}>建议使用 4:3 或 16:9 的横版图片</div>
+            </div>
+            <div className="form-group">
               <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <input
                   type="checkbox"
@@ -502,6 +546,31 @@ export default function WordListManage() {
                     }}
                   />
                 ))}
+              </div>
+            </div>
+            <div className="form-group">
+              <label>封面图片（可选，支持 JPG/PNG，最大 2MB）</label>
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                {editBook.cover_image ? (
+                  <div style={{ position: 'relative' }}>
+                    <img src={editBook.cover_image} alt="封面预览" style={{ width: 120, height: 80, objectFit: 'cover', borderRadius: 8 }} />
+                    <button
+                      className="icon-btn"
+                      onClick={() => setEditBook({ ...editBook, cover_image: '' })}
+                      style={{ position: 'absolute', top: -8, right: -8, background: '#ef4444', color: 'white', borderRadius: '50%', width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12 }}
+                    >✕</button>
+                  </div>
+                ) : (
+                  <label className="btn btn-outline btn-sm" style={{ cursor: 'pointer' }}>
+                    📷 选择图片
+                    <input
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={e => handleImageUpload(e, 'edit')}
+                    />
+                  </label>
+                )}
               </div>
             </div>
             <div className="form-group">

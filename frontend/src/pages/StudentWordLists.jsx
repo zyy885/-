@@ -113,19 +113,58 @@ export default function StudentWordLists() {
                     className="browse-card book-card"
                     onClick={() => selectBook(book)}
                     style={{
-                      background: `linear-gradient(135deg, ${book.cover_color || '#6366f1'}22 0%, ${book.cover_color || '#6366f1'}11 100%)`,
-                      borderTop: `4px solid ${book.cover_color || '#6366f1'}`
+                      background: book.cover_image
+                        ? undefined
+                        : `linear-gradient(135deg, ${book.cover_color || '#6366f1'}22 0%, ${book.cover_color || '#6366f1'}11 100%)`,
+                      borderTop: book.cover_image ? 'none' : `4px solid ${book.cover_color || '#6366f1'}`,
+                      padding: book.cover_image ? 0 : undefined,
+                      overflow: 'hidden'
                     }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div className="browse-icon">📚</div>
-                      {book.is_public && <span className="badge badge-green">公开</span>}
-                    </div>
-                    <div className="browse-title">{book.name}</div>
-                    {book.description && <div className="browse-desc">{book.description}</div>}
-                    <div className="browse-meta">
-                      <span>📋 {book.list_count || 0} 个词表</span>
-                      <span>🔤 {book.word_count || 0} 词</span>
+                    {book.cover_image && (
+                      <div style={{
+                        width: '100%',
+                        height: 110,
+                        backgroundImage: `url(${book.cover_image})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        position: 'relative'
+                      }}>
+                        <div style={{
+                          position: 'absolute',
+                          inset: 0,
+                          background: 'linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.7))'
+                        }} />
+                        <div style={{
+                          position: 'absolute',
+                          bottom: 8,
+                          left: 12,
+                          right: 12,
+                          color: 'white',
+                          fontWeight: 600,
+                          fontSize: 15,
+                          textShadow: '0 1px 3px rgba(0,0,0,0.5)'
+                        }}>
+                          {book.name}
+                        </div>
+                        {book.is_public && (
+                          <span className="badge badge-green" style={{ position: 'absolute', top: 8, right: 8 }}>公开</span>
+                        )}
+                      </div>
+                    )}
+                    <div style={{ padding: book.cover_image ? '12px 14px 14px' : undefined }}>
+                      {!book.cover_image && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                          <div className="browse-icon">📚</div>
+                          {book.is_public && <span className="badge badge-green">公开</span>}
+                        </div>
+                      )}
+                      {!book.cover_image && <div className="browse-title">{book.name}</div>}
+                      {book.description && <div className="browse-desc">{book.description}</div>}
+                      <div className="browse-meta">
+                        <span>📋 {book.list_count || 0} 个词表</span>
+                        <span>🔤 {book.word_count || 0} 词</span>
+                      </div>
                     </div>
                   </div>
                 ))}
