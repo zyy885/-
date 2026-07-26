@@ -21,6 +21,17 @@ export default function StudentWordLists() {
     loadFavs();
   }, []);
 
+  useEffect(() => {
+    const handleVisible = () => {
+      if (document.visibilityState === 'visible') {
+        loadAll();
+        loadFavs();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisible);
+    return () => document.removeEventListener('visibilitychange', handleVisible);
+  }, []);
+
   const loadFavs = async () => {
     try {
       const d = await api.getFavorites();
@@ -93,7 +104,11 @@ export default function StudentWordLists() {
         <h2>
           {selectedList ? selectedList.name : selectedBook ? selectedBook.name : '词表总览'}
         </h2>
-        <div />
+        <button
+          className="btn-link"
+          onClick={() => { loadAll(); loadFavs(); }}
+          title="刷新"
+        >🔄 刷新</button>
       </div>
 
       {!selectedBook && !selectedList && (
