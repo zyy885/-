@@ -78,7 +78,7 @@ export default function WordListManage() {
     const file = e.target.files[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) return alert('请选择图片文件');
-    if (file.size > 2 * 1024 * 1024) return alert('图片不能超过 2MB');
+    if (file.size > 10 * 1024 * 1024) return alert('图片不能超过 10MB');
     const reader = new FileReader();
     reader.onload = (ev) => {
       const img = ev.target.result;
@@ -474,7 +474,7 @@ export default function WordListManage() {
               </div>
             </div>
             <div className="form-group">
-              <label>封面图片（可选，支持 JPG/PNG，最大 2MB）</label>
+              <label>封面图片（可选，支持 JPG/PNG，最大 10MB）</label>
               <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
                 {newBook.cover_image ? (
                   <div style={{ position: 'relative' }}>
@@ -549,7 +549,7 @@ export default function WordListManage() {
               </div>
             </div>
             <div className="form-group">
-              <label>封面图片（可选，支持 JPG/PNG，最大 2MB）</label>
+              <label>封面图片（可选，支持 JPG/PNG，最大 10MB）</label>
               <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
                 {editBook.cover_image ? (
                   <div style={{ position: 'relative' }}>
