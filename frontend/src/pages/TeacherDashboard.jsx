@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { api } from '../api.js';
 
 export default function TeacherDashboard() {
-  const [stats, setStats] = useState({ wordLists: 0, tasks: 0, students: 0 });
+  const [stats, setStats] = useState({ wordBooks: 0, tasks: 0, students: 0 });
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -13,12 +13,12 @@ export default function TeacherDashboard() {
 
   const load = async () => {
     try {
-      const [wl, tk, st] = await Promise.all([
-        api.getWordLists(),
+      const [wb, tk, st] = await Promise.all([
+        api.getWordBooks(),
         api.getTasks(),
         api.getStudents(),
       ]);
-      setStats({ wordLists: wl.wordLists.length, tasks: tk.tasks.length, students: st.students.length });
+      setStats({ wordBooks: wb.wordBooks.length, tasks: tk.tasks.length, students: st.students.length });
       setTasks(tk.tasks);
     } finally {
       setLoading(false);
@@ -32,8 +32,8 @@ export default function TeacherDashboard() {
       <h2>老师总览</h2>
       <div className="stats-grid">
         <div className="stat-card">
-          <div className="stat-num">{stats.wordLists}</div>
-          <div className="stat-label">词表</div>
+          <div className="stat-num">{stats.wordBooks}</div>
+          <div className="stat-label">单词书</div>
         </div>
         <div className="stat-card">
           <div className="stat-num">{stats.tasks}</div>
