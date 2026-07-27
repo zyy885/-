@@ -949,6 +949,17 @@ body {
   color: rgba(255, 255, 255, 0.8);
 }
 
+.list-item.drag-over {
+  background: #dcfce7 !important;
+  border: 2px dashed #22c55e !important;
+  transform: scale(1.02);
+}
+
+.list-item.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+}
+
 .list-item-info {
   flex: 1;
   overflow: hidden;

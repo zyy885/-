@@ -22,6 +22,8 @@ export default function WordListManage() {
   const [renamingBookId, setRenamingBookId] = useState(null);
   const [renamingBookValue, setRenamingBookValue] = useState('');
   const [editingListBookId, setEditingListBookId] = useState(null);
+  const [dragOverBookId, setDragOverBookId] = useState(null);
+  const [draggingListId, setDraggingListId] = useState(null);
   const [importData, setImportData] = useState('');
   const [importPreview, setImportPreview] = useState(null);
   const [importFileName, setImportFileName] = useState('');
@@ -162,6 +164,47 @@ export default function WordListManage() {
       loadLists(selectedBookId);
       loadWordBooks();
     } catch (e) { alert(e.message); }
+  };
+
+  const handleDragStart = (e, listId) => {
+    setDraggingListId(listId);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', String(listId));
+  };
+
+  const handleDragEnd = () => {
+    setDraggingListId(null);
+    setDragOverBookId(null);
+  };
+
+  const handleDragOver = (e, bookId) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dragOverBookId !== bookId) setDragOverBookId(bookId);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverBookId(null);
+  };
+
+  const handleDrop = async (e, bookId) => {
+    e.preventDefault();
+    const listId = Number(e.dataTransfer.getData('text/plain'));
+    if (!listId) return;
+    const list = lists.find(l => l.id === listId);
+    if (!list) return;
+    if (String(list.word_book_id || '') === String(bookId || '')) {
+      setDragOverBookId(null);
+      setDraggingListId(null);
+      return;
+    }
+    try {
+      await api.updateWordList(listId, { name: list.name, description: list.description || '', word_book_id: bookId });
+      loadLists(selectedBookId);
+      loadWordBooks();
+    } catch (e) { alert(e.message); }
+    setDragOverBookId(null);
+    setDraggingListId(null);
   };
 
   const addWord = async () => {
@@ -726,8 +769,12 @@ export default function WordListManage() {
         <div className="sidebar">
           <h3>单词书</h3>
           <div
-            className={'list-item' + (selectedBookId === null ? ' active' : '')}
+            className={'list-item' + (selectedBookId === null ? ' active' : '') + (dragOverBookId === null ? ' drag-over' : '')}
             onClick={() => { setSelectedBookId(null); setSelectedId(null); }}
+            onDragOver={e => handleDragOver(e, null)}
+            onDragLeave={handleDragLeave}
+            onDrop={e => handleDrop(e, null)}
+            style={{ transition: 'all 0.2s' }}
           >
             <div className="list-item-info">
               <div className="list-item-name">📁 未分类</div>
@@ -737,9 +784,12 @@ export default function WordListManage() {
           {wordBooks.map(b => (
             <div
               key={b.id}
-              className={'list-item' + (selectedBookId === b.id ? ' active' : '')}
+              className={'list-item' + (selectedBookId === b.id ? ' active' : '') + (dragOverBookId === b.id ? ' drag-over' : '')}
               onClick={() => setSelectedBookId(b.id)}
-              style={{ borderLeft: `4px solid ${b.cover_color || '#6366f1'}` }}
+              onDragOver={e => handleDragOver(e, b.id)}
+              onDragLeave={handleDragLeave}
+              onDrop={e => handleDrop(e, b.id)}
+              style={{ borderLeft: `4px solid ${b.cover_color || '#6366f1'}`, transition: 'all 0.2s' }}
             >
               <div className="list-item-info" style={{ flex: 1, minWidth: 0 }}>
                 <div className="list-item-name">
@@ -763,8 +813,12 @@ export default function WordListManage() {
           {lists.map(l => (
             <div
               key={l.id}
-              className={'list-item' + (selectedId === l.id ? ' active' : '')}
+              className={'list-item' + (selectedId === l.id ? ' active' : '') + (draggingListId === l.id ? ' dragging' : '')}
               onClick={() => !renamingId && setSelectedId(l.id)}
+              draggable={!renamingId}
+              onDragStart={e => handleDragStart(e, l.id)}
+              onDragEnd={handleDragEnd}
+              style={{ cursor: renamingId ? 'default' : 'grab', transition: 'all 0.2s' }}
             >
               <div className="list-item-info" style={{ flex: 1, minWidth: 0 }}>
                 {renamingId === l.id ? (
