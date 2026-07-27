@@ -151,6 +151,19 @@ app.delete('/api/users/:id', authMiddleware, requireRole('teacher'), async (req,
   res.json({ ok: true });
 });
 
+app.put('/api/users/:id/password', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const { password } = req.body;
+  if (!password || typeof password !== 'string' || password.length < 6 || password.length > 100) {
+    return res.status(400).json({ error: '密码长度需在6-100之间' });
+  }
+  if (Number(req.params.id) === req.user.id) {
+    return res.status(400).json({ error: '请通过设置页面修改自己的密码' });
+  }
+  const hash = bcrypt.hashSync(password, 10);
+  await db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(hash, req.params.id);
+  res.json({ ok: true });
+});
+
 app.get('/api/word-books', authMiddleware, async (req, res) => {
   let rows;
   if (req.user.role === 'teacher') {

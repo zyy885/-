@@ -64,6 +64,7 @@ export const api = {
   getUsers: () => request('GET', '/users'),
   createUser: (data) => request('POST', '/users', data),
   deleteUser: (id) => request('DELETE', '/users/' + id),
+  resetUserPassword: (id, password) => request('PUT', `/users/${id}/password`, { password }),
   getWordBooks: () => request('GET', '/word-books'),
   createWordBook: (data) => request('POST', '/word-books', data),
   updateWordBook: (id, data) => request('PUT', '/word-books/' + id, data),

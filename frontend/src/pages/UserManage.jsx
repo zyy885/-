@@ -26,7 +26,10 @@ export default function UserManage() {
   const [showBatch, setShowBatch] = useState(false);
   const [showTagModal, setShowTagModal] = useState(false);
   const [showStudentTagModal, setShowStudentTagModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [resetPasswordUser, setResetPasswordUser] = useState(null);
+  const [newPassword, setNewPassword] = useState('');
   const [editingTag, setEditingTag] = useState(null);
   const [studentTagIds, setStudentTagIds] = useState([]);
   const [batchText, setBatchText] = useState('');
@@ -85,6 +88,24 @@ export default function UserManage() {
   const removeUser = async (u) => {
     if (!confirm(`确定删除用户「${u.username}」？`)) return;
     try { await api.deleteUser(u.id); load(); } catch (e) { alert(e.message); }
+  };
+
+  const openResetPassword = (u) => {
+    setResetPasswordUser(u);
+    setNewPassword('123456');
+    setShowPasswordModal(true);
+  };
+
+  const saveResetPassword = async () => {
+    if (!resetPasswordUser) return;
+    if (!newPassword.trim() || newPassword.length < 6) return alert('密码长度至少6位');
+    try {
+      await api.resetUserPassword(resetPasswordUser.id, newPassword.trim());
+      alert(`用户「${resetPasswordUser.username}」的密码已重置为：${newPassword}`);
+      setShowPasswordModal(false);
+      setResetPasswordUser(null);
+      setNewPassword('');
+    } catch (e) { alert(e.message); }
   };
 
   const openTagModal = (tag = null) => {
@@ -187,7 +208,8 @@ export default function UserManage() {
                     </td>
                     <td className="muted small">{new Date(u.created_at).toLocaleString()}</td>
                     <td>
-                      <button className="btn btn-danger btn-sm" onClick={() => removeUser(u)}>删除</button>
+                      <button className="btn btn-outline btn-sm" onClick={() => openResetPassword(u)}>🔑 改密码</button>
+                      <button className="btn btn-danger btn-sm" style={{ marginLeft: 6 }} onClick={() => removeUser(u)}>删除</button>
                     </td>
                   </tr>
                 ))}
@@ -357,6 +379,31 @@ export default function UserManage() {
             <div className="modal-actions">
               <button className="btn btn-outline" onClick={() => setShowStudentTagModal(false)}>取消</button>
               <button className="btn btn-primary" onClick={saveStudentTags}>保存</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showPasswordModal && resetPasswordUser && (
+        <div className="modal" onClick={() => setShowPasswordModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h3>修改「{resetPasswordUser.username}」的密码</h3>
+            <div className="form-group">
+              <label>新密码（至少6位）</label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+                placeholder="请输入新密码"
+                autoFocus
+              />
+            </div>
+            <div className="muted small" style={{ marginBottom: 12 }}>
+              默认密码为 123456，建议用户登录后自行修改
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-outline" onClick={() => { setShowPasswordModal(false); setResetPasswordUser(null); }}>取消</button>
+              <button className="btn btn-primary" onClick={saveResetPassword}>确认修改</button>
             </div>
           </div>
         </div>
