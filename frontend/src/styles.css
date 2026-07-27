@@ -23,10 +23,13 @@ body {
   background: var(--bg-body);
   color: var(--text-primary);
   line-height: 1.6;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .app {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
@@ -35,7 +38,8 @@ body {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 0 24px;
-  height: 60px;
+  padding-top: env(safe-area-inset-top);
+  height: calc(60px + env(safe-area-inset-top));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1151,7 +1155,8 @@ body {
 @media (max-width: 768px) {
   .navbar {
     padding: 0 12px;
-    height: 60px;
+    padding-top: env(safe-area-inset-top);
+    height: calc(56px + env(safe-area-inset-top));
     flex-direction: row;
     gap: 0;
   }
@@ -1174,7 +1179,7 @@ body {
     display: block;
   }
   .main-content {
-    padding: 12px;
+    padding: 12px 12px calc(100px + env(safe-area-inset-bottom));
   }
   .manage-layout {
     grid-template-columns: 1fr;
@@ -1527,7 +1532,8 @@ body.dark-theme .comment-card.new-comment {
 @media (max-width: 768px) {
   .navbar {
     padding: 0 12px;
-    height: 56px;
+    padding-top: env(safe-area-inset-top);
+    height: calc(56px + env(safe-area-inset-top));
   }
   .nav-left .logo {
     font-size: 16px;
@@ -1543,7 +1549,7 @@ body.dark-theme .comment-card.new-comment {
     white-space: nowrap;
   }
   .main-content {
-    padding: 12px;
+    padding: 12px 12px calc(100px + env(safe-area-inset-bottom));
   }
   .page-header h2 {
     font-size: 18px;
@@ -2645,6 +2651,10 @@ body.dark-theme .comment-card.new-comment {
   .main-content {
     padding-bottom: 24px !important;
   }
+}
+
+html {
+  viewport-fit: cover;
 }
 
 /* ========== Mine Page ========== */
