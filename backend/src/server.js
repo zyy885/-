@@ -47,6 +47,20 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
+async function runMigrations() {
+  if (isPG) {
+    try {
+      await db.raw.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS rank_bonus_days INTEGER DEFAULT 0`);
+      await db.raw.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS rank_bonus_words INTEGER DEFAULT 0`);
+      await db.raw.query(`ALTER TABLE settings ADD COLUMN IF NOT EXISTS voice TEXT DEFAULT 'default'`);
+      console.log('迁移执行完成');
+    } catch (e) {
+      console.error('迁移执行出错（可能已存在）:', e.message);
+    }
+  }
+}
+runMigrations();
+
 const loginAttempts = new Map();
 const RATE_LIMIT_WINDOW = 60000;
 const MAX_LOGIN_ATTEMPTS = 5;
@@ -160,9 +174,17 @@ app.get('/api/students', authMiddleware, requireRole('teacher'), async (req, res
 });
 
 app.get('/api/users', authMiddleware, requireRole('teacher'), async (req, res) => {
-  const users = await db.prepare(
-    'SELECT id, username, role, created_at, rank_bonus_days, rank_bonus_words FROM users ORDER BY role, username'
-  ).all();
+  let users;
+  try {
+    users = await db.prepare(
+      'SELECT id, username, role, created_at, rank_bonus_days, rank_bonus_words FROM users ORDER BY role, username'
+    ).all();
+  } catch (e) {
+    console.warn('获取用户列表（含奖励字段）失败，退化为基础查询:', e.message);
+    users = await db.prepare(
+      'SELECT id, username, role, created_at FROM users ORDER BY role, username'
+    ).all();
+  }
   const checkinRows = await db.prepare(
     'SELECT student_id, COUNT(*) as cnt FROM checkins GROUP BY student_id'
   ).all();
@@ -1167,23 +1189,41 @@ app.delete('/api/comments/:id', authMiddleware, requireRole('teacher'), async (r
 });
 
 app.get('/api/settings', authMiddleware, async (req, res) => {
-  let s = await db.prepare('SELECT * FROM settings WHERE user_id = ?').get(req.user.id);
+  let s;
+  try {
+    s = await db.prepare('SELECT * FROM settings WHERE user_id = ?').get(req.user.id);
+  } catch (e) {
+    console.warn('获取设置失败，使用默认值:', e.message);
+    s = null;
+  }
   if (!s) s = { theme: 'light', voice: 'default' };
+  if (!s.voice) s.voice = 'default';
   res.json({ settings: s });
 });
 
 app.put('/api/settings', authMiddleware, async (req, res) => {
   const { theme, voice } = req.body;
-  const existing = await db.prepare('SELECT * FROM settings WHERE user_id = ?').get(req.user.id);
+  let existing;
+  try {
+    existing = await db.prepare('SELECT * FROM settings WHERE user_id = ?').get(req.user.id);
+  } catch (e) { existing = null; }
   if (existing) {
-    await db.prepare(
-      'UPDATE settings SET theme = ?, voice = ? WHERE user_id = ?'
-    ).run(theme || existing.theme || 'light', voice !== undefined ? voice : existing.voice || 'default', req.user.id);
+    try {
+      await db.prepare(
+        'UPDATE settings SET theme = ?, voice = ? WHERE user_id = ?'
+      ).run(theme || existing.theme || 'light', voice !== undefined ? voice : existing.voice || 'default', req.user.id);
+    } catch (e) {
+      await db.prepare('UPDATE settings SET theme = ? WHERE user_id = ?').run(theme || existing.theme || 'light', req.user.id);
+    }
   } else {
-    await db.prepare(
-      `INSERT INTO settings (user_id, theme, voice) VALUES (?, ?, ?)
-       ON CONFLICT(user_id) DO UPDATE SET theme = excluded.theme, voice = excluded.voice`
-    ).run(req.user.id, theme || 'light', voice || 'default');
+    try {
+      await db.prepare(
+        `INSERT INTO settings (user_id, theme, voice) VALUES (?, ?, ?)
+         ON CONFLICT(user_id) DO UPDATE SET theme = excluded.theme, voice = excluded.voice`
+      ).run(req.user.id, theme || 'light', voice || 'default');
+    } catch (e) {
+      await db.prepare(`INSERT INTO settings (user_id, theme) VALUES (?, ?) ON CONFLICT(user_id) DO UPDATE SET theme = excluded.theme`).run(req.user.id, theme || 'light');
+    }
   }
   res.json({ ok: true });
 });
@@ -1369,11 +1409,16 @@ app.get('/api/checkins/status', authMiddleware, requireRole('student'), async (r
   const today = new Date().toISOString().split('T')[0];
   const studentId = req.user.id;
 
-  const userRow = await db.prepare(
-    'SELECT rank_bonus_days, rank_bonus_words FROM users WHERE id = ?'
-  ).get(studentId);
-  const bonusDays = Number(userRow?.rank_bonus_days) || 0;
-  const bonusWords = Number(userRow?.rank_bonus_words) || 0;
+  let bonusDays = 0, bonusWords = 0;
+  try {
+    const userRow = await db.prepare(
+      'SELECT rank_bonus_days, rank_bonus_words FROM users WHERE id = ?'
+    ).get(studentId);
+    bonusDays = Number(userRow?.rank_bonus_days) || 0;
+    bonusWords = Number(userRow?.rank_bonus_words) || 0;
+  } catch (e) {
+    console.warn('获取等级奖励字段失败，使用默认值 0:', e.message);
+  }
 
   const todayCheckin = await db.prepare(
     isPG
