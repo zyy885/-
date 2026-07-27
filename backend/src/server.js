@@ -6,6 +6,9 @@ const db = require('./db');
 const { isPG } = require('./db');
 const { signToken, authMiddleware, requireRole } = require('./auth');
 
+const IS_PUBLIC = isPG ? 'wb.is_public = TRUE' : 'CAST(wb.is_public AS INTEGER) = 1';
+const IS_PUBLIC_ALT = isPG ? 'wb2.is_public = TRUE' : 'CAST(wb2.is_public AS INTEGER) = 1';
+
 const app = express();
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS
@@ -160,21 +163,23 @@ app.get('/api/users', authMiddleware, requireRole('teacher'), async (req, res) =
   const users = await db.prepare(
     'SELECT id, username, role, created_at, rank_bonus_days, rank_bonus_words FROM users ORDER BY role, username'
   ).all();
-  const enriched = [];
-  for (const u of users) {
-    const row = { ...u };
-    if (u.role === 'student') {
-      const checkinRow = await db.prepare(
-        'SELECT COUNT(*) as cnt FROM checkins WHERE student_id = ?'
-      ).get(u.id);
-      const wordsRow = await db.prepare(
-        'SELECT COALESCE(SUM(words_studied), 0) as w FROM study_sessions WHERE student_id = ?'
-      ).get(u.id);
-      row.total_checkins = Number(checkinRow?.cnt) || 0;
-      row.total_words = Number(wordsRow?.w) || 0;
-    }
-    enriched.push(row);
-  }
+  const checkinRows = await db.prepare(
+    'SELECT student_id, COUNT(*) as cnt FROM checkins GROUP BY student_id'
+  ).all();
+  const wordsRows = await db.prepare(
+    'SELECT student_id, COALESCE(SUM(words_studied), 0) as w FROM study_sessions GROUP BY student_id'
+  ).all();
+  const checkinMap = {}, wordsMap = {};
+  for (const r of checkinRows) checkinMap[r.student_id] = Number(r.cnt) || 0;
+  for (const r of wordsRows) wordsMap[r.student_id] = Number(r.w) || 0;
+  const enriched = users.map(u => {
+    if (u.role !== 'student') return u;
+    return {
+      ...u,
+      total_checkins: checkinMap[u.id] || 0,
+      total_words: wordsMap[u.id] || 0,
+    };
+  });
   res.json({ users: enriched });
 });
 
@@ -341,7 +346,7 @@ app.get('/api/word-books', authMiddleware, async (req, res) => {
          WHERE wl.word_book_id = wb.id) as word_count
        FROM word_books wb
        WHERE (
-         CAST(wb.is_public AS INTEGER) = 1
+         ${IS_PUBLIC}
          OR wb.id IN (
            SELECT DISTINCT wl2.word_book_id FROM word_lists wl2
            INNER JOIN tasks t ON t.word_list_id = wl2.id
@@ -397,7 +402,7 @@ app.get('/api/word-lists', authMiddleware, async (req, res) => {
     baseSQL += ' LEFT JOIN word_books wb ON wb.id = wl.word_book_id';
     whereSQL = ` WHERE (
       wl.word_book_id IS NULL
-      OR CAST(wb.is_public AS INTEGER) = 1
+      OR ${IS_PUBLIC}
       OR EXISTS (
         SELECT 1 FROM tasks t
         INNER JOIN task_students ts ON ts.task_id = t.id
@@ -471,7 +476,7 @@ app.get('/api/word-lists/:id/words', authMiddleware, async (req, res) => {
        WHERE wl.id = ? AND (
          wl.word_book_id IS NULL
          OR wl.teacher_id = ?
-         OR CAST(wb.is_public AS INTEGER) = 1
+         OR ${IS_PUBLIC}
          OR EXISTS (
            SELECT 1 FROM tasks t
            INNER JOIN task_students ts ON ts.task_id = t.id
@@ -1062,7 +1067,7 @@ app.get('/api/word-lists/:id/export', authMiddleware, async (req, res) => {
        WHERE wl.id = ? AND (
          wl.word_book_id IS NULL
          OR wl.teacher_id = ?
-         OR CAST(wb.is_public AS INTEGER) = 1
+         OR ${IS_PUBLIC}
          OR EXISTS (
            SELECT 1 FROM tasks t
            INNER JOIN task_students ts ON ts.task_id = t.id
@@ -1704,7 +1709,7 @@ app.get('/api/self-tests/words', authMiddleware, requireRole('student'), async (
        WHERE wl.id = ? AND (
          wl.word_book_id IS NULL
          OR wl.teacher_id = ?
-         OR CAST(wb.is_public AS INTEGER) = 1
+         OR ${IS_PUBLIC}
          OR EXISTS (
            SELECT 1 FROM tasks t
            INNER JOIN task_students ts ON ts.task_id = t.id
@@ -1718,7 +1723,7 @@ app.get('/api/self-tests/words', authMiddleware, requireRole('student'), async (
     const canAccess = await db.prepare(
       `SELECT 1 FROM word_books wb
        WHERE wb.id = ? AND (
-         CAST(wb.is_public AS INTEGER) = 1 OR wb.teacher_id = ? OR
+         ${IS_PUBLIC} OR wb.teacher_id = ? OR
          EXISTS (
            SELECT 1 FROM word_lists wl2
            INNER JOIN tasks t ON t.word_list_id = wl2.id
@@ -1748,6 +1753,7 @@ app.get('/api/self-tests/words', authMiddleware, requireRole('student'), async (
 app.post('/api/self-tests/submit', authMiddleware, requireRole('student'), async (req, res) => {
   const { word_book_id, word_list_id, answers } = req.body;
   if (!answers || !answers.length) return res.status(400).json({ error: '参数错误' });
+  if (answers.length > 200) return res.status(400).json({ error: '单次最多 200 题' });
   let correct = 0;
   const cleanMeaning = (s) => {
     s = s.trim().toLowerCase();
@@ -1756,9 +1762,16 @@ app.post('/api/self-tests/submit', authMiddleware, requireRole('student'), async
     s = s.replace(/^[（(][^）)]*[）)]\s*/, '').trim();
     return s;
   };
+  const wordIds = [...new Set(answers.map(a => a.word_id).filter(Boolean))];
+  const placeholders = wordIds.map(() => '?').join(',');
+  const words = await db.prepare(
+    `SELECT * FROM words WHERE id IN (${placeholders})`
+  ).all(...wordIds);
+  const wordMap = {};
+  for (const w of words) wordMap[w.id] = w;
   for (const a of answers) {
     a.is_correct = false;
-    const word = await db.prepare('SELECT * FROM words WHERE id = ?').get(a.word_id);
+    const word = wordMap[a.word_id];
     if (!word) continue;
     const qType = a.question_type || 'en_to_zh';
     const userAns = (a.user_answer || '').trim().toLowerCase();
