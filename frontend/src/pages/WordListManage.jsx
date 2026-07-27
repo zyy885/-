@@ -337,7 +337,7 @@ export default function WordListManage() {
   const getSeqInfo = () => {
     const seqs = lists.map(l => parseSeqName(l.name)).filter(Boolean).sort((a, b) => b.num - a.num);
     if (seqs.length === 0) return null;
-    return { maxNum: seqs[0].num, baseName: seqs[0].baseName };
+    return { maxNum: seqs[0].num, baseName: seqs[0].baseName, usedNums: seqs.map(s => s.num) };
   };
 
   const formatSeqName = (num, baseName) => {
@@ -753,51 +753,79 @@ export default function WordListManage() {
             <h3>新建词表</h3>
             <div className="form-group">
               <label>名称</label>
-              {getSeqInfo() && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
-                  <button
-                    className="btn btn-outline btn-sm"
-                    style={{ padding: '2px 10px', fontSize: 13 }}
-                    onClick={() => {
-                      const info = getSeqInfo();
-                      if (!info) return;
-                      const currentParsed = parseSeqName(newList.name);
-                      const currentNum = currentParsed ? currentParsed.num : info.maxNum + 1;
-                      const newNum = Math.max(1, currentNum - 1);
-                      setNewList({ ...newList, name: formatSeqName(newNum, info.baseName) });
-                    }}
-                  >⏪</button>
-                  <button
-                    className="btn btn-outline btn-sm"
-                    style={{ padding: '2px 10px', fontSize: 13 }}
-                    onClick={() => {
-                      const info = getSeqInfo();
-                      if (!info) return;
-                      const currentParsed = parseSeqName(newList.name);
-                      const currentNum = currentParsed ? currentParsed.num : info.maxNum + 1;
-                      setNewList({ ...newList, name: formatSeqName(currentNum + 1, info.baseName) });
-                    }}
-                  >⏩</button>
-                  <span className="muted small" style={{ fontSize: 12 }}>
-                    当前：{(() => {
-                      const info = getSeqInfo();
-                      if (!info) return '';
-                      const currentParsed = parseSeqName(newList.name);
-                      const currentNum = currentParsed ? currentParsed.num : info.maxNum + 1;
-                      return formatSeqName(currentNum, info.baseName);
-                    })()}
-                  </span>
-                  <button
-                    className="btn btn-outline btn-sm"
-                    style={{ padding: '2px 10px', fontSize: 12, marginLeft: 'auto' }}
-                    onClick={() => {
-                      const info = getSeqInfo();
-                      if (!info) return;
-                      setNewList({ ...newList, name: formatSeqName(info.maxNum + 1, info.baseName) });
-                    }}
-                  >跳到下一个</button>
-                </div>
-              )}
+              {getSeqInfo() && (() => {
+                const info = getSeqInfo();
+                const currentParsed = parseSeqName(newList.name);
+                const currentNum = currentParsed ? currentParsed.num : info.maxNum + 1;
+                const isUsed = info.usedNums.includes(currentNum);
+                const setNum = (n) => setNewList({ ...newList, name: formatSeqName(n, info.baseName) });
+                return (
+                  <div style={{ marginBottom: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4, flexWrap: 'wrap' }}>
+                      <select
+                        style={{ padding: '3px 6px', fontSize: 12, borderRadius: 4, border: '1px solid #d1d5db' }}
+                        value=""
+                        onChange={e => { if (e.target.value) setNum(parseInt(e.target.value)); }}
+                      >
+                        <option value="">📋 跳转到已有序号...</option>
+                        {[...info.usedNums].sort((a, b) => a - b).map(n => (
+                          <option key={n} value={n}>{formatSeqName(n, info.baseName)}</option>
+                        ))}
+                      </select>
+                      <button
+                        className="btn btn-outline btn-sm"
+                        style={{ padding: '2px 8px', fontSize: 12 }}
+                        onClick={() => setNum(Math.max(1, currentNum - 10))}
+                      >⏪⏪</button>
+                      <button
+                        className="btn btn-outline btn-sm"
+                        style={{ padding: '2px 8px', fontSize: 12 }}
+                        onClick={() => setNum(Math.max(1, currentNum - 1))}
+                      >⏪</button>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <input
+                          type="number"
+                          min="1"
+                          style={{ width: 56, padding: '3px 6px', fontSize: 13, textAlign: 'center', borderRadius: 4, border: isUsed ? '1px solid #f59e0b' : '1px solid #d1d5db', background: isUsed ? '#fef3c7' : '#fff' }}
+                          value={currentNum}
+                          onChange={e => {
+                            const n = parseInt(e.target.value);
+                            if (n > 0) setNum(n);
+                          }}
+                        />
+                      </div>
+                      <button
+                        className="btn btn-outline btn-sm"
+                        style={{ padding: '2px 8px', fontSize: 12 }}
+                        onClick={() => setNum(currentNum + 1)}
+                      >⏩</button>
+                      <button
+                        className="btn btn-outline btn-sm"
+                        style={{ padding: '2px 8px', fontSize: 12 }}
+                        onClick={() => setNum(currentNum + 10)}
+                      >⏩⏩</button>
+                      <button
+                        className="btn btn-primary btn-sm"
+                        style={{ padding: '2px 10px', fontSize: 11, marginLeft: 'auto' }}
+                        onClick={() => setNum(info.maxNum + 1)}
+                      >✨ 跳到下一个 ({formatSeqName(info.maxNum + 1, info.baseName)})</button>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                      <span className="muted small" style={{ fontSize: 11 }}>
+                        → <strong>{formatSeqName(currentNum, info.baseName)}</strong>
+                      </span>
+                      {isUsed ? (
+                        <span className="badge badge-yellow" style={{ fontSize: 10, padding: '1px 6px' }}>⚠️ 该序号已存在</span>
+                      ) : (
+                        <span className="badge badge-green" style={{ fontSize: 10, padding: '1px 6px' }}>✓ 新序号</span>
+                      )}
+                      <span className="muted small" style={{ fontSize: 11 }}>
+                        已有：{info.usedNums.length} 个 · 最大：{formatSeqName(info.maxNum, info.baseName)}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })()}
               <input value={newList.name} onChange={e => setNewList({ ...newList, name: e.target.value })} placeholder="如：Unit 1 词汇" />
             </div>
             <div className="form-group">
@@ -979,51 +1007,79 @@ export default function WordListManage() {
                           {importMode === 'new' && (
                             <div className="form-group" style={{ marginBottom: 0 }}>
                               <label>词表名称</label>
-                              {getSeqInfo() && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
-                                  <button
-                                    className="btn btn-outline btn-sm"
-                                    style={{ padding: '2px 10px', fontSize: 13 }}
-                                    onClick={() => {
-                                      const info = getSeqInfo();
-                                      if (!info) return;
-                                      const currentParsed = parseSeqName(importPreview.name);
-                                      const currentNum = currentParsed ? currentParsed.num : info.maxNum + 1;
-                                      const newNum = Math.max(1, currentNum - 1);
-                                      setImportPreview({ ...importPreview, name: formatSeqName(newNum, info.baseName) });
-                                    }}
-                                  >⏪</button>
-                                  <button
-                                    className="btn btn-outline btn-sm"
-                                    style={{ padding: '2px 10px', fontSize: 13 }}
-                                    onClick={() => {
-                                      const info = getSeqInfo();
-                                      if (!info) return;
-                                      const currentParsed = parseSeqName(importPreview.name);
-                                      const currentNum = currentParsed ? currentParsed.num : info.maxNum + 1;
-                                      setImportPreview({ ...importPreview, name: formatSeqName(currentNum + 1, info.baseName) });
-                                    }}
-                                  >⏩</button>
-                                  <span className="muted small" style={{ fontSize: 12 }}>
-                                    当前：{(() => {
-                                      const info = getSeqInfo();
-                                      if (!info) return '';
-                                      const currentParsed = parseSeqName(importPreview.name);
-                                      const currentNum = currentParsed ? currentParsed.num : info.maxNum + 1;
-                                      return formatSeqName(currentNum, info.baseName);
-                                    })()}
-                                  </span>
-                                  <button
-                                    className="btn btn-outline btn-sm"
-                                    style={{ padding: '2px 10px', fontSize: 12, marginLeft: 'auto' }}
-                                    onClick={() => {
-                                      const info = getSeqInfo();
-                                      if (!info) return;
-                                      setImportPreview({ ...importPreview, name: formatSeqName(info.maxNum + 1, info.baseName) });
-                                    }}
-                                  >跳到下一个</button>
-                                </div>
-                              )}
+                              {getSeqInfo() && (() => {
+                                const info = getSeqInfo();
+                                const currentParsed = parseSeqName(importPreview.name);
+                                const currentNum = currentParsed ? currentParsed.num : info.maxNum + 1;
+                                const isUsed = info.usedNums.includes(currentNum);
+                                const setNum = (n) => setImportPreview({ ...importPreview, name: formatSeqName(n, info.baseName) });
+                                return (
+                                  <div style={{ marginBottom: 8 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4, flexWrap: 'wrap' }}>
+                                      <select
+                                        style={{ padding: '3px 6px', fontSize: 12, borderRadius: 4, border: '1px solid #d1d5db' }}
+                                        value=""
+                                        onChange={e => { if (e.target.value) setNum(parseInt(e.target.value)); }}
+                                      >
+                                        <option value="">📋 跳转到已有序号...</option>
+                                        {[...info.usedNums].sort((a, b) => a - b).map(n => (
+                                          <option key={n} value={n}>{formatSeqName(n, info.baseName)}</option>
+                                        ))}
+                                      </select>
+                                      <button
+                                        className="btn btn-outline btn-sm"
+                                        style={{ padding: '2px 8px', fontSize: 12 }}
+                                        onClick={() => setNum(Math.max(1, currentNum - 10))}
+                                      >⏪⏪</button>
+                                      <button
+                                        className="btn btn-outline btn-sm"
+                                        style={{ padding: '2px 8px', fontSize: 12 }}
+                                        onClick={() => setNum(Math.max(1, currentNum - 1))}
+                                      >⏪</button>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                        <input
+                                          type="number"
+                                          min="1"
+                                          style={{ width: 56, padding: '3px 6px', fontSize: 13, textAlign: 'center', borderRadius: 4, border: isUsed ? '1px solid #f59e0b' : '1px solid #d1d5db', background: isUsed ? '#fef3c7' : '#fff' }}
+                                          value={currentNum}
+                                          onChange={e => {
+                                            const n = parseInt(e.target.value);
+                                            if (n > 0) setNum(n);
+                                          }}
+                                        />
+                                      </div>
+                                      <button
+                                        className="btn btn-outline btn-sm"
+                                        style={{ padding: '2px 8px', fontSize: 12 }}
+                                        onClick={() => setNum(currentNum + 1)}
+                                      >⏩</button>
+                                      <button
+                                        className="btn btn-outline btn-sm"
+                                        style={{ padding: '2px 8px', fontSize: 12 }}
+                                        onClick={() => setNum(currentNum + 10)}
+                                      >⏩⏩</button>
+                                      <button
+                                        className="btn btn-primary btn-sm"
+                                        style={{ padding: '2px 10px', fontSize: 11, marginLeft: 'auto' }}
+                                        onClick={() => setNum(info.maxNum + 1)}
+                                      >✨ 跳到下一个 ({formatSeqName(info.maxNum + 1, info.baseName)})</button>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                                      <span className="muted small" style={{ fontSize: 11 }}>
+                                        → <strong>{formatSeqName(currentNum, info.baseName)}</strong>
+                                      </span>
+                                      {isUsed ? (
+                                        <span className="badge badge-yellow" style={{ fontSize: 10, padding: '1px 6px' }}>⚠️ 该序号已存在</span>
+                                      ) : (
+                                        <span className="badge badge-green" style={{ fontSize: 10, padding: '1px 6px' }}>✓ 新序号</span>
+                                      )}
+                                      <span className="muted small" style={{ fontSize: 11 }}>
+                                        已有：{info.usedNums.length} 个 · 最大：{formatSeqName(info.maxNum, info.baseName)}
+                                      </span>
+                                    </div>
+                                  </div>
+                                );
+                              })()}
                               <input
                                 value={importPreview.name || ''}
                                 onChange={e => setImportPreview({ ...importPreview, name: e.target.value })}
