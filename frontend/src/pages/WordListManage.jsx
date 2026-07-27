@@ -331,10 +331,18 @@ export default function WordListManage() {
   const getNextSeqName = () => {
     const seqs = lists.map(l => parseSeqName(l.name)).filter(Boolean).sort((a, b) => b.num - a.num);
     if (seqs.length === 0) return null;
-    const maxSeq = seqs[0];
-    const nextNum = maxSeq.num + 1;
-    const base = maxSeq.baseName;
-    const cnNum = numToChinese(nextNum);
+    return formatSeqName(seqs[0].num + 1, seqs[0].baseName);
+  };
+
+  const getSeqInfo = () => {
+    const seqs = lists.map(l => parseSeqName(l.name)).filter(Boolean).sort((a, b) => b.num - a.num);
+    if (seqs.length === 0) return null;
+    return { maxNum: seqs[0].num, baseName: seqs[0].baseName };
+  };
+
+  const formatSeqName = (num, baseName) => {
+    const cnNum = numToChinese(num);
+    const base = baseName || '第X页';
     if (/^第.+[页节章单元]$/.test(base)) {
       const suffix = base.match(/[页节章单元]$/)[0];
       return `第${cnNum}${suffix}`;
@@ -344,9 +352,9 @@ export default function WordListManage() {
       const suffix = base.match(/[页节章单元]$/)[0];
       return `${cnNum}${suffix}`;
     }
-    if (/^List\s*\d+$/i.test(base)) return `List ${nextNum}`;
-    if (/^Unit\s*\d+$/i.test(base)) return `Unit ${nextNum}`;
-    if (/^Lesson\s*\d+$/i.test(base)) return `Lesson ${nextNum}`;
+    if (/^List\s*\d+$/i.test(base)) return `List ${num}`;
+    if (/^Unit\s*\d+$/i.test(base)) return `Unit ${num}`;
+    if (/^Lesson\s*\d+$/i.test(base)) return `Lesson ${num}`;
     return `第${cnNum}页`;
   };
 
@@ -744,13 +752,52 @@ export default function WordListManage() {
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <h3>新建词表</h3>
             <div className="form-group">
-              <label>名称 {getNextSeqName() && (
-                <button
-                  className="btn btn-outline btn-sm"
-                  style={{ marginLeft: 8, padding: '2px 8px', fontSize: 12 }}
-                  onClick={() => setNewList({ ...newList, name: getNextSeqName() })}
-                >⏩ 下一个：{getNextSeqName()}</button>
-              )}</label>
+              <label>名称</label>
+              {getSeqInfo() && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
+                  <button
+                    className="btn btn-outline btn-sm"
+                    style={{ padding: '2px 10px', fontSize: 13 }}
+                    onClick={() => {
+                      const info = getSeqInfo();
+                      if (!info) return;
+                      const currentParsed = parseSeqName(newList.name);
+                      const currentNum = currentParsed ? currentParsed.num : info.maxNum + 1;
+                      const newNum = Math.max(1, currentNum - 1);
+                      setNewList({ ...newList, name: formatSeqName(newNum, info.baseName) });
+                    }}
+                  >⏪</button>
+                  <button
+                    className="btn btn-outline btn-sm"
+                    style={{ padding: '2px 10px', fontSize: 13 }}
+                    onClick={() => {
+                      const info = getSeqInfo();
+                      if (!info) return;
+                      const currentParsed = parseSeqName(newList.name);
+                      const currentNum = currentParsed ? currentParsed.num : info.maxNum + 1;
+                      setNewList({ ...newList, name: formatSeqName(currentNum + 1, info.baseName) });
+                    }}
+                  >⏩</button>
+                  <span className="muted small" style={{ fontSize: 12 }}>
+                    当前：{(() => {
+                      const info = getSeqInfo();
+                      if (!info) return '';
+                      const currentParsed = parseSeqName(newList.name);
+                      const currentNum = currentParsed ? currentParsed.num : info.maxNum + 1;
+                      return formatSeqName(currentNum, info.baseName);
+                    })()}
+                  </span>
+                  <button
+                    className="btn btn-outline btn-sm"
+                    style={{ padding: '2px 10px', fontSize: 12, marginLeft: 'auto' }}
+                    onClick={() => {
+                      const info = getSeqInfo();
+                      if (!info) return;
+                      setNewList({ ...newList, name: formatSeqName(info.maxNum + 1, info.baseName) });
+                    }}
+                  >跳到下一个</button>
+                </div>
+              )}
               <input value={newList.name} onChange={e => setNewList({ ...newList, name: e.target.value })} placeholder="如：Unit 1 词汇" />
             </div>
             <div className="form-group">
@@ -931,13 +978,52 @@ export default function WordListManage() {
                         <div className="form-row" style={{ marginTop: 8 }}>
                           {importMode === 'new' && (
                             <div className="form-group" style={{ marginBottom: 0 }}>
-                              <label>词表名称 {getNextSeqName() && (
-                                <button
-                                  className="btn btn-outline btn-sm"
-                                  style={{ marginLeft: 8, padding: '2px 8px', fontSize: 12 }}
-                                  onClick={() => setImportPreview({ ...importPreview, name: getNextSeqName() })}
-                                >⏩ 下一个：{getNextSeqName()}</button>
-                              )}</label>
+                              <label>词表名称</label>
+                              {getSeqInfo() && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6, flexWrap: 'wrap' }}>
+                                  <button
+                                    className="btn btn-outline btn-sm"
+                                    style={{ padding: '2px 10px', fontSize: 13 }}
+                                    onClick={() => {
+                                      const info = getSeqInfo();
+                                      if (!info) return;
+                                      const currentParsed = parseSeqName(importPreview.name);
+                                      const currentNum = currentParsed ? currentParsed.num : info.maxNum + 1;
+                                      const newNum = Math.max(1, currentNum - 1);
+                                      setImportPreview({ ...importPreview, name: formatSeqName(newNum, info.baseName) });
+                                    }}
+                                  >⏪</button>
+                                  <button
+                                    className="btn btn-outline btn-sm"
+                                    style={{ padding: '2px 10px', fontSize: 13 }}
+                                    onClick={() => {
+                                      const info = getSeqInfo();
+                                      if (!info) return;
+                                      const currentParsed = parseSeqName(importPreview.name);
+                                      const currentNum = currentParsed ? currentParsed.num : info.maxNum + 1;
+                                      setImportPreview({ ...importPreview, name: formatSeqName(currentNum + 1, info.baseName) });
+                                    }}
+                                  >⏩</button>
+                                  <span className="muted small" style={{ fontSize: 12 }}>
+                                    当前：{(() => {
+                                      const info = getSeqInfo();
+                                      if (!info) return '';
+                                      const currentParsed = parseSeqName(importPreview.name);
+                                      const currentNum = currentParsed ? currentParsed.num : info.maxNum + 1;
+                                      return formatSeqName(currentNum, info.baseName);
+                                    })()}
+                                  </span>
+                                  <button
+                                    className="btn btn-outline btn-sm"
+                                    style={{ padding: '2px 10px', fontSize: 12, marginLeft: 'auto' }}
+                                    onClick={() => {
+                                      const info = getSeqInfo();
+                                      if (!info) return;
+                                      setImportPreview({ ...importPreview, name: formatSeqName(info.maxNum + 1, info.baseName) });
+                                    }}
+                                  >跳到下一个</button>
+                                </div>
+                              )}
                               <input
                                 value={importPreview.name || ''}
                                 onChange={e => setImportPreview({ ...importPreview, name: e.target.value })}
