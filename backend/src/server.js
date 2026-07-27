@@ -270,10 +270,11 @@ app.post('/api/word-lists', authMiddleware, requireRole('teacher'), async (req, 
   const listId = info.lastInsertRowid;
   if (words && words.length) {
     const stmt = db.prepare(
-      'INSERT INTO words (word_list_id, word, meaning, example) VALUES (?, ?, ?, ?)'
+      'INSERT INTO words (word_list_id, word, meaning, example, sort_order) VALUES (?, ?, ?, ?, ?)'
     );
-    for (const w of words) {
-      if (w.word && w.meaning) await stmt.run(listId, w.word, w.meaning, w.example || '');
+    for (let i = 0; i < words.length; i++) {
+      const w = words[i];
+      if (w.word && w.meaning) await stmt.run(listId, w.word, w.meaning, w.example || '', i + 1);
     }
   }
   res.json({ id: listId });
@@ -317,7 +318,7 @@ app.get('/api/word-lists/:id/words', authMiddleware, async (req, res) => {
     if (!canAccess) return res.status(403).json({ error: '无权限' });
   }
   const words = await db.prepare(
-    'SELECT * FROM words WHERE word_list_id = ? ORDER BY id'
+    'SELECT * FROM words WHERE word_list_id = ? ORDER BY sort_order, id'
   ).all(req.params.id);
   res.json({ words });
 });
@@ -325,10 +326,46 @@ app.get('/api/word-lists/:id/words', authMiddleware, async (req, res) => {
 app.post('/api/word-lists/:id/words', authMiddleware, requireRole('teacher'), async (req, res) => {
   const { word, meaning, example } = req.body;
   if (!word || !meaning) return res.status(400).json({ error: '单词和释义必填' });
+  const list = await db.prepare('SELECT * FROM word_lists WHERE id = ? AND teacher_id = ?').get(req.params.id, req.user.id);
+  if (!list) return res.status(404).json({ error: '词表不存在或无权限' });
+  const maxRow = await db.prepare('SELECT COALESCE(MAX(sort_order), 0) as m FROM words WHERE word_list_id = ?').get(req.params.id);
+  const nextOrder = (maxRow?.m || 0) + 1;
   const info = await db.prepare(
-    'INSERT INTO words (word_list_id, word, meaning, example) VALUES (?, ?, ?, ?)'
-  ).run(req.params.id, word, meaning, example || '');
+    'INSERT INTO words (word_list_id, word, meaning, example, sort_order) VALUES (?, ?, ?, ?, ?)'
+  ).run(req.params.id, word, meaning, example || '', nextOrder);
   res.json({ id: info.lastInsertRowid });
+});
+
+app.post('/api/word-lists/:id/words/insert', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const { word, meaning, example, position, reference_word_id } = req.body;
+  if (!word || !meaning) return res.status(400).json({ error: '单词和释义必填' });
+  if (!['before', 'after', 'end'].includes(position)) {
+    return res.status(400).json({ error: '无效的插入位置' });
+  }
+  const list = await db.prepare('SELECT * FROM word_lists WHERE id = ? AND teacher_id = ?').get(req.params.id, req.user.id);
+  if (!list) return res.status(404).json({ error: '词表不存在或无权限' });
+
+  const allWords = await db.prepare('SELECT id, sort_order FROM words WHERE word_list_id = ? ORDER BY sort_order, id').all(req.params.id);
+  let insertOrder;
+
+  if (position === 'end' || allWords.length === 0) {
+    const maxRow = await db.prepare('SELECT COALESCE(MAX(sort_order), 0) as m FROM words WHERE word_list_id = ?').get(req.params.id);
+    insertOrder = (maxRow?.m || 0) + 1;
+  } else {
+    const refWord = allWords.find(w => w.id === Number(reference_word_id));
+    if (!refWord) return res.status(404).json({ error: '参考单词不存在' });
+    insertOrder = position === 'before' ? refWord.sort_order : refWord.sort_order + 1;
+    for (const w of allWords) {
+      if (w.sort_order >= insertOrder) {
+        await db.prepare('UPDATE words SET sort_order = sort_order + 1 WHERE id = ?').run(w.id);
+      }
+    }
+  }
+
+  const info = await db.prepare(
+    'INSERT INTO words (word_list_id, word, meaning, example, sort_order) VALUES (?, ?, ?, ?, ?)'
+  ).run(req.params.id, word, meaning, example || '', insertOrder);
+  res.json({ id: info.lastInsertRowid, sort_order: insertOrder });
 });
 
 app.put('/api/words/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
@@ -840,7 +877,7 @@ app.post('/api/word-lists/import', authMiddleware, requireRole('teacher'), async
   ).run(name, description || '', word_book_id || null, req.user.id);
   const listId = info.lastInsertRowid;
   const stmt = db.prepare(
-    'INSERT INTO words (word_list_id, word, meaning, example) VALUES (?, ?, ?, ?)'
+    'INSERT INTO words (word_list_id, word, meaning, example, sort_order) VALUES (?, ?, ?, ?, ?)'
   );
   let count = 0;
   const seen = new Set();
@@ -849,8 +886,8 @@ app.post('/api/word-lists/import', authMiddleware, requireRole('teacher'), async
     const key = w.word.trim().toLowerCase();
     if (seen.has(key)) continue;
     seen.add(key);
-    await stmt.run(listId, w.word.trim(), w.meaning.trim(), w.example || '');
     count++;
+    await stmt.run(listId, w.word.trim(), w.meaning.trim(), w.example || '', count);
   }
   res.json({ id: listId, imported: count, skipped: words.length - count });
 });
@@ -862,8 +899,10 @@ app.post('/api/word-lists/:id/import', authMiddleware, requireRole('teacher'), a
   if (!list) return res.status(404).json({ error: '词表不存在或无权限' });
   const existing = await db.prepare('SELECT word FROM words WHERE word_list_id = ?').all(req.params.id);
   const existingSet = new Set(existing.map(w => w.word.trim().toLowerCase()));
+  const maxRow = await db.prepare('SELECT COALESCE(MAX(sort_order), 0) as m FROM words WHERE word_list_id = ?').get(req.params.id);
+  let sortIdx = maxRow?.m || 0;
   const stmt = db.prepare(
-    'INSERT INTO words (word_list_id, word, meaning, example) VALUES (?, ?, ?, ?)'
+    'INSERT INTO words (word_list_id, word, meaning, example, sort_order) VALUES (?, ?, ?, ?, ?)'
   );
   let count = 0;
   const seen = new Set();
@@ -872,8 +911,9 @@ app.post('/api/word-lists/:id/import', authMiddleware, requireRole('teacher'), a
     const key = w.word.trim().toLowerCase();
     if (existingSet.has(key) || seen.has(key)) continue;
     seen.add(key);
-    await stmt.run(req.params.id, w.word.trim(), w.meaning.trim(), w.example || '');
+    sortIdx++;
     count++;
+    await stmt.run(req.params.id, w.word.trim(), w.meaning.trim(), w.example || '', sortIdx);
   }
   res.json({ id: req.params.id, imported: count, skipped: words.length - count });
 });

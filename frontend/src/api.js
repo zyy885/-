@@ -75,6 +75,7 @@ export const api = {
   deleteWordList: (id) => request('DELETE', '/word-lists/' + id),
   getWords: (listId) => request('GET', `/word-lists/${listId}/words`),
   addWord: (listId, data) => request('POST', `/word-lists/${listId}/words`, data),
+  insertWord: (listId, data) => request('POST', `/word-lists/${listId}/words/insert`, data),
   updateWord: (id, data) => request('PUT', '/words/' + id, data),
   deleteWord: (id) => request('DELETE', '/words/' + id),
   getTasks: () => request('GET', '/tasks'),

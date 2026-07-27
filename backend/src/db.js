@@ -498,6 +498,8 @@ const buildDDL = () => {
       await db.query(`ALTER TABLE word_books ADD COLUMN IF NOT EXISTS cover_color TEXT DEFAULT '#6366f1'`);
       await db.query(`ALTER TABLE word_books ADD COLUMN IF NOT EXISTS cover_image TEXT`);
       await db.query(`ALTER TABLE word_books ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE`);
+      await db.query(`ALTER TABLE words ADD COLUMN IF NOT EXISTS sort_order INTEGER`);
+      await db.query(`UPDATE words SET sort_order = id WHERE sort_order IS NULL`);
       await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS idx_study_records_unique ON study_records (task_student_id, word_id)`);
     } else {
       try { db.prepare('ALTER TABLE tasks ADD COLUMN test_mode TEXT DEFAULT "en_to_zh"').run(); } catch (e) {}
@@ -507,6 +509,8 @@ const buildDDL = () => {
       try { db.prepare('ALTER TABLE word_books ADD COLUMN cover_color TEXT DEFAULT "#6366f1"').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE word_books ADD COLUMN cover_image TEXT').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE word_books ADD COLUMN is_public INTEGER DEFAULT 0').run(); } catch (e) {}
+      try { db.prepare('ALTER TABLE words ADD COLUMN sort_order INTEGER').run(); } catch (e) {}
+      try { db.prepare('UPDATE words SET sort_order = id WHERE sort_order IS NULL').run(); } catch (e) {}
       try { db.prepare('CREATE UNIQUE INDEX IF NOT EXISTS idx_study_records_unique ON study_records (task_student_id, word_id)').run(); } catch (e) {}
     }
   } catch (e) {}

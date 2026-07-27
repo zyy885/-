@@ -16,6 +16,7 @@ export default function WordListManage() {
   const [newBook, setNewBook] = useState({ name: '', description: '', cover_color: '#6366f1', cover_image: '', is_public: true });
   const [editBook, setEditBook] = useState(null);
   const [newWord, setNewWord] = useState({ word: '', meaning: '', example: '' });
+  const [insertConfig, setInsertConfig] = useState(null);
   const [editingWord, setEditingWord] = useState(null);
   const [renamingId, setRenamingId] = useState(null);
   const [renamingValue, setRenamingValue] = useState('');
@@ -207,11 +208,22 @@ export default function WordListManage() {
     setDraggingListId(null);
   };
 
+  const openAddWord = (config = null) => {
+    setInsertConfig(config);
+    setNewWord({ word: '', meaning: '', example: '' });
+    setShowAddWord(true);
+  };
+
   const addWord = async () => {
     if (!newWord.word.trim() || !newWord.meaning.trim()) return alert('单词和释义必填');
     try {
-      await api.addWord(selectedId, newWord);
+      if (insertConfig) {
+        await api.insertWord(selectedId, { ...newWord, ...insertConfig });
+      } else {
+        await api.addWord(selectedId, newWord);
+      }
       setNewWord({ word: '', meaning: '', example: '' });
+      setInsertConfig(null);
       setShowAddWord(false);
       loadWords(selectedId);
       loadLists(selectedBookId);
@@ -947,7 +959,7 @@ export default function WordListManage() {
                   <button className="btn btn-outline btn-sm" onClick={() => setShowImport(true)}>📥 导入词表</button>
                   <button className="btn btn-outline btn-sm" onClick={handleExport}>📤 导出</button>
                   <button className="btn btn-outline btn-sm" onClick={batchAddWords}>批量添加</button>
-                  <button className="btn btn-primary btn-sm" onClick={() => setShowAddWord(true)}>+ 添加单词</button>
+                  <button className="btn btn-primary btn-sm" onClick={() => openAddWord()}>+ 添加单词</button>
                 </div>
               </div>
 
@@ -1163,9 +1175,18 @@ export default function WordListManage() {
               )}
 
               {showAddWord && (
-                <div className="modal" onClick={() => setShowAddWord(false)}>
+                <div className="modal" onClick={() => { setShowAddWord(false); setInsertConfig(null); }}>
                   <div className="modal-content" onClick={e => e.stopPropagation()}>
-                    <h3>添加单词</h3>
+                    <h3>
+                      {insertConfig
+                        ? (insertConfig.position === 'before' ? '⬆️ 在单词上方插入' : '⬇️ 在单词下方插入')
+                        : '➕ 添加单词（追加到末尾）'}
+                    </h3>
+                    {insertConfig && (
+                      <div className="muted small" style={{ marginBottom: 12 }}>
+                        将插入到「{words.find(w => w.id === insertConfig.reference_word_id)?.word}」的{insertConfig.position === 'before' ? '上方' : '下方'}
+                      </div>
+                    )}
                     <div className="form-group"><label>单词</label>
                       <input value={newWord.word} onChange={e => setNewWord({ ...newWord, word: e.target.value })} placeholder="如：apple" />
                     </div>
@@ -1208,8 +1229,10 @@ export default function WordListManage() {
                             <td>{w.meaning}</td>
                             <td className="muted small">{w.example || '-'}</td>
                             <td>
-                              <button className="icon-btn" onClick={() => setEditingWord({ ...w })}>✏️</button>
-                              <button className="icon-btn" onClick={() => deleteWord(w.id)}>🗑</button>
+                              <button className="icon-btn" title="在上方插入" onClick={() => openAddWord({ position: 'before', reference_word_id: w.id })}>⬆️</button>
+                              <button className="icon-btn" title="在下方插入" onClick={() => openAddWord({ position: 'after', reference_word_id: w.id })}>⬇️</button>
+                              <button className="icon-btn" title="编辑" onClick={() => setEditingWord({ ...w })}>✏️</button>
+                              <button className="icon-btn" title="删除" onClick={() => deleteWord(w.id)}>🗑</button>
                             </td>
                           </>
                         )}
