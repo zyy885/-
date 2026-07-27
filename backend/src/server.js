@@ -37,6 +37,13 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
 
+app.use((err, req, res, next) => {
+  if (err.type === 'entity.too.large') return res.status(413).json({ error: '请求体过大' });
+  if (err.type === 'entity.parse.failed') return res.status(400).json({ error: '请求格式错误' });
+  console.error('中间件错误:', err);
+  next(err);
+});
+
 const loginAttempts = new Map();
 const RATE_LIMIT_WINDOW = 60000;
 const MAX_LOGIN_ATTEMPTS = 5;
@@ -668,9 +675,8 @@ app.get('/api/tasks/:id/test-words', authMiddleware, async (req, res) => {
     'SELECT * FROM task_students WHERE task_id = ? AND student_id = ?'
   ).get(req.params.id, req.user.id);
   if (!ts) return res.status(404).json({ error: '未分配此任务' });
-  const randomFn = db.isPG ? 'RANDOM()' : 'RANDOM()';
   const allWords = await db.prepare(
-    `SELECT * FROM words WHERE word_list_id = ? ORDER BY ${randomFn} LIMIT ?`
+    `SELECT * FROM words WHERE word_list_id = ? ORDER BY RANDOM() LIMIT ?`
   ).all(task.word_list_id, task.test_words_count || 10);
   const mode = task.test_mode || 'en_to_zh';
   const words = allWords.map((w, i) => {
@@ -917,7 +923,9 @@ app.get('/api/study-stats', authMiddleware, async (req, res) => {
 });
 
 app.post('/api/study-sessions/track', authMiddleware, async (req, res) => {
-  const { duration_seconds = 0, words_studied = 0 } = req.body;
+  let { duration_seconds = 0, words_studied = 0 } = req.body;
+  duration_seconds = Math.min(Math.max(Number(duration_seconds) || 0, 0), 86400);
+  words_studied = Math.min(Math.max(Number(words_studied) || 0, 0), 10000);
   const today = new Date().toISOString().slice(0, 10);
   const uid = req.user.id;
 
@@ -964,6 +972,7 @@ app.get('/api/leaderboard', authMiddleware, async (req, res) => {
 app.post('/api/users/batch', authMiddleware, requireRole('teacher'), async (req, res) => {
   const { users } = req.body;
   if (!users || !Array.isArray(users)) return res.status(400).json({ error: '参数错误' });
+  if (users.length > 1000) return res.status(400).json({ error: '单次最多创建 1000 个用户' });
   let added = 0, skipped = 0;
   await db.transaction(async (txDb) => {
     const stmt = txDb.prepare(
@@ -971,9 +980,12 @@ app.post('/api/users/batch', authMiddleware, requireRole('teacher'), async (req,
     );
     for (const u of users) {
       if (!u.username || !u.password) { skipped++; continue; }
+      if (typeof u.username !== 'string' || u.username.length < 2 || u.username.length > 50) { skipped++; continue; }
+      if (typeof u.password !== 'string' || u.password.length < 6 || u.password.length > 100) { skipped++; continue; }
+      if (u.role && !['teacher', 'student'].includes(u.role)) { skipped++; continue; }
       const exists = await txDb.prepare('SELECT id FROM users WHERE username = ?').get(u.username);
       if (exists) { skipped++; continue; }
-      await stmt.run(u.username, bcrypt.hashSync(u.password, 10), u.role || 'student');
+      await stmt.run(u.username.trim(), bcrypt.hashSync(u.password, 10), u.role || 'student');
       added++;
     }
   });
@@ -1000,8 +1012,9 @@ app.get('/api/tasks/:id/export', authMiddleware, requireRole('teacher'), async (
       r.last_studied_at || ''
     ].join(','))
   ].join('\n');
+  const safeName = (task?.name || '成绩').replace(/[<>"\\\r\n\t;]/g, '').slice(0, 50);
   res.setHeader('Content-Type', 'text/csv; charset=utf-8');
-  res.setHeader('Content-Disposition', `attachment; filename="${(task?.name || '成绩')}.csv"`);
+  res.setHeader('Content-Disposition', `attachment; filename="${safeName}.csv"`);
   res.send('\ufeff' + csv);
 });
 
@@ -1789,6 +1802,20 @@ if (fs.existsSync(FRONTEND_DIST)) {
     res.sendFile(path.join(FRONTEND_DIST, 'index.html'));
   });
 }
+
+app.use((err, req, res, next) => {
+  console.error('未捕获错误:', err);
+  if (res.headersSent) return next(err);
+  res.status(500).json({ error: '服务器内部错误' });
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('未处理的 Promise 拒绝:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('未捕获的异常:', err);
+});
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

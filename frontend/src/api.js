@@ -97,9 +97,19 @@ export const api = {
   getMyStats: () => request('GET', '/stats/me'),
   getLeaderboard: () => request('GET', '/leaderboard'),
   batchCreateUsers: (users) => request('POST', '/users/batch', { users }),
-  exportTaskScores: (taskId) => window.open(`/api/tasks/${taskId}/export`, '_blank'),
+  exportTaskScores: (taskId) => {
+    const token = getToken();
+    window.open(`/api/tasks/${taskId}/export?token=${encodeURIComponent(token || '')}`, '_blank');
+  },
   resetTaskStudent: (tsId) => request('POST', '/task-students/' + tsId + '/reset'),
-  exportWordList: (listId) => fetch(`/api/word-lists/${listId}/export`, { headers: { Authorization: 'Bearer ' + getToken() } }).then(r => r.json()),
+  exportWordList: (listId) => {
+    const token = getToken();
+    return fetch(`/api/word-lists/${listId}/export?token=${encodeURIComponent(token || '')}`).then(r => r.json());
+  },
+  exportSentenceList: (listId) => {
+    const token = getToken();
+    return fetch(`/api/sentence-lists/${listId}/export?token=${encodeURIComponent(token || '')}`).then(r => r.json());
+  },
   importWordList: (data) => request('POST', '/word-lists/import', data),
   importWordsToList: (listId, data) => request('POST', `/word-lists/${listId}/import`, data),
   getComments: () => request('GET', '/comments'),
