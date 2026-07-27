@@ -90,7 +90,7 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 app.post('/api/auth/register', async (req, res) => {
-  const { username, password, role } = req.body;
+  const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ error: '用户名和密码必填' });
   }
@@ -100,7 +100,7 @@ app.post('/api/auth/register', async (req, res) => {
   if (typeof password !== 'string' || password.length < 6 || password.length > 100) {
     return res.status(400).json({ error: '密码长度需在6-100之间' });
   }
-  const userRole = ['teacher', 'student'].includes(role) ? role : 'student';
+  const userRole = 'student';
   const exists = await db.prepare('SELECT id FROM users WHERE username = ?').get(username);
   if (exists) return res.status(400).json({ error: '用户名已存在' });
   const hash = bcrypt.hashSync(password, 10);
@@ -144,10 +144,36 @@ app.post('/api/users', authMiddleware, requireRole('teacher'), async (req, res) 
 });
 
 app.delete('/api/users/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
-  if (Number(req.params.id) === req.user.id) {
+  const targetId = Number(req.params.id);
+  if (targetId === req.user.id) {
     return res.status(400).json({ error: '不能删除当前登录账号' });
   }
-  await db.prepare('DELETE FROM users WHERE id = ?').run(req.params.id);
+  const target = await db.prepare('SELECT * FROM users WHERE id = ?').get(targetId);
+  if (!target) return res.status(404).json({ error: '用户不存在' });
+  if (target.role === 'teacher') {
+    const hasLists = await db.prepare('SELECT 1 FROM word_lists WHERE teacher_id = ? LIMIT 1').get(targetId);
+    const hasTasks = await db.prepare('SELECT 1 FROM tasks WHERE teacher_id = ? LIMIT 1').get(targetId);
+    if (hasLists || hasTasks) {
+      return res.status(400).json({ error: '该教师有关联的词表或任务，请先处理' });
+    }
+  }
+  const tsIds = await db.prepare('SELECT id FROM task_students WHERE student_id = ?').all(targetId);
+  for (const ts of tsIds) {
+    await db.prepare('DELETE FROM study_records WHERE task_student_id = ?').run(ts.id);
+    await db.prepare('DELETE FROM test_records WHERE task_student_id = ?').run(ts.id);
+  }
+  await db.prepare('DELETE FROM task_students WHERE student_id = ?').run(targetId);
+  await db.prepare('DELETE FROM favorites WHERE user_id = ?').run(targetId);
+  await db.prepare('DELETE FROM comments WHERE student_id = ?').run(targetId);
+  await db.prepare('DELETE FROM checkins WHERE student_id = ?').run(targetId);
+  await db.prepare('DELETE FROM translation_records WHERE student_id = ?').run(targetId);
+  const selfTestIds = await db.prepare('SELECT id FROM self_tests WHERE student_id = ?').all(targetId);
+  for (const st of selfTestIds) {
+    await db.prepare('DELETE FROM self_test_records WHERE self_test_id = ?').run(st.id);
+  }
+  await db.prepare('DELETE FROM self_tests WHERE student_id = ?').run(targetId);
+  await db.prepare('DELETE FROM student_tags WHERE student_id = ?').run(targetId);
+  await db.prepare('DELETE FROM users WHERE id = ?').run(targetId);
   res.json({ ok: true });
 });
 
@@ -220,9 +246,11 @@ app.put('/api/word-books/:id', authMiddleware, requireRole('teacher'), async (re
 });
 
 app.delete('/api/word-books/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
-  await db.prepare('DELETE FROM word_books WHERE id = ? AND teacher_id = ?').run(
-    req.params.id, req.user.id
-  );
+  const wb = await db.prepare('SELECT * FROM word_books WHERE id = ? AND teacher_id = ?').get(req.params.id, req.user.id);
+  if (!wb) return res.status(404).json({ error: '单词书不存在或无权限' });
+  const hasLists = await db.prepare('SELECT 1 FROM word_lists WHERE word_book_id = ? LIMIT 1').get(req.params.id);
+  if (hasLists) return res.status(400).json({ error: '该单词书下还有词表，请先删除词表' });
+  await db.prepare('DELETE FROM word_books WHERE id = ? AND teacher_id = ?').run(req.params.id, req.user.id);
   res.json({ ok: true });
 });
 
@@ -289,9 +317,16 @@ app.put('/api/word-lists/:id', authMiddleware, requireRole('teacher'), async (re
 });
 
 app.delete('/api/word-lists/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
-  await db.prepare('DELETE FROM word_lists WHERE id = ? AND teacher_id = ?').run(
-    req.params.id, req.user.id
-  );
+  const list = await db.prepare('SELECT * FROM word_lists WHERE id = ? AND teacher_id = ?').get(req.params.id, req.user.id);
+  if (!list) return res.status(404).json({ error: '词表不存在或无权限' });
+  const hasTasks = await db.prepare('SELECT 1 FROM tasks WHERE word_list_id = ? LIMIT 1').get(req.params.id);
+  if (hasTasks) return res.status(400).json({ error: '该词表有关联的任务，请先删除任务' });
+  const wordIds = await db.prepare('SELECT id FROM words WHERE word_list_id = ?').all(req.params.id);
+  for (const w of wordIds) {
+    await db.prepare('DELETE FROM favorites WHERE word_id = ?').run(w.id);
+  }
+  await db.prepare('DELETE FROM words WHERE word_list_id = ?').run(req.params.id);
+  await db.prepare('DELETE FROM word_lists WHERE id = ? AND teacher_id = ?').run(req.params.id, req.user.id);
   res.json({ ok: true });
 });
 
@@ -417,11 +452,17 @@ app.get('/api/tasks', authMiddleware, async (req, res) => {
 });
 
 app.post('/api/tasks', authMiddleware, requireRole('teacher'), async (req, res) => {
-  const { name, word_list_id, deadline, test_words_count, test_mode, student_ids } = req.body;
+  const { name, word_list_id, deadline, test_words_count, test_mode, student_ids, sentence_list_id } = req.body;
   if (!name || !word_list_id) return res.status(400).json({ error: '参数错误' });
+  const wl = await db.prepare('SELECT * FROM word_lists WHERE id = ? AND teacher_id = ?').get(word_list_id, req.user.id);
+  if (!wl) return res.status(403).json({ error: '词表不存在或无权限' });
+  if (sentence_list_id) {
+    const sl = await db.prepare('SELECT * FROM sentence_lists WHERE id = ? AND teacher_id = ?').get(sentence_list_id, req.user.id);
+    if (!sl) return res.status(403).json({ error: '句子列表不存在或无权限' });
+  }
   const info = await db.prepare(
-    'INSERT INTO tasks (name, word_list_id, teacher_id, deadline, test_words_count, test_mode) VALUES (?, ?, ?, ?, ?, ?)'
-  ).run(name, word_list_id, req.user.id, deadline || null, test_words_count || 10, test_mode || 'mixed');
+    'INSERT INTO tasks (name, word_list_id, teacher_id, deadline, test_words_count, test_mode, sentence_list_id) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  ).run(name, word_list_id, req.user.id, deadline || null, test_words_count || 10, test_mode || 'mixed', sentence_list_id || null);
   const taskId = info.lastInsertRowid;
   if (student_ids && student_ids.length) {
     const stmt = db.prepare(
@@ -433,11 +474,22 @@ app.post('/api/tasks', authMiddleware, requireRole('teacher'), async (req, res) 
 });
 
 app.delete('/api/tasks/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const task = await db.prepare('SELECT * FROM tasks WHERE id = ? AND teacher_id = ?').get(req.params.id, req.user.id);
+  if (!task) return res.status(404).json({ error: '任务不存在或无权限' });
+  const tsIds = await db.prepare('SELECT id FROM task_students WHERE task_id = ?').all(req.params.id);
+  for (const ts of tsIds) {
+    await db.prepare('DELETE FROM study_records WHERE task_student_id = ?').run(ts.id);
+    await db.prepare('DELETE FROM test_records WHERE task_student_id = ?').run(ts.id);
+  }
+  await db.prepare('DELETE FROM task_students WHERE task_id = ?').run(req.params.id);
+  await db.prepare('DELETE FROM comments WHERE task_id = ?').run(req.params.id);
   await db.prepare('DELETE FROM tasks WHERE id = ? AND teacher_id = ?').run(req.params.id, req.user.id);
   res.json({ ok: true });
 });
 
 app.get('/api/tasks/:id/progress', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const task = await db.prepare('SELECT * FROM tasks WHERE id = ? AND teacher_id = ?').get(req.params.id, req.user.id);
+  if (!task) return res.status(404).json({ error: '任务不存在或无权限' });
   const rows = await db.prepare(
     `SELECT ts.*, u.username,
       (SELECT COUNT(*) FROM words w WHERE w.word_list_id = t.word_list_id) as total_words
@@ -571,9 +623,18 @@ app.post('/api/tests/submit', authMiddleware, async (req, res) => {
 });
 
 app.get('/api/tasks/:id/test-result', authMiddleware, async (req, res) => {
-  const ts = await db.prepare(
-    'SELECT * FROM task_students WHERE task_id = ? AND student_id = ?'
-  ).get(req.params.id, req.user.id);
+  let ts;
+  if (req.user.role === 'teacher') {
+    ts = await db.prepare(
+      `SELECT ts.* FROM task_students ts
+       INNER JOIN tasks t ON t.id = ts.task_id
+       WHERE ts.task_id = ? AND t.teacher_id = ?`
+    ).get(req.params.id, req.user.id);
+  } else {
+    ts = await db.prepare(
+      'SELECT * FROM task_students WHERE task_id = ? AND student_id = ?'
+    ).get(req.params.id, req.user.id);
+  }
   if (!ts) return res.status(404).json({ error: '未找到' });
   const records = await db.prepare(
     `SELECT tr.*, w.word, w.meaning, w.example
@@ -587,6 +648,9 @@ app.get('/api/tasks/:id/test-result', authMiddleware, async (req, res) => {
 app.put('/api/me/password', authMiddleware, async (req, res) => {
   const { oldPassword, newPassword } = req.body;
   if (!oldPassword || !newPassword) return res.status(400).json({ error: '参数错误' });
+  if (typeof newPassword !== 'string' || newPassword.length < 6 || newPassword.length > 100) {
+    return res.status(400).json({ error: '新密码长度需在6-100之间' });
+  }
   const user = await db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
   if (!bcrypt.compareSync(oldPassword, user.password_hash)) {
     return res.status(400).json({ error: '原密码错误' });
@@ -1001,6 +1065,11 @@ app.put('/api/sentence-lists/:id', authMiddleware, requireRole('teacher'), async
 });
 
 app.delete('/api/sentence-lists/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const list = await db.prepare('SELECT * FROM sentence_lists WHERE id = ? AND teacher_id = ?').get(req.params.id, req.user.id);
+  if (!list) return res.status(404).json({ error: '句子列表不存在或无权限' });
+  const hasTasks = await db.prepare('SELECT 1 FROM tasks WHERE sentence_list_id = ? LIMIT 1').get(req.params.id);
+  if (hasTasks) return res.status(400).json({ error: '该句子列表有关联的任务，请先删除任务' });
+  await db.prepare('DELETE FROM sentences WHERE sentence_list_id = ?').run(req.params.id);
   await db.prepare('DELETE FROM sentence_lists WHERE id = ? AND teacher_id = ?').run(req.params.id, req.user.id);
   res.json({ ok: true });
 });
@@ -1399,6 +1468,7 @@ app.delete('/api/tags/:id', authMiddleware, requireRole('teacher'), async (req, 
   const tag = await db.prepare('SELECT * FROM tags WHERE id = ?').get(req.params.id);
   if (!tag) return res.status(404).json({ error: '标签不存在' });
   if (tag.teacher_id !== req.user.id) return res.status(403).json({ error: '无权限' });
+  await db.prepare('DELETE FROM student_tags WHERE tag_id = ?').run(req.params.id);
   await db.prepare('DELETE FROM tags WHERE id = ?').run(req.params.id);
   res.json({ ok: true });
 });

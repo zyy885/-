@@ -16,7 +16,7 @@ export default function Login({ onLogin }) {
     setLoading(true);
     try {
       const fn = mode === 'login' ? api.login : api.register;
-      const args = mode === 'login' ? [username, password] : [username, password, 'student'];
+      const args = mode === 'login' ? [username, password] : [username, password];
       const data = await fn(...args);
       onLogin(data.token, data.user);
       navigate('/' + data.user.role);
