@@ -21,6 +21,7 @@ export default function WordListManage() {
   const [renamingValue, setRenamingValue] = useState('');
   const [renamingBookId, setRenamingBookId] = useState(null);
   const [renamingBookValue, setRenamingBookValue] = useState('');
+  const [editingListBookId, setEditingListBookId] = useState(null);
   const [importData, setImportData] = useState('');
   const [importPreview, setImportPreview] = useState(null);
   const [importFileName, setImportFileName] = useState('');
@@ -146,6 +147,7 @@ export default function WordListManage() {
   const startRename = (l) => {
     setRenamingId(l.id);
     setRenamingValue(l.name);
+    setEditingListBookId(l.word_book_id || null);
   };
 
   const saveRename = async () => {
@@ -153,10 +155,12 @@ export default function WordListManage() {
     const list = lists.find(l => l.id === renamingId);
     if (!list) return;
     try {
-      await api.updateWordList(renamingId, { name: renamingValue.trim(), description: list.description || '', word_book_id: selectedBookId || null });
+      await api.updateWordList(renamingId, { name: renamingValue.trim(), description: list.description || '', word_book_id: editingListBookId });
       setRenamingId(null);
       setRenamingValue('');
+      setEditingListBookId(null);
       loadLists(selectedBookId);
+      loadWordBooks();
     } catch (e) { alert(e.message); }
   };
 
@@ -764,27 +768,40 @@ export default function WordListManage() {
             >
               <div className="list-item-info" style={{ flex: 1, minWidth: 0 }}>
                 {renamingId === l.id ? (
-                  <input
-                    autoFocus
-                    value={renamingValue}
-                    onChange={e => setRenamingValue(e.target.value)}
-                    onClick={e => e.stopPropagation()}
-                    onKeyDown={e => { if (e.key === 'Enter') saveRename(); if (e.key === 'Escape') { setRenamingId(null); setRenamingValue(''); } }}
-                    style={{ width: '100%', padding: 4, fontSize: 14, borderRadius: 4, border: '1px solid #3b82f6' }}
-                  />
+                  <div onClick={e => e.stopPropagation()} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    <input
+                      autoFocus
+                      value={renamingValue}
+                      onChange={e => setRenamingValue(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') saveRename(); if (e.key === 'Escape') { setRenamingId(null); setRenamingValue(''); setEditingListBookId(null); } }}
+                      style={{ width: '100%', padding: 4, fontSize: 14, borderRadius: 4, border: '1px solid #3b82f6' }}
+                    />
+                    <select
+                      value={editingListBookId || ''}
+                      onChange={e => setEditingListBookId(e.target.value ? Number(e.target.value) : null)}
+                      style={{ width: '100%', padding: 4, fontSize: 12, borderRadius: 4, border: '1px solid #d1d5db' }}
+                    >
+                      <option value="">📁 未分类</option>
+                      {wordBooks.map(b => (
+                        <option key={b.id} value={b.id}>📚 {b.name}</option>
+                      ))}
+                    </select>
+                  </div>
                 ) : (
-                  <div className="list-item-name">{l.name}</div>
+                  <>
+                    <div className="list-item-name">{l.name}</div>
+                    <div className="muted small">{l.word_count || 0} 个单词</div>
+                  </>
                 )}
-                <div className="muted small">{l.word_count || 0} 个单词</div>
               </div>
               {renamingId === l.id ? (
                 <>
                   <button className="icon-btn" onClick={e => { e.stopPropagation(); saveRename(); }} title="保存">✓</button>
-                  <button className="icon-btn" onClick={e => { e.stopPropagation(); setRenamingId(null); setRenamingValue(''); }} title="取消">✕</button>
+                  <button className="icon-btn" onClick={e => { e.stopPropagation(); setRenamingId(null); setRenamingValue(''); setEditingListBookId(null); }} title="取消">✕</button>
                 </>
               ) : (
                 <>
-                  <button className="icon-btn" onClick={e => { e.stopPropagation(); startRename(l); }} title="重命名">✏️</button>
+                  <button className="icon-btn" onClick={e => { e.stopPropagation(); startRename(l); }} title="重命名 / 移动">✏️</button>
                   <button className="icon-btn" onClick={e => { e.stopPropagation(); deleteList(l.id); }} title="删除">🗑</button>
                 </>
               )}
