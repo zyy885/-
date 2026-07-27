@@ -229,7 +229,7 @@ app.get('/api/word-books', authMiddleware, async (req, res) => {
 app.post('/api/word-books', authMiddleware, requireRole('teacher'), async (req, res) => {
   const { name, description, cover_color, cover_image, is_public } = req.body;
   if (!name) return res.status(400).json({ error: '请输入单词书名称' });
-  const publicFlag = is_public === undefined ? 1 : (is_public ? 1 : 0);
+  const publicFlag = is_public === undefined ? (isPG ? true : 1) : (is_public ? (isPG ? true : 1) : (isPG ? false : 0));
   const info = await db.prepare(
     'INSERT INTO word_books (name, description, cover_color, cover_image, is_public, teacher_id) VALUES (?, ?, ?, ?, ?, ?)'
   ).run(name, description || '', cover_color || '#6366f1', cover_image || null, publicFlag, req.user.id);
@@ -238,7 +238,7 @@ app.post('/api/word-books', authMiddleware, requireRole('teacher'), async (req, 
 
 app.put('/api/word-books/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
   const { name, description, cover_color, cover_image, is_public } = req.body;
-  const publicFlag = is_public === undefined ? 1 : (is_public ? 1 : 0);
+  const publicFlag = is_public === undefined ? (isPG ? true : 1) : (is_public ? (isPG ? true : 1) : (isPG ? false : 0));
   await db.prepare(
     'UPDATE word_books SET name = ?, description = ?, cover_color = ?, cover_image = ?, is_public = ? WHERE id = ? AND teacher_id = ?'
   ).run(name, description || '', cover_color || '#6366f1', cover_image || null, publicFlag, req.params.id, req.user.id);
