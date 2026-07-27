@@ -15,7 +15,7 @@ function statusBadge(status) {
 function getKaoyanDate() {
   const saved = localStorage.getItem('kaoyan_date');
   if (saved) return saved;
-  return '2026-12-21';
+  return '2026-12-19';
 }
 
 function calcCountdown(targetDateStr) {
