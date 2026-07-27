@@ -638,8 +638,12 @@ app.get('/api/stats/me', authMiddleware, async (req, res) => {
      WHERE ts.student_id = ? AND tr.is_correct = 0`
   ).get(req.user.id)).cnt;
   res.json({
-    totalTasks, testedTasks, avgScore: Math.round(avgScore),
-    studyDays, totalWords, wrongCount
+    totalTasks: Number(totalTasks) || 0,
+    testedTasks: Number(testedTasks) || 0,
+    avgScore: Math.round(Number(avgScore) || 0),
+    studyDays: Number(studyDays) || 0,
+    totalWords: Number(totalWords) || 0,
+    wrongCount: Number(wrongCount) || 0,
   });
 });
 
@@ -674,10 +678,10 @@ app.get('/api/study-stats', authMiddleware, async (req, res) => {
   }
 
   res.json({
-    todayDuration: todaySession?.duration_seconds || 0,
-    totalDuration: totalDurationRow.s || 0,
-    todayWords: todaySession?.words_studied || 0,
-    totalWords: totalWordsRow.w || 0,
+    todayDuration: Number(todaySession?.duration_seconds) || 0,
+    totalDuration: Number(totalDurationRow.s) || 0,
+    todayWords: Number(todaySession?.words_studied) || 0,
+    totalWords: Number(totalWordsRow.w) || 0,
     checkinDays: checkinRows.length,
     streakDays: streak,
   });
@@ -719,7 +723,13 @@ app.get('/api/leaderboard', authMiddleware, async (req, res) => {
      ORDER BY avg_score DESC ${nullsLast}, days DESC, tasks DESC
      LIMIT 20`
   ).all();
-  res.json({ leaderboard: rows });
+  const fixedRows = rows.map(r => ({
+    ...r,
+    tasks: Number(r.tasks) || 0,
+    days: Number(r.days) || 0,
+    avg_score: Number(r.avg_score) || 0,
+  }));
+  res.json({ leaderboard: fixedRows });
 });
 
 app.post('/api/users/batch', authMiddleware, requireRole('teacher'), async (req, res) => {
@@ -1473,8 +1483,9 @@ app.post('/api/self-tests/submit', authMiddleware, requireRole('student'), async
     if (!word) continue;
     const qType = a.question_type || 'en_to_zh';
     const userAns = (a.user_answer || '').trim().toLowerCase();
-    if (userAns.length === 0) continue;
-    if (qType === 'zh_to_en') {
+    if (userAns.length === 0) {
+      a.is_correct = false;
+    } else if (qType === 'zh_to_en') {
       const validWords = word.word.split(/[;,，；、\/\|]/).map(s => s.trim().toLowerCase()).filter(Boolean);
       if (validWords.some(w => w === userAns || userAns.includes(w) || w.includes(userAns))) a.is_correct = true;
     } else {
