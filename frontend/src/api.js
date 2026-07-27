@@ -31,7 +31,7 @@ function handleAuthError() {
 
 async function request(method, path, body) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000);
+  const timeoutId = setTimeout(() => controller.abort(), 45000);
   const opts = {
     method,
     headers: { 'Content-Type': 'application/json' },
@@ -55,7 +55,7 @@ async function request(method, path, body) {
   } catch (e) {
     clearTimeout(timeoutId);
     if (e.name === 'AbortError') {
-      throw new Error('请求超时，请检查网络后重试');
+      throw new Error('请求超时，请检查网络后重试（首次打开可能需要几十秒启动服务）');
     }
     if (e.message === 'Failed to fetch' || e.message.includes('NetworkError')) {
       throw new Error('网络连接失败，请检查网络');
