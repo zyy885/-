@@ -4,6 +4,25 @@ import { api } from '../api.js';
 
 const TAG_COLORS = ['#6366f1', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#8b5cf6', '#14b8a6'];
 
+const RANK_LEVELS = [
+  { name: '传奇', icon: '🌟', color: '#dc2626', level: 9, minDays: 366, minWords: 20000 },
+  { name: '宗师', icon: '👑', color: '#7c3aed', level: 8, minDays: 201, minWords: 12000 },
+  { name: '大师', icon: '🏆', color: '#ea580c', level: 7, minDays: 101, minWords: 7000 },
+  { name: '钻石', icon: '💠', color: '#2563eb', level: 6, minDays: 61, minWords: 4000 },
+  { name: '铂金', icon: '💎', color: '#0891b2', level: 5, minDays: 31, minWords: 2000 },
+  { name: '黄金', icon: '🥇', color: '#d97706', level: 4, minDays: 15, minWords: 1000 },
+  { name: '白银', icon: '🥈', color: '#6b7280', level: 3, minDays: 8, minWords: 500 },
+  { name: '青铜', icon: '🥉', color: '#92400e', level: 2, minDays: 4, minWords: 200 },
+  { name: '初学者', icon: '🌱', color: '#65a30d', level: 1, minDays: 0, minWords: 0 },
+];
+
+function getRank(days, words) {
+  for (const r of RANK_LEVELS) {
+    if (days >= r.minDays || words >= r.minWords) return r;
+  }
+  return RANK_LEVELS[RANK_LEVELS.length - 1];
+}
+
 function roleLabel(role) {
   return role === 'teacher' ? '👨‍🏫' : '🎒';
 }
@@ -27,8 +46,12 @@ export default function UserManage() {
   const [showTagModal, setShowTagModal] = useState(false);
   const [showStudentTagModal, setShowStudentTagModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showRankModal, setShowRankModal] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [resetPasswordUser, setResetPasswordUser] = useState(null);
+  const [rankInfo, setRankInfo] = useState(null);
+  const [bonusDays, setBonusDays] = useState(0);
+  const [bonusWords, setBonusWords] = useState(0);
   const [newPassword, setNewPassword] = useState('');
   const [editingTag, setEditingTag] = useState(null);
   const [studentTagIds, setStudentTagIds] = useState([]);
@@ -106,6 +129,38 @@ export default function UserManage() {
       setResetPasswordUser(null);
       setNewPassword('');
     } catch (e) { alert(e.message); }
+  };
+
+  const openRankModal = async (student) => {
+    setSelectedStudent(student);
+    setRankInfo(null);
+    setBonusDays(0);
+    setBonusWords(0);
+    try {
+      const data = await api.getUserRankInfo(student.id);
+      setRankInfo(data);
+      setBonusDays(data.rank_bonus_days || 0);
+      setBonusWords(data.rank_bonus_words || 0);
+    } catch (e) { console.error(e); }
+    setShowRankModal(true);
+  };
+
+  const saveRankBonus = async () => {
+    if (!selectedStudent) return;
+    try {
+      await api.updateUserRankBonus(selectedStudent.id, {
+        rank_bonus_days: Number(bonusDays) || 0,
+        rank_bonus_words: Number(bonusWords) || 0,
+      });
+      const data = await api.getUserRankInfo(selectedStudent.id);
+      setRankInfo(data);
+      alert(`「${selectedStudent.username}」的等级奖励已更新！当前等级：${data.rank.icon} ${data.rank.name}`);
+    } catch (e) { alert(e.message); }
+  };
+
+  const promoteToMaxRank = () => {
+    setBonusDays(9999);
+    setBonusWords(999999);
   };
 
   const openTagModal = (tag = null) => {
@@ -191,14 +246,23 @@ export default function UserManage() {
           <div className="progress-table">
             <table>
               <thead>
-                <tr><th>#</th><th>用户名</th><th>身份</th><th>标签</th><th>创建时间</th><th>操作</th></tr>
+                <tr><th>#</th><th>用户名</th><th>身份</th><th>等级</th><th>标签</th><th>创建时间</th><th>操作</th></tr>
               </thead>
               <tbody>
-                {users.map((u, i) => (
+                {users.map((u, i) => {
+                  const rank = u.role === 'student' ? getRank(u.rank_bonus_days || 0, u.rank_bonus_words || 0) : null;
+                  return (
                   <tr key={u.id}>
                     <td>{i + 1}</td>
                     <td>{roleLabel(u.role)} {u.username}</td>
                     <td>{roleBadge(u.role)}</td>
+                    <td>
+                      {u.role === 'student' ? (
+                        <button className="btn btn-outline btn-sm" onClick={() => openRankModal(u)} style={{ borderColor: rank.color, color: rank.color }}>
+                          {rank.icon} {rank.name}
+                        </button>
+                      ) : '-'}
+                    </td>
                     <td>
                       {u.role === 'student' ? (
                         <button className="btn btn-outline btn-sm" onClick={() => openStudentTagModal(u)}>
@@ -212,7 +276,7 @@ export default function UserManage() {
                       <button className="btn btn-danger btn-sm" style={{ marginLeft: 6 }} onClick={() => removeUser(u)}>删除</button>
                     </td>
                   </tr>
-                ))}
+                );})}
               </tbody>
             </table>
           </div>
@@ -404,6 +468,78 @@ export default function UserManage() {
             <div className="modal-actions">
               <button className="btn btn-outline" onClick={() => { setShowPasswordModal(false); setResetPasswordUser(null); }}>取消</button>
               <button className="btn btn-primary" onClick={saveResetPassword}>确认修改</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showRankModal && selectedStudent && (
+        <div className="modal" onClick={() => setShowRankModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <h3>「{selectedStudent.username}」的等级信息</h3>
+            {rankInfo && rankInfo.rank && (
+              <div style={{
+                padding: '16px',
+                borderRadius: 12,
+                marginBottom: 16,
+                background: `linear-gradient(135deg, ${rankInfo.rank.color}22, ${rankInfo.rank.color}11)`,
+                border: `1px solid ${rankInfo.rank.color}44`
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <span style={{ fontSize: 40 }}>{rankInfo.rank.icon}</span>
+                  <div>
+                    <div style={{ fontSize: 20, fontWeight: 'bold', color: rankInfo.rank.color }}>
+                      {rankInfo.rank.name}
+                    </div>
+                    <div className="muted small">Lv.{rankInfo.rank.level}</div>
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 12, fontSize: 13 }}>
+                  <div>🔥 连续打卡：<b>{rankInfo.streak_days}</b> 天</div>
+                  <div>📅 累计打卡：<b>{rankInfo.total_checkins}</b> 天</div>
+                  <div>📚 学习单词：<b>{rankInfo.total_words}</b> 词</div>
+                  <div>🎁 奖励天数：<b style={{ color: '#16a34a' }}>+{rankInfo.rank_bonus_days}</b></div>
+                  <div>🎁 奖励单词：<b style={{ color: '#16a34a' }}>+{rankInfo.rank_bonus_words}</b></div>
+                  <div>✨ 有效天数：<b>{rankInfo.effective_days}</b></div>
+                </div>
+                {rankInfo.next_rank && (
+                  <div className="muted small" style={{ marginTop: 8 }}>
+                    下一等级：{rankInfo.next_rank.icon} {rankInfo.next_rank.name}（打卡 {rankInfo.next_rank.minDays} 天 或 学习 {rankInfo.next_rank.minWords} 词）
+                  </div>
+                )}
+              </div>
+            )}
+            <div className="form-group">
+              <label>奖励打卡天数（加到连续/累计天数上计算等级）</label>
+              <input
+                type="number"
+                min="0"
+                max="9999"
+                value={bonusDays}
+                onChange={e => setBonusDays(Number(e.target.value) || 0)}
+              />
+            </div>
+            <div className="form-group">
+              <label>奖励学习单词数（加到学习单词数上计算等级）</label>
+              <input
+                type="number"
+                min="0"
+                max="999999"
+                value={bonusWords}
+                onChange={e => setBonusWords(Number(e.target.value) || 0)}
+              />
+            </div>
+            <div style={{ marginBottom: 12 }}>
+              <button className="btn btn-outline btn-sm" onClick={promoteToMaxRank}>
+                🚀 直接升至最高等级（传奇）
+              </button>
+            </div>
+            <div className="muted small" style={{ marginBottom: 12 }}>
+              提示：设置奖励天数/单词数后，学生的实际等级将重新计算。
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-outline" onClick={() => { setShowRankModal(false); setSelectedStudent(null); }}>取消</button>
+              <button className="btn btn-primary" onClick={saveRankBonus}>保存等级奖励</button>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { api } from '../api.js';
+import { speak } from '../utils/speech.js';
 
 export default function StudyPage() {
   const { id } = useParams();
@@ -13,10 +14,6 @@ export default function StudyPage() {
   const [showMeaning, setShowMeaning] = useState(false);
   const [favMap, setFavMap] = useState({});
   const [hints, setHints] = useState({ firstLetter: false, example: false, image: false, syllable: false });
-
-  const speak = (w) => {
-    try { const u = new SpeechSynthesisUtterance(w); u.lang = 'en-US'; speechSynthesis.speak(u); } catch (e) {}
-  };
 
   useEffect(() => {
     loadFavs();

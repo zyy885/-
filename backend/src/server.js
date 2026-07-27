@@ -55,6 +55,33 @@ function checkRateLimit(ip) {
   return true;
 }
 
+const RANK_LEVELS = [
+  { name: '传奇', icon: '🌟', color: '#dc2626', level: 9, minDays: 366, minWords: 20000 },
+  { name: '宗师', icon: '👑', color: '#7c3aed', level: 8, minDays: 201, minWords: 12000 },
+  { name: '大师', icon: '🏆', color: '#ea580c', level: 7, minDays: 101, minWords: 7000 },
+  { name: '钻石', icon: '💠', color: '#2563eb', level: 6, minDays: 61, minWords: 4000 },
+  { name: '铂金', icon: '💎', color: '#0891b2', level: 5, minDays: 31, minWords: 2000 },
+  { name: '黄金', icon: '🥇', color: '#d97706', level: 4, minDays: 15, minWords: 1000 },
+  { name: '白银', icon: '🥈', color: '#6b7280', level: 3, minDays: 8, minWords: 500 },
+  { name: '青铜', icon: '🥉', color: '#92400e', level: 2, minDays: 4, minWords: 200 },
+  { name: '初学者', icon: '🌱', color: '#65a30d', level: 1, minDays: 0, minWords: 0 },
+];
+
+function getRank(days, words) {
+  for (const r of RANK_LEVELS) {
+    if (days >= r.minDays || words >= r.minWords) return r;
+  }
+  return RANK_LEVELS[RANK_LEVELS.length - 1];
+}
+
+function getNextRank(days, words) {
+  for (let i = RANK_LEVELS.length - 2; i >= 0; i--) {
+    const r = RANK_LEVELS[i];
+    if (days < r.minDays && words < r.minWords) return r;
+  }
+  return null;
+}
+
 const FRONTEND_DIST = path.join(__dirname, '..', '..', 'frontend', 'dist');
 const fs = require('fs');
 if (fs.existsSync(FRONTEND_DIST)) {
@@ -188,6 +215,86 @@ app.put('/api/users/:id/password', authMiddleware, requireRole('teacher'), async
   const hash = bcrypt.hashSync(password, 10);
   await db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(hash, req.params.id);
   res.json({ ok: true });
+});
+
+app.get('/api/users/:id/rank-info', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const userId = Number(req.params.id);
+  const user = await db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
+  if (!user) return res.status(404).json({ error: '用户不存在' });
+  if (user.role !== 'student') return res.status(400).json({ error: '仅学生有等级信息' });
+
+  const bonusDays = Number(user.rank_bonus_days) || 0;
+  const bonusWords = Number(user.rank_bonus_words) || 0;
+
+  const totalCheckinsRow = await db.prepare(
+    'SELECT COUNT(*) as cnt FROM checkins WHERE student_id = ?'
+  ).get(userId);
+  const totalCheckins = Number(totalCheckinsRow.cnt) || 0;
+
+  const totalWordsRow = await db.prepare(
+    'SELECT COALESCE(SUM(words_studied), 0) as w FROM study_sessions WHERE student_id = ?'
+  ).get(userId);
+  const totalWords = Number(totalWordsRow.w) || 0;
+
+  const checkinRows = await db.prepare(
+    'SELECT checkin_date FROM checkins WHERE student_id = ? ORDER BY checkin_date DESC'
+  ).all(userId);
+
+  const calcStreak = (dates) => {
+    if (!dates || dates.length === 0) return 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayStr = today.toISOString().split('T')[0];
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    const dateSet = new Set(dates.map(d => typeof d === 'string' ? d : d.checkin_date));
+    if (!dateSet.has(todayStr) && !dateSet.has(yesterdayStr)) return 0;
+    let streak = 0;
+    let cursor = new Date(today);
+    if (!dateSet.has(todayStr)) cursor.setDate(cursor.getDate() - 1);
+    while (true) {
+      const cursorStr = cursor.toISOString().split('T')[0];
+      if (dateSet.has(cursorStr)) {
+        streak++;
+        cursor.setDate(cursor.getDate() - 1);
+      } else break;
+    }
+    return streak;
+  };
+
+  const streak = calcStreak(checkinRows);
+  const effectiveDays = streak + bonusDays;
+  const effectiveWords = totalWords + bonusWords;
+  const rank = getRank(effectiveDays, effectiveWords);
+  const nextRank = getNextRank(effectiveDays, effectiveWords);
+
+  res.json({
+    user: { id: user.id, username: user.username },
+    streak_days: streak,
+    total_checkins: totalCheckins,
+    total_words: totalWords,
+    rank_bonus_days: bonusDays,
+    rank_bonus_words: bonusWords,
+    effective_days: effectiveDays,
+    effective_words: effectiveWords,
+    rank,
+    next_rank: nextRank,
+  });
+});
+
+app.put('/api/users/:id/rank-bonus', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const userId = Number(req.params.id);
+  const { rank_bonus_days, rank_bonus_words } = req.body;
+  const user = await db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
+  if (!user) return res.status(404).json({ error: '用户不存在' });
+  if (user.role !== 'student') return res.status(400).json({ error: '仅学生可设置等级奖励' });
+  const days = Math.max(0, Math.min(9999, Number(rank_bonus_days) || 0));
+  const words = Math.max(0, Math.min(999999, Number(rank_bonus_words) || 0));
+  await db.prepare(
+    'UPDATE users SET rank_bonus_days = ?, rank_bonus_words = ? WHERE id = ?'
+  ).run(days, words, userId);
+  res.json({ ok: true, rank_bonus_days: days, rank_bonus_words: words });
 });
 
 app.get('/api/word-books', authMiddleware, async (req, res) => {
@@ -765,6 +872,12 @@ app.get('/api/study-stats', authMiddleware, async (req, res) => {
   const today = new Date().toISOString().slice(0, 10);
   const uid = req.user.id;
 
+  const userRow = await db.prepare(
+    'SELECT rank_bonus_days, rank_bonus_words FROM users WHERE id = ?'
+  ).get(uid);
+  const bonusDays = Number(userRow?.rank_bonus_days) || 0;
+  const bonusWords = Number(userRow?.rank_bonus_words) || 0;
+
   const todaySession = await db.prepare(
     'SELECT * FROM study_sessions WHERE student_id = ? AND session_date = ?'
   ).get(uid, today);
@@ -798,6 +911,8 @@ app.get('/api/study-stats', authMiddleware, async (req, res) => {
     totalWords: Number(totalWordsRow.w) || 0,
     checkinDays: checkinRows.length,
     streakDays: streak,
+    rank_bonus_days: bonusDays,
+    rank_bonus_words: bonusWords,
   });
 });
 
@@ -1020,16 +1135,23 @@ app.delete('/api/comments/:id', authMiddleware, requireRole('teacher'), async (r
 
 app.get('/api/settings', authMiddleware, async (req, res) => {
   let s = await db.prepare('SELECT * FROM settings WHERE user_id = ?').get(req.user.id);
-  if (!s) s = { theme: 'light' };
+  if (!s) s = { theme: 'light', voice: 'default' };
   res.json({ settings: s });
 });
 
 app.put('/api/settings', authMiddleware, async (req, res) => {
-  const { theme } = req.body;
-  await db.prepare(
-    `INSERT INTO settings (user_id, theme) VALUES (?, ?)
-     ON CONFLICT(user_id) DO UPDATE SET theme = excluded.theme`
-  ).run(req.user.id, theme || 'light');
+  const { theme, voice } = req.body;
+  const existing = await db.prepare('SELECT * FROM settings WHERE user_id = ?').get(req.user.id);
+  if (existing) {
+    await db.prepare(
+      'UPDATE settings SET theme = ?, voice = ? WHERE user_id = ?'
+    ).run(theme || existing.theme || 'light', voice !== undefined ? voice : existing.voice || 'default', req.user.id);
+  } else {
+    await db.prepare(
+      `INSERT INTO settings (user_id, theme, voice) VALUES (?, ?, ?)
+       ON CONFLICT(user_id) DO UPDATE SET theme = excluded.theme, voice = excluded.voice`
+    ).run(req.user.id, theme || 'light', voice || 'default');
+  }
   res.json({ ok: true });
 });
 
@@ -1214,6 +1336,12 @@ app.get('/api/checkins/status', authMiddleware, requireRole('student'), async (r
   const today = new Date().toISOString().split('T')[0];
   const studentId = req.user.id;
 
+  const userRow = await db.prepare(
+    'SELECT rank_bonus_days, rank_bonus_words FROM users WHERE id = ?'
+  ).get(studentId);
+  const bonusDays = Number(userRow?.rank_bonus_days) || 0;
+  const bonusWords = Number(userRow?.rank_bonus_words) || 0;
+
   const todayCheckin = await db.prepare(
     isPG
       ? "SELECT * FROM checkins WHERE student_id = $1 AND checkin_date = $2"
@@ -1325,24 +1453,21 @@ app.get('/api/checkins/status', authMiddleware, requireRole('student'), async (r
     return streak;
   };
 
+  const totalWordsRow = await db.prepare(
+    'SELECT COALESCE(SUM(words_studied), 0) as w FROM study_sessions WHERE student_id = ?'
+  ).get(studentId);
+  const totalWords = Number(totalWordsRow.w) || 0;
+
   const streak = calcStreak(allCheckins);
   const total = totalCheckins.cnt || 0;
 
-  const getRank = (days) => {
-    if (days >= 366) return { name: '传奇', icon: '🌟', color: '#dc2626', level: 9 };
-    if (days >= 201) return { name: '宗师', icon: '👑', color: '#7c3aed', level: 8 };
-    if (days >= 101) return { name: '大师', icon: '🏆', color: '#ea580c', level: 7 };
-    if (days >= 61) return { name: '钻石', icon: '💠', color: '#2563eb', level: 6 };
-    if (days >= 31) return { name: '铂金', icon: '💎', color: '#0891b2', level: 5 };
-    if (days >= 15) return { name: '黄金', icon: '🥇', color: '#d97706', level: 4 };
-    if (days >= 8) return { name: '白银', icon: '🥈', color: '#6b7280', level: 3 };
-    if (days >= 4) return { name: '青铜', icon: '🥉', color: '#92400e', level: 2 };
-    return { name: '初学者', icon: '🌱', color: '#65a30d', level: 1 };
-  };
+  const effectiveStreak = streak + bonusDays;
+  const effectiveTotal = total + bonusDays;
+  const effectiveWords = totalWords + bonusWords;
 
-  const rankByStreak = getRank(streak);
-  const rankByTotal = getRank(total);
-  const nextRank = getRank((streak > total ? streak : total) + 1);
+  const rank = getRank(effectiveStreak, effectiveWords);
+  const rankByTotal = getRank(effectiveTotal, effectiveWords);
+  const nextRank = getNextRank(effectiveStreak, effectiveWords);
 
   res.json({
     checked_in: !!todayCheckin,
@@ -1352,7 +1477,10 @@ app.get('/api/checkins/status', authMiddleware, requireRole('student'), async (r
     total_checkins: total,
     today_checkin: todayCheckin,
     streak: streak,
-    rank: rankByStreak,
+    total_words: totalWords,
+    rank_bonus_days: bonusDays,
+    rank_bonus_words: bonusWords,
+    rank: rank,
     rank_total: rankByTotal,
     next_rank: nextRank,
   });

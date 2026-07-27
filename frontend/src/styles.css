@@ -3089,3 +3089,240 @@ html {
   font-size: 24px;
   line-height: 1;
 }
+
+.rank-preview {
+  padding-bottom: 24px;
+}
+
+.rank-header {
+  padding: 20px 24px 28px;
+  color: white;
+  margin: -24px -24px 20px;
+}
+
+.btn-back {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+
+.btn-back:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.rank-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rank-badge-lg {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 16px 20px;
+  backdrop-filter: blur(10px);
+  border: 2px solid;
+}
+
+.rank-emoji-lg {
+  font-size: 48px;
+}
+
+.rank-name-lg {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.rank-level-lg {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+.rank-header-stats {
+  display: flex;
+  gap: 24px;
+  font-size: 14px;
+}
+
+.rank-header-stats b {
+  font-size: 18px;
+}
+
+.rank-list {
+  background: #fff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.rank-list-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  background: #f9fafb;
+  border-left: 4px solid #d1d5db;
+  transition: all 0.2s;
+}
+
+.rank-item.current {
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.08), transparent);
+  border-left-width: 4px;
+}
+
+.rank-item.unlocked {
+  opacity: 0.6;
+}
+
+.rank-item.locked {
+  opacity: 1;
+}
+
+.rank-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rank-item-icon {
+  font-size: 28px;
+}
+
+.rank-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rank-item-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.rank-item-level {
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.rank-item-tag {
+  background: #6366f1;
+  color: white;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.rank-item-tag.next {
+  background: #f59e0b;
+}
+
+.rank-item-req {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.rank-item-req b {
+  color: #374151;
+  font-weight: 600;
+}
+
+.rank-req-or {
+  color: #9ca3af;
+  margin: 0 4px;
+}
+
+.rank-item-right {
+  font-size: 12px;
+  color: #6b7280;
+  text-align: right;
+}
+
+.rank-status {
+  font-weight: 600;
+}
+
+.rank-status.unlocked {
+  color: #10b981;
+}
+
+.rank-progress-text {
+  color: #6366f1;
+  font-weight: 500;
+}
+
+.mine-rank-row,
+.rank-icon-wrap {
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.mine-rank-row:hover,
+.rank-icon-wrap:hover {
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .rank-header {
+    padding: 16px 16px 20px;
+    margin: -12px -12px 16px;
+  }
+
+  .rank-badge-lg {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .rank-emoji-lg {
+    font-size: 40px;
+  }
+
+  .rank-name-lg {
+    font-size: 20px;
+  }
+
+  .rank-header-stats {
+    gap: 16px;
+    font-size: 13px;
+  }
+
+  .rank-header-stats b {
+    font-size: 16px;
+  }
+
+  .rank-list {
+    padding: 12px;
+  }
+
+  .rank-item {
+    padding: 10px 12px;
+  }
+
+  .rank-item-icon {
+    font-size: 24px;
+  }
+}

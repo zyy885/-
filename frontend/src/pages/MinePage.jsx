@@ -3,22 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import { api, getCurrentUser, clearAuth } from '../api.js';
 
 const RANKS = [
-  { name: '初学者', icon: '🌱', min: 0, color: '#65a30d' },
-  { name: '青铜', icon: '🥉', min: 4, color: '#92400e' },
-  { name: '白银', icon: '🥈', min: 8, color: '#6b7280' },
-  { name: '黄金', icon: '🥇', min: 15, color: '#d97706' },
-  { name: '铂金', icon: '💎', min: 31, color: '#0891b2' },
-  { name: '钻石', icon: '💠', min: 61, color: '#2563eb' },
-  { name: '大师', icon: '🏆', min: 101, color: '#ea580c' },
-  { name: '宗师', icon: '👑', min: 201, color: '#7c3aed' },
-  { name: '传奇', icon: '🌟', min: 366, color: '#dc2626' },
+  { name: '传奇', icon: '🌟', minDays: 366, minWords: 20000, color: '#dc2626' },
+  { name: '宗师', icon: '👑', minDays: 201, minWords: 12000, color: '#7c3aed' },
+  { name: '大师', icon: '🏆', minDays: 101, minWords: 7000, color: '#ea580c' },
+  { name: '钻石', icon: '💠', minDays: 61, minWords: 4000, color: '#2563eb' },
+  { name: '铂金', icon: '💎', minDays: 31, minWords: 2000, color: '#0891b2' },
+  { name: '黄金', icon: '🥇', minDays: 15, minWords: 1000, color: '#d97706' },
+  { name: '白银', icon: '🥈', minDays: 8, minWords: 500, color: '#6b7280' },
+  { name: '青铜', icon: '🥉', minDays: 4, minWords: 200, color: '#92400e' },
+  { name: '初学者', icon: '🌱', minDays: 0, minWords: 0, color: '#65a30d' },
 ];
 
-function getRank(days) {
-  for (let i = RANKS.length - 1; i >= 0; i--) {
-    if (days >= RANKS[i].min) return { ...RANKS[i], level: i + 1 };
+function getRank(days, words) {
+  for (let i = 0; i < RANKS.length; i++) {
+    if (days >= RANKS[i].minDays || words >= RANKS[i].minWords) {
+      return { ...RANKS[i], level: RANKS.length - i };
+    }
   }
-  return { ...RANKS[0], level: 1 };
+  return { ...RANKS[RANKS.length - 1], level: 1 };
 }
 
 const AVATAR_OPTIONS = ['🧑‍🎓', '👨‍🎓', '👩‍🎓', '🧒', '👦', '👧', '🦊', '🐼', '🐨', '🐯', '🦁', '🐸', '🐙', '🦄', '🐳', '🌸'];
@@ -38,7 +40,10 @@ export default function MinePage() {
     } catch (e) { console.error(e); }
   };
 
-  const rank = getRank(stats?.streakDays || 0);
+  const rank = getRank(
+    (stats?.streakDays || 0) + (stats?.rank_bonus_days || 0),
+    (stats?.totalWords || 0) + (stats?.rank_bonus_words || 0)
+  );
 
   const changeAvatar = async (emoji) => {
     try {
@@ -89,7 +94,7 @@ export default function MinePage() {
           </div>
         </div>
 
-        <div className="mine-rank-row">
+        <div className="mine-rank-row" onClick={() => navigate('/rank-preview')}>
           <div className="mine-rank-badge" style={{ borderColor: rank.color }}>
             <span className="mine-rank-icon">{rank.icon}</span>
             <span className="mine-rank-name" style={{ color: rank.color }}>{rank.name}</span>

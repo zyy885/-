@@ -24,6 +24,7 @@ import SentencePractice from './pages/SentencePractice.jsx';
 import SelfTestPage from './pages/SelfTestPage.jsx';
 import SelfTestSelect from './pages/SelfTestSelect.jsx';
 import MinePage from './pages/MinePage.jsx';
+import RankPreview from './pages/RankPreview.jsx';
 
 function Navbar() {
   const user = getCurrentUser();
@@ -295,6 +296,7 @@ export default function App() {
           <Route path="/student/leaderboard" element={<ProtectedRoute role="student"><Leaderboard /></ProtectedRoute>} />
           <Route path="/student/comments" element={<ProtectedRoute role="student"><CommentsStudent /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
+          <Route path="/rank-preview" element={<ProtectedRoute><RankPreview /></ProtectedRoute>} />
         </Routes>
       </main>
       <BottomTabBar />

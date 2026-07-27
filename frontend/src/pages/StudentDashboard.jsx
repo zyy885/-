@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
 
 function statusBadge(status) {
@@ -28,6 +28,7 @@ function calcCountdown(targetDateStr) {
 }
 
 export default function StudentDashboard() {
+  const navigate = useNavigate();
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [checkinStatus, setCheckinStatus] = useState(null);
@@ -88,7 +89,7 @@ export default function StudentDashboard() {
         <div className="checkin-section" style={{ flex: 1, minWidth: 0 }}>
           <div className="checkin-card" style={{ background: rank ? `linear-gradient(135deg, ${rank.color} 0%, #764ba2 100%)` : undefined }}>
             <div className="checkin-card-left">
-              <div className="rank-icon-wrap">
+              <div className="rank-icon-wrap" onClick={() => navigate('/rank-preview')}>
                 <span className="rank-emoji">{rank?.icon || '🌱'}</span>
                 {rank && (
                   <div className="rank-badge-sm" style={{ background: rank.color }}>
@@ -99,7 +100,7 @@ export default function StudentDashboard() {
               <div>
                 <div className="checkin-title">
                   {checkinStatus?.checked_in ? '今日已打卡' : '每日打卡'}
-                  <span className="rank-name" style={{ marginLeft: 8 }}>{rank?.name || '初学者'}</span>
+                  <span className="rank-name" style={{ marginLeft: 8, cursor: 'pointer' }} onClick={() => navigate('/rank-preview')}>{rank?.name || '初学者'}</span>
                 </div>
                 <div className="checkin-reason">
                   {checkinStatus?.checkin_reason || '加载中...'}

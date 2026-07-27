@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { api } from '../api.js';
-
-function speak(word) {
-  try { const u = new SpeechSynthesisUtterance(word); u.lang = 'en-US'; speechSynthesis.speak(u); } catch (e) {}
-}
+import { speak } from '../utils/speech.js';
 
 export default function TestPage() {
   const { id } = useParams();
@@ -113,7 +110,7 @@ export default function TestPage() {
           {qType === 'en_to_zh' && (
             <button
               className="icon-btn"
-              onClick={() => { try { const u = new SpeechSynthesisUtterance(word.word); u.lang='en-US'; speechSynthesis.speak(u); } catch(e){} }}
+              onClick={() => speak(word.word)}
               title="发音"
             >🔊</button>
           )}

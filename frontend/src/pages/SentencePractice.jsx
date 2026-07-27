@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
+import { speak } from '../utils/speech.js';
 
 export default function SentencePractice() {
   const navigate = useNavigate();
@@ -35,10 +36,6 @@ export default function SentencePractice() {
     setCurrentIndex(0);
     setShowAnswer(false);
     setUserTranslation('');
-  };
-
-  const speak = (text) => {
-    try { const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; speechSynthesis.speak(u); } catch (e) {}
   };
 
   const submitAnswer = async (selfCorrect) => {

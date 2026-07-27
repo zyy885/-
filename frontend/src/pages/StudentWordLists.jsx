@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
-
-function speak(word) {
-  try { const u = new SpeechSynthesisUtterance(word); u.lang = 'en-US'; speechSynthesis.speak(u); } catch (e) {}
-}
+import { speak } from '../utils/speech.js';
 
 export default function StudentWordLists() {
   const navigate = useNavigate();
