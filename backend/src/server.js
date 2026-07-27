@@ -173,7 +173,7 @@ app.get('/api/word-books', authMiddleware, async (req, res) => {
          WHERE wl.word_book_id = wb.id) as word_count
        FROM word_books wb
        WHERE (
-         wb.is_public = 1 OR wb.is_public IS TRUE
+         CAST(wb.is_public AS INTEGER) = 1
          OR wb.id IN (
            SELECT DISTINCT wl2.word_book_id FROM word_lists wl2
            INNER JOIN tasks t ON t.word_list_id = wl2.id
@@ -227,7 +227,7 @@ app.get('/api/word-lists', authMiddleware, async (req, res) => {
     baseSQL += ' LEFT JOIN word_books wb ON wb.id = wl.word_book_id';
     whereSQL = ` WHERE (
       wl.word_book_id IS NULL
-      OR wb.is_public = 1 OR wb.is_public IS TRUE
+      OR CAST(wb.is_public AS INTEGER) = 1
       OR EXISTS (
         SELECT 1 FROM tasks t
         INNER JOIN task_students ts ON ts.task_id = t.id
@@ -293,7 +293,7 @@ app.get('/api/word-lists/:id/words', authMiddleware, async (req, res) => {
        WHERE wl.id = ? AND (
          wl.word_book_id IS NULL
          OR wl.teacher_id = ?
-         OR wb.is_public = 1 OR wb.is_public IS TRUE
+         OR CAST(wb.is_public AS INTEGER) = 1
          OR EXISTS (
            SELECT 1 FROM tasks t
            INNER JOIN task_students ts ON ts.task_id = t.id
@@ -795,7 +795,7 @@ app.get('/api/word-lists/:id/export', authMiddleware, async (req, res) => {
        WHERE wl.id = ? AND (
          wl.word_book_id IS NULL
          OR wl.teacher_id = ?
-         OR wb.is_public = 1 OR wb.is_public IS TRUE
+         OR CAST(wb.is_public AS INTEGER) = 1
          OR EXISTS (
            SELECT 1 FROM tasks t
            INNER JOIN task_students ts ON ts.task_id = t.id
@@ -1415,7 +1415,7 @@ app.get('/api/self-tests/words', authMiddleware, requireRole('student'), async (
        WHERE wl.id = ? AND (
          wl.word_book_id IS NULL
          OR wl.teacher_id = ?
-         OR wb.is_public = 1 OR wb.is_public IS TRUE
+         OR CAST(wb.is_public AS INTEGER) = 1
          OR EXISTS (
            SELECT 1 FROM tasks t
            INNER JOIN task_students ts ON ts.task_id = t.id
@@ -1429,7 +1429,7 @@ app.get('/api/self-tests/words', authMiddleware, requireRole('student'), async (
     const canAccess = await db.prepare(
       `SELECT 1 FROM word_books wb
        WHERE wb.id = ? AND (
-         wb.is_public = 1 OR wb.is_public IS TRUE OR wb.teacher_id = ? OR
+         CAST(wb.is_public AS INTEGER) = 1 OR wb.teacher_id = ? OR
          EXISTS (
            SELECT 1 FROM word_lists wl2
            INNER JOIN tasks t ON t.word_list_id = wl2.id
