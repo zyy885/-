@@ -30,15 +30,19 @@ function handleAuthError() {
 }
 
 async function request(method, path, body) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
   const opts = {
     method,
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json' },
+    signal: controller.signal,
   };
   const token = getToken();
   if (token) opts.headers.Authorization = 'Bearer ' + token;
   if (body) opts.body = JSON.stringify(body);
   try {
     const res = await fetch(BASE + path, opts);
+    clearTimeout(timeoutId);
     if (res.status === 401) {
       handleAuthError();
       throw new Error('登录已过期，请重新登录');
@@ -49,6 +53,10 @@ async function request(method, path, body) {
     }
     return data;
   } catch (e) {
+    clearTimeout(timeoutId);
+    if (e.name === 'AbortError') {
+      throw new Error('请求超时，请检查网络后重试');
+    }
     if (e.message === 'Failed to fetch' || e.message.includes('NetworkError')) {
       throw new Error('网络连接失败，请检查网络');
     }

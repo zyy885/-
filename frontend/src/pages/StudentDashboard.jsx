@@ -52,6 +52,9 @@ export default function StudentDashboard() {
       ]);
       setTasks(tasksData.tasks);
       setCheckinStatus(checkinData);
+    } catch (e) {
+      console.error('加载失败:', e);
+      alert('加载失败：' + e.message);
     } finally {
       setLoading(false);
     }

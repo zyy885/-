@@ -158,9 +158,24 @@ app.get('/api/students', authMiddleware, requireRole('teacher'), async (req, res
 
 app.get('/api/users', authMiddleware, requireRole('teacher'), async (req, res) => {
   const users = await db.prepare(
-    'SELECT id, username, role, created_at FROM users ORDER BY role, username'
+    'SELECT id, username, role, created_at, rank_bonus_days, rank_bonus_words FROM users ORDER BY role, username'
   ).all();
-  res.json({ users });
+  const enriched = [];
+  for (const u of users) {
+    const row = { ...u };
+    if (u.role === 'student') {
+      const checkinRow = await db.prepare(
+        'SELECT COUNT(*) as cnt FROM checkins WHERE student_id = ?'
+      ).get(u.id);
+      const wordsRow = await db.prepare(
+        'SELECT COALESCE(SUM(words_studied), 0) as w FROM study_sessions WHERE student_id = ?'
+      ).get(u.id);
+      row.total_checkins = Number(checkinRow?.cnt) || 0;
+      row.total_words = Number(wordsRow?.w) || 0;
+    }
+    enriched.push(row);
+  }
+  res.json({ users: enriched });
 });
 
 app.post('/api/users', authMiddleware, requireRole('teacher'), async (req, res) => {

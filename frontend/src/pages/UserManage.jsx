@@ -72,6 +72,9 @@ export default function UserManage() {
       setTags(tagsData.tags || []);
       setCheckins(checkinData.checkins || []);
       setAllStudents(checkinData.all_students || []);
+    } catch (e) {
+      console.error('加载失败:', e);
+      alert('加载失败：' + e.message);
     } finally {
       setLoading(false);
     }
@@ -155,6 +158,8 @@ export default function UserManage() {
       const data = await api.getUserRankInfo(selectedStudent.id);
       setRankInfo(data);
       alert(`「${selectedStudent.username}」的等级奖励已更新！当前等级：${data.rank.icon} ${data.rank.name}`);
+      setShowRankModal(false);
+      load();
     } catch (e) { alert(e.message); }
   };
 
@@ -250,7 +255,9 @@ export default function UserManage() {
               </thead>
               <tbody>
                 {users.map((u, i) => {
-                  const rank = u.role === 'student' ? getRank(u.rank_bonus_days || 0, u.rank_bonus_words || 0) : null;
+                  const effectiveDays = (u.total_checkins || 0) + (u.rank_bonus_days || 0);
+                  const effectiveWords = (u.total_words || 0) + (u.rank_bonus_words || 0);
+                  const rank = u.role === 'student' ? getRank(effectiveDays, effectiveWords) : null;
                   return (
                   <tr key={u.id}>
                     <td>{i + 1}</td>
