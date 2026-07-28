@@ -1,4 +1,4 @@
-* {
+﻿* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -1625,6 +1625,7 @@ body.dark-theme .comment-card.new-comment {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -2715,6 +2716,7 @@ html {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 14px;
   padding: 14px;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 
@@ -3128,6 +3130,7 @@ html {
   background: rgba(255, 255, 255, 0.15);
   border-radius: 16px;
   padding: 16px 20px;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border: 2px solid;
 }
