@@ -944,12 +944,20 @@ app.get('/api/study-stats', authMiddleware, async (req, res) => {
 
   let streak = 0;
   const dates = checkinRows.map(r => r.checkin_date);
+  const dateSet = new Set(dates);
   let cursor = new Date();
   cursor.setHours(0, 0, 0, 0);
-  while (true) {
-    const d = cursor.toISOString().slice(0, 10);
-    if (dates.includes(d)) { streak++; cursor.setDate(cursor.getDate() - 1); }
-    else break;
+  const todayStr = cursor.toISOString().slice(0, 10);
+  const yesterday = new Date(cursor);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().slice(0, 10);
+  if (dateSet.has(todayStr) || dateSet.has(yesterdayStr)) {
+    if (!dateSet.has(todayStr)) cursor.setDate(cursor.getDate() - 1);
+    while (true) {
+      const d = cursor.toISOString().slice(0, 10);
+      if (dateSet.has(d)) { streak++; cursor.setDate(cursor.getDate() - 1); }
+      else break;
+    }
   }
 
   res.json({
@@ -1288,23 +1296,23 @@ app.get('/api/sentence-lists/:id/sentences', authMiddleware, async (req, res) =>
 });
 
 app.post('/api/sentence-lists/:id/sentences', authMiddleware, requireRole('teacher'), async (req, res) => {
-  const { sentence_en, sentence_zh, analysis } = req.body;
+  const { sentence_en, sentence_zh, analysis, vocabulary, grammar, structure, correction, summary } = req.body;
   if (!sentence_en || !sentence_zh) return res.status(400).json({ error: '英文和中文都必填' });
   const info = await db.prepare(
-    'INSERT INTO sentences (sentence_list_id, sentence_en, sentence_zh, analysis) VALUES (?, ?, ?, ?)'
-  ).run(req.params.id, sentence_en, sentence_zh, analysis || '');
+    'INSERT INTO sentences (sentence_list_id, sentence_en, sentence_zh, analysis, vocabulary, grammar, structure, correction, summary) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+  ).run(req.params.id, sentence_en, sentence_zh, analysis || '', vocabulary || '', grammar || '', structure || '', correction || '', summary || '');
   res.json({ id: info.lastInsertRowid });
 });
 
 app.put('/api/sentences/:id', authMiddleware, requireRole('teacher'), async (req, res) => {
-  const { sentence_en, sentence_zh, analysis } = req.body;
+  const { sentence_en, sentence_zh, analysis, vocabulary, grammar, structure, correction, summary } = req.body;
   const s = await db.prepare(
     `SELECT s.* FROM sentences s
      INNER JOIN sentence_lists sl ON sl.id = s.sentence_list_id
      WHERE s.id = ? AND sl.teacher_id = ?`
   ).get(req.params.id, req.user.id);
   if (!s) return res.status(404).json({ error: '句子不存在或无权限' });
-  await db.prepare('UPDATE sentences SET sentence_en = ?, sentence_zh = ?, analysis = ? WHERE id = ?').run(sentence_en, sentence_zh, analysis || '', req.params.id);
+  await db.prepare('UPDATE sentences SET sentence_en = ?, sentence_zh = ?, analysis = ?, vocabulary = ?, grammar = ?, structure = ?, correction = ?, summary = ? WHERE id = ?').run(sentence_en, sentence_zh, analysis || '', vocabulary || '', grammar || '', structure || '', correction || '', summary || '', req.params.id);
   res.json({ ok: true });
 });
 
@@ -1333,7 +1341,7 @@ app.get('/api/sentence-lists/:id/export', authMiddleware, async (req, res) => {
     ).get(req.user.id, req.params.id, req.user.id);
     if (!canAccess) return res.status(403).json({ error: '无权限' });
   }
-  const sentences = await db.prepare('SELECT sentence_en, sentence_zh, analysis FROM sentences WHERE sentence_list_id = ? ORDER BY id').all(req.params.id);
+  const sentences = await db.prepare('SELECT sentence_en, sentence_zh, analysis, vocabulary, grammar, structure, correction, summary FROM sentences WHERE sentence_list_id = ? ORDER BY id').all(req.params.id);
   res.json({ name: list.name, description: list.description, sentences });
 });
 
@@ -1341,11 +1349,11 @@ app.post('/api/sentence-lists/import', authMiddleware, requireRole('teacher'), a
   const { name, description, sentences } = req.body;
   if (!name || !Array.isArray(sentences)) return res.status(400).json({ error: '参数错误' });
   const info = await db.prepare('INSERT INTO sentence_lists (name, description, teacher_id) VALUES (?, ?, ?)').run(name, description || '', req.user.id);
-  const insert = db.prepare('INSERT INTO sentences (sentence_list_id, sentence_en, sentence_zh, analysis) VALUES (?, ?, ?, ?)');
+  const insert = db.prepare('INSERT INTO sentences (sentence_list_id, sentence_en, sentence_zh, analysis, vocabulary, grammar, structure, correction, summary) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)');
   let count = 0;
   for (const s of sentences) {
     if (s.sentence_en && s.sentence_zh) {
-      await insert.run(info.lastInsertRowid, s.sentence_en, s.sentence_zh, s.analysis || '');
+      await insert.run(info.lastInsertRowid, s.sentence_en, s.sentence_zh, s.analysis || '', s.vocabulary || '', s.grammar || '', s.structure || '', s.correction || '', s.summary || '');
       count++;
     }
   }

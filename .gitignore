@@ -7,3 +7,7 @@ dist/
 *.log
 .env
 .env.local
+all_sentences_*.json
+clean_sentences.js
+parse_all_sentences.js
+import_full_sentences.js

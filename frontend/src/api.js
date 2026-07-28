@@ -1,4 +1,4 @@
-const BASE = '/api';
+const BASE = import.meta.env.VITE_API_BASE || '/api';
 
 function getToken() {
   return localStorage.getItem('vocab_token');
@@ -107,16 +107,16 @@ export const api = {
   batchCreateUsers: (users) => request('POST', '/users/batch', { users }),
   exportTaskScores: (taskId) => {
     const token = getToken();
-    window.open(`/api/tasks/${taskId}/export?token=${encodeURIComponent(token || '')}`, '_blank');
+    window.open(`${BASE}/tasks/${taskId}/export?token=${encodeURIComponent(token || '')}`, '_blank');
   },
   resetTaskStudent: (tsId) => request('POST', '/task-students/' + tsId + '/reset'),
   exportWordList: (listId) => {
     const token = getToken();
-    return fetch(`/api/word-lists/${listId}/export?token=${encodeURIComponent(token || '')}`).then(r => r.json());
+    return fetch(`${BASE}/word-lists/${listId}/export?token=${encodeURIComponent(token || '')}`).then(r => r.json());
   },
   exportSentenceList: (listId) => {
     const token = getToken();
-    return fetch(`/api/sentence-lists/${listId}/export?token=${encodeURIComponent(token || '')}`).then(r => r.json());
+    return fetch(`${BASE}/sentence-lists/${listId}/export?token=${encodeURIComponent(token || '')}`).then(r => r.json());
   },
   importWordList: (data) => request('POST', '/word-lists/import', data),
   importWordsToList: (listId, data) => request('POST', `/word-lists/${listId}/import`, data),
@@ -133,7 +133,6 @@ export const api = {
   addSentence: (listId, data) => request('POST', `/sentence-lists/${listId}/sentences`, data),
   updateSentence: (id, data) => request('PUT', '/sentences/' + id, data),
   deleteSentence: (id) => request('DELETE', '/sentences/' + id),
-  exportSentenceList: (listId) => fetch(`/api/sentence-lists/${listId}/export`, { headers: { Authorization: 'Bearer ' + getToken() } }).then(r => r.json()),
   importSentenceList: (data) => request('POST', '/sentence-lists/import', data),
   submitTranslation: (data) => request('POST', '/translation/submit', data),
   getTranslationRecords: () => request('GET', '/translation/records'),

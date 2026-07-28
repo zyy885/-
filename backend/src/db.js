@@ -196,6 +196,11 @@ const buildDDL = () => {
         sentence_en TEXT NOT NULL,
         sentence_zh TEXT NOT NULL,
         analysis TEXT,
+        vocabulary TEXT,
+        grammar TEXT,
+        structure TEXT,
+        correction TEXT,
+        summary TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
@@ -401,6 +406,11 @@ const buildDDL = () => {
       sentence_en TEXT NOT NULL,
       sentence_zh TEXT NOT NULL,
       analysis TEXT,
+      vocabulary TEXT,
+      grammar TEXT,
+      structure TEXT,
+      correction TEXT,
+      summary TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (sentence_list_id) REFERENCES sentence_lists(id) ON DELETE CASCADE
     );
@@ -504,6 +514,11 @@ const buildDDL = () => {
       await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS rank_bonus_days INTEGER DEFAULT 0`);
       await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS rank_bonus_words INTEGER DEFAULT 0`);
       await db.query(`ALTER TABLE settings ADD COLUMN IF NOT EXISTS voice TEXT DEFAULT 'default'`);
+      await db.query(`ALTER TABLE sentences ADD COLUMN IF NOT EXISTS vocabulary TEXT`);
+      await db.query(`ALTER TABLE sentences ADD COLUMN IF NOT EXISTS grammar TEXT`);
+      await db.query(`ALTER TABLE sentences ADD COLUMN IF NOT EXISTS structure TEXT`);
+      await db.query(`ALTER TABLE sentences ADD COLUMN IF NOT EXISTS correction TEXT`);
+      await db.query(`ALTER TABLE sentences ADD COLUMN IF NOT EXISTS summary TEXT`);
     } else {
       try { db.prepare('ALTER TABLE tasks ADD COLUMN test_mode TEXT DEFAULT "en_to_zh"').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE tasks ADD COLUMN sentence_list_id INTEGER').run(); } catch (e) {}
@@ -518,6 +533,11 @@ const buildDDL = () => {
       try { db.prepare('ALTER TABLE users ADD COLUMN rank_bonus_days INTEGER DEFAULT 0').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE users ADD COLUMN rank_bonus_words INTEGER DEFAULT 0').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE settings ADD COLUMN voice TEXT DEFAULT "default"').run(); } catch (e) {}
+      try { db.prepare('ALTER TABLE sentences ADD COLUMN vocabulary TEXT').run(); } catch (e) {}
+      try { db.prepare('ALTER TABLE sentences ADD COLUMN grammar TEXT').run(); } catch (e) {}
+      try { db.prepare('ALTER TABLE sentences ADD COLUMN structure TEXT').run(); } catch (e) {}
+      try { db.prepare('ALTER TABLE sentences ADD COLUMN correction TEXT').run(); } catch (e) {}
+      try { db.prepare('ALTER TABLE sentences ADD COLUMN summary TEXT').run(); } catch (e) {}
     }
   } catch (e) {}
 

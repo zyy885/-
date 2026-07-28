@@ -167,12 +167,49 @@ export default function SentencePractice() {
                   <div style={{ fontSize: 16, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
                     {mode === 'en_to_zh' ? current.sentence_zh : current.sentence_en}
                   </div>
-                  {current.analysis && (
+
+                  {current.vocabulary && (
+                    <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #bbf7d0' }}>
+                      <div style={{ fontWeight: 600, color: '#166534', marginBottom: 6 }}>📖 词及词组：</div>
+                      <div className="muted" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.7 }}>{current.vocabulary}</div>
+                    </div>
+                  )}
+
+                  {current.grammar && (
+                    <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #bbf7d0' }}>
+                      <div style={{ fontWeight: 600, color: '#166534', marginBottom: 6 }}>📝 语法点：</div>
+                      <div className="muted" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.7 }}>{current.grammar}</div>
+                    </div>
+                  )}
+
+                  {current.structure && (
+                    <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #bbf7d0' }}>
+                      <div style={{ fontWeight: 600, color: '#166534', marginBottom: 6 }}>🧩 主干梳理：</div>
+                      <div className="muted" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.7 }}>{current.structure}</div>
+                    </div>
+                  )}
+
+                  {current.analysis && !current.vocabulary && !current.grammar && !current.structure && (
                     <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #bbf7d0' }}>
                       <div style={{ fontWeight: 600, color: '#166534', marginBottom: 4 }}>💡 解析：</div>
                       <div className="muted" style={{ whiteSpace: 'pre-wrap' }}>{current.analysis}</div>
                     </div>
                   )}
+
+                  {current.correction && (
+                    <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #bbf7d0' }}>
+                      <div style={{ fontWeight: 600, color: '#b45309', marginBottom: 6 }}>✏️ 订正：</div>
+                      <div className="muted" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.7 }}>{current.correction}</div>
+                    </div>
+                  )}
+
+                  {current.summary && (
+                    <div style={{ marginTop: 12, paddingTop: 12, borderTop: '1px solid #bbf7d0' }}>
+                      <div style={{ fontWeight: 600, color: '#1d4ed8', marginBottom: 6 }}>📌 总结：</div>
+                      <div className="muted" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.7 }}>{current.summary}</div>
+                    </div>
+                  )}
+
                   <div style={{ marginTop: 16, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                     <button className="btn btn-primary" onClick={() => { submitAnswer(true); next(); }}>✅ 我对了，下一句</button>
                     <button className="btn btn-outline" onClick={() => { submitAnswer(false); next(); }}>❌ 我错了，下一句</button>
