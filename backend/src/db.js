@@ -8,9 +8,10 @@ let db;
 
 if (isPG) {
   const { Pool } = require('pg');
+  const sslDisabled = process.env.PGSSLMODE === 'disable';
   const pool = new Pool({
     connectionString: DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    ssl: sslDisabled ? false : { rejectUnauthorized: false },
   });
   pool.on('error', (err) => console.error('PG pool error:', err));
   db = pool;
