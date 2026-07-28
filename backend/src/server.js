@@ -1898,7 +1898,7 @@ process.on('uncaughtException', (err) => {
   console.error('未捕获的异常:', err);
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`服务运行在 http://localhost:${PORT}`);
 });
