@@ -2,6 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
 
+const QUESTION_TYPES = [
+  { key: 'fill_blank', label: '✏️ 填空题', desc: '输入答案' },
+  { key: 'choice', label: '🎯 选择题', desc: '四选一' },
+  { key: 'spelling', label: '🔤 拼写题', desc: '首字母提示' },
+  { key: 'listening', label: '👂 听力题', desc: '听发音选单词' },
+  { key: 'mixed', label: '🎲 混合模式', desc: '随机题型' },
+];
+
 export default function SelfTestSelect() {
   const navigate = useNavigate();
   const [wordBooks, setWordBooks] = useState([]);
@@ -9,7 +17,8 @@ export default function SelfTestSelect() {
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('books');
   const [count, setCount] = useState(10);
-  const [mode, setMode] = useState('en_to_zh');
+  const [mode, setMode] = useState('fill_blank');
+  const [langMode, setLangMode] = useState('mixed');
 
   useEffect(() => { load(); }, []);
 
@@ -25,13 +34,14 @@ export default function SelfTestSelect() {
   };
 
   const startTest = (params) => {
-    const qs = new URLSearchParams({ count, mode, ...params }).toString();
+    const qs = new URLSearchParams({ count, mode, lang_mode: langMode, ...params }).toString();
     navigate(`/student/self-test?${qs}`);
   };
 
   if (loading) return <div className="loading">加载中...</div>;
 
   const COUNTS = [5, 10, 20, 30, 50];
+  const showLangMode = mode === 'fill_blank' || mode === 'choice' || mode === 'mixed';
 
   return (
     <div className="self-select-page">
@@ -50,13 +60,33 @@ export default function SelfTestSelect() {
             ))}
           </div>
         </div>
+
         <div className="config-row">
-          <label>测试模式</label>
-          <div className="chip-group">
-            <button className={`chip ${mode === 'en_to_zh' ? 'active' : ''}`} onClick={() => setMode('en_to_zh')}>英译中</button>
-            <button className={`chip ${mode === 'zh_to_en' ? 'active' : ''}`} onClick={() => setMode('zh_to_en')}>中译英</button>
+          <label>题型选择</label>
+          <div className="qtype-grid">
+            {QUESTION_TYPES.map(qt => (
+              <button
+                key={qt.key}
+                className={`qtype-card ${mode === qt.key ? 'active' : ''}`}
+                onClick={() => setMode(qt.key)}
+              >
+                <div className="qtype-label">{qt.label}</div>
+                <div className="qtype-desc">{qt.desc}</div>
+              </button>
+            ))}
           </div>
         </div>
+
+        {showLangMode && (
+          <div className="config-row">
+            <label>语言方向</label>
+            <div className="chip-group">
+              <button className={`chip ${langMode === 'mixed' ? 'active' : ''}`} onClick={() => setLangMode('mixed')}>混合</button>
+              <button className={`chip ${langMode === 'en_to_zh' ? 'active' : ''}`} onClick={() => setLangMode('en_to_zh')}>英译中</button>
+              <button className={`chip ${langMode === 'zh_to_en' ? 'active' : ''}`} onClick={() => setLangMode('zh_to_en')}>中译英</button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="tabs">

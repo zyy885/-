@@ -1799,7 +1799,7 @@ app.get('/api/checkins/all', authMiddleware, requireRole('teacher'), async (req,
 });
 
 app.get('/api/self-tests/words', authMiddleware, requireRole('student'), async (req, res) => {
-  const { word_book_id, word_list_id, count = 20, mode = 'mixed' } = req.query;
+  const { word_book_id, word_list_id, count = 20, mode = 'fill_blank', lang_mode = 'mixed' } = req.query;
   let words = [];
   if (word_list_id) {
     const canAccess = await db.prepare(
@@ -1839,13 +1839,87 @@ app.get('/api/self-tests/words', authMiddleware, requireRole('student'), async (
        ORDER BY RANDOM() LIMIT ?`
     ).all(word_book_id, Math.min(Number(count), 100));
   }
-  const qMode = mode === 'en_to_zh' ? 'en_to_zh' : mode === 'zh_to_en' ? 'zh_to_en' : 'mixed';
-  const questions = words.map(w => ({
-    word_id: w.id,
-    word: w.word,
-    meaning: w.meaning,
-    question_type: qMode === 'mixed' ? (Math.random() > 0.5 ? 'en_to_zh' : 'zh_to_en') : qMode,
-  }));
+
+  const allWords = await db.prepare(`
+    SELECT w.* FROM words w
+    INNER JOIN word_lists wl ON wl.id = w.word_list_id
+    WHERE wl.id IN (
+      SELECT wl2.id FROM word_lists wl2
+      LEFT JOIN word_books wb ON wb.id = wl2.word_book_id
+      WHERE wl2.teacher_id = ? OR ${IS_PUBLIC}
+    )
+    ORDER BY RANDOM() LIMIT 200
+  `).all(req.user.id);
+
+  const getLangMode = () => {
+    if (lang_mode === 'en_to_zh') return 'en_to_zh';
+    if (lang_mode === 'zh_to_en') return 'zh_to_en';
+    return Math.random() > 0.5 ? 'en_to_zh' : 'zh_to_en';
+  };
+
+  const makeChoiceOptions = (correctWord, allWordsList, direction) => {
+    const shuffled = [...allWordsList].sort(() => Math.random() - 0.5).filter(w => w.id !== correctWord.id);
+    const distractors = shuffled.slice(0, 3);
+    const correctOption = direction === 'en_to_zh' ? correctWord.meaning : correctWord.word;
+    const options = [
+      correctOption,
+      ...distractors.map(w => direction === 'en_to_zh' ? w.meaning : w.word)
+    ].map((text, idx) => ({ label: String.fromCharCode(65 + idx), text }));
+    return options.sort(() => Math.random() - 0.5);
+  };
+
+  const makeListeningOptions = (correctWord, allWordsList) => {
+    const shuffled = [...allWordsList].sort(() => Math.random() - 0.5).filter(w => w.id !== correctWord.id);
+    const distractors = shuffled.slice(0, 3);
+    const options = [
+      { word: correctWord.word, meaning: correctWord.meaning, is_correct: true },
+      ...distractors.map(w => ({ word: w.word, meaning: w.meaning, is_correct: false }))
+    ].sort(() => Math.random() - 0.5);
+    return options;
+  };
+
+  const questionTypes = ['fill_blank', 'choice', 'spelling', 'listening', 'mixed'];
+  const validMode = questionTypes.includes(mode) ? mode : 'fill_blank';
+
+  const questions = words.map(w => {
+    let qType = validMode;
+    if (qType === 'mixed') {
+      const coreTypes = ['fill_blank', 'choice', 'spelling', 'listening'];
+      qType = coreTypes[Math.floor(Math.random() * coreTypes.length)];
+    }
+    const lMode = getLangMode();
+    const base = {
+      word_id: w.id,
+      word: w.word,
+      meaning: w.meaning,
+      question_type: qType,
+      lang_mode: lMode,
+    };
+
+    if (qType === 'fill_blank') {
+      return { ...base, question_type: lMode };
+    } else if (qType === 'choice') {
+      return {
+        ...base,
+        options: makeChoiceOptions(w, allWords, lMode),
+      };
+    } else if (qType === 'spelling') {
+      const firstLetter = w.word.charAt(0);
+      const blankHint = firstLetter + '_'.repeat(Math.max(0, w.word.length - 1));
+      return {
+        ...base,
+        lang_mode: 'zh_to_en',
+        hint: blankHint,
+      };
+    } else if (qType === 'listening') {
+      return {
+        ...base,
+        lang_mode: 'en_to_zh',
+        options: makeListeningOptions(w, allWords),
+      };
+    }
+    return base;
+  });
   res.json({ questions, total: questions.length });
 });
 
@@ -1869,22 +1943,24 @@ app.post('/api/self-tests/submit', authMiddleware, requireRole('student'), async
     const userAns = (a.user_answer || '').trim().toLowerCase();
     if (userAns.length === 0) {
       a.is_correct = false;
+    } else if (qType === 'choice' || qType === 'listening') {
+      const correctAns = (qType === 'listening' ? word.word : (a.lang_mode === 'zh_to_en' ? word.word : word.meaning)).trim().toLowerCase();
+      a.is_correct = normalizeForCompare(userAns) === normalizeForCompare(correctAns);
+    } else if (qType === 'spelling' || qType === 'zh_to_en') {
+      const validWords = word.word.split(/[;,，；、\/\|]/).map(s => s.trim().toLowerCase()).filter(Boolean);
+      const normUserAns = normalizeForCompare(userAns);
+      if (validWords.some(w => {
+        const nw = normalizeForCompare(w);
+        return nw === normUserAns || normUserAns.includes(nw) || nw.includes(normUserAns);
+      })) a.is_correct = true;
     } else {
       const normUserAns = normalizeForCompare(userAns);
-      if (qType === 'zh_to_en') {
-        const validWords = word.word.split(/[;,，；、\/\|]/).map(s => s.trim().toLowerCase()).filter(Boolean);
-        if (validWords.some(w => {
-          const nw = normalizeForCompare(w);
-          return nw === normUserAns || normUserAns.includes(nw) || nw.includes(normUserAns);
-        })) a.is_correct = true;
-      } else {
-        const rawMeanings = word.meaning.split(/[;,，；、\/\|]/).map(s => s.trim()).filter(Boolean);
-        const validMeanings = rawMeanings.map(cleanMeaning).filter(Boolean);
-        if (validMeanings.some(m => {
-          const nm = normalizeForCompare(m);
-          return nm === normUserAns || normUserAns.includes(nm) || nm.includes(normUserAns);
-        })) a.is_correct = true;
-      }
+      const rawMeanings = word.meaning.split(/[;,，；、\/\|]/).map(s => s.trim()).filter(Boolean);
+      const validMeanings = rawMeanings.map(cleanMeaning).filter(Boolean);
+      if (validMeanings.some(m => {
+        const nm = normalizeForCompare(m);
+        return nm === normUserAns || normUserAns.includes(nm) || nm.includes(normUserAns);
+      })) a.is_correct = true;
     }
     if (a.is_correct) correct++;
   }
