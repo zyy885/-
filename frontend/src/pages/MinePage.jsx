@@ -63,23 +63,45 @@ export default function MinePage() {
 
   const fmtMin = (sec) => Math.round(sec / 60);
 
-  const menuGroups = [
-    {
-      title: '学习数据',
-      items: [
-        { icon: '📊', label: '学习统计', onClick: () => navigate('/student/stats') },
-        { icon: '⭐', label: '我的收藏', onClick: () => navigate('/student/favorites') },
-        { icon: '❌', label: '错题本', onClick: () => navigate('/student/wrong-book') },
+  const isTeacher = user?.role === 'teacher';
+
+  const menuGroups = isTeacher
+    ? [
+        {
+          title: '教学管理',
+          items: [
+            { icon: '📋', label: '词表管理', onClick: () => navigate('/teacher/word-lists') },
+            { icon: '📝', label: '长难句', onClick: () => navigate('/teacher/sentence-lists') },
+            { icon: '📊', label: '任务管理', onClick: () => navigate('/teacher/tasks') },
+            { icon: '👥', label: '账号管理', onClick: () => navigate('/teacher/users') },
+            { icon: '💬', label: '留言管理', onClick: () => navigate('/teacher/comments') },
+          ]
+        },
+        {
+          title: '更多',
+          items: [
+            { icon: '⚙️', label: '设置', onClick: () => navigate('/settings') },
+            { icon: '🚪', label: '退出登录', onClick: logout, danger: true },
+          ]
+        }
       ]
-    },
-    {
-      title: '更多',
-      items: [
-        { icon: '⚙️', label: '设置', onClick: () => navigate('/settings') },
-        { icon: '🚪', label: '退出登录', onClick: logout, danger: true },
-      ]
-    }
-  ];
+    : [
+        {
+          title: '学习数据',
+          items: [
+            { icon: '📊', label: '学习统计', onClick: () => navigate('/student/stats') },
+            { icon: '⭐', label: '我的收藏', onClick: () => navigate('/student/favorites') },
+            { icon: '❌', label: '错题本', onClick: () => navigate('/student/wrong-book') },
+          ]
+        },
+        {
+          title: '更多',
+          items: [
+            { icon: '⚙️', label: '设置', onClick: () => navigate('/settings') },
+            { icon: '🚪', label: '退出登录', onClick: logout, danger: true },
+          ]
+        }
+      ];
 
   return (
     <div className="mine-page">
@@ -90,7 +112,7 @@ export default function MinePage() {
           </div>
           <div className="mine-user-info">
             <div className="mine-username">{user?.username || '用户'}</div>
-            <div className="mine-user-sub">学号 #{user?.id} · 点击头像更换</div>
+            <div className="mine-user-sub">{isTeacher ? '工号' : '学号'} #{user?.id} · 点击头像更换</div>
           </div>
         </div>
 

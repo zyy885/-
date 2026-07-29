@@ -119,9 +119,14 @@ export default function SelfTestPage() {
         <div className="result-list">
           {result.records.map((r, i) => {
             const qtype = r.question_type;
-            const correctAnswer = (qtype === 'zh_to_en' || qtype === 'spelling' || qtype === 'listening')
-              ? r.word
-              : r.meaning;
+            let correctAnswer;
+            if (qtype === 'zh_to_en' || qtype === 'spelling' || qtype === 'listening') {
+              correctAnswer = r.word;
+            } else if (qtype === 'choice') {
+              correctAnswer = r.lang_mode === 'zh_to_en' ? r.word : r.meaning;
+            } else {
+              correctAnswer = r.meaning;
+            }
             return (
               <div key={r.word_id} className={'result-item ' + (r.is_correct ? 'correct' : 'wrong')}>
                 <div className="result-num">{i + 1}</div>
