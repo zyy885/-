@@ -36,7 +36,12 @@ async function fetchDictionaryData(word) {
   const key = word.toLowerCase();
   if (dictCache[key]) return dictCache[key];
   try {
-    const res = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(word));
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const res = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(word), {
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
     if (!res.ok) {
       dictCache[key] = { audio: null, example: null };
       return dictCache[key];
@@ -72,23 +77,28 @@ async function fetchDictionaryData(word) {
   }
 }
 
+function preloadAudio(url) {
+  if (!url || audioCache[url]) return;
+  audioCache[url] = url;
+  const a = new Audio(url);
+  a.preload = 'auto';
+  a.load();
+}
+
 async function playAudioUrl(url) {
   return new Promise((resolve, reject) => {
     stopAll();
     isPlaying = true;
     const audio = new Audio(url);
     currentAudio = audio;
-    audio.onended = () => {
+    const done = () => {
       isPlaying = false;
       currentAudio = null;
-      resolve();
     };
-    audio.onerror = (e) => {
-      isPlaying = false;
-      currentAudio = null;
-      reject(e);
-    };
-    audio.play().catch(reject);
+    audio.onended = () => { done(); resolve(); };
+    audio.onerror = (e) => { done(); reject(e); };
+    const p = audio.play();
+    if (p && p.catch) p.catch((e) => { done(); reject(e); });
   });
 }
 
@@ -107,8 +117,9 @@ function speakWithTTS(text, lang, rate) {
       const v = cachedVoices.find(function(v) { return v.name === savedVoice; });
       if (v) u.voice = v;
     }
-    u.onend = function() { isPlaying = false; };
-    u.onerror = function() { isPlaying = false; };
+    const done = function() { isPlaying = false; };
+    u.onend = done;
+    u.onerror = done;
     speechSynthesis.speak(u);
   } catch (e) {
     isPlaying = false;
@@ -116,10 +127,7 @@ function speakWithTTS(text, lang, rate) {
 }
 
 export async function speak(text, lang) {
-  if (isPlaying) {
-    stopAll();
-    return;
-  }
+  stopAll();
   lang = lang || 'en-US';
   try {
     const word = text.trim().toLowerCase();
@@ -132,26 +140,29 @@ export async function speak(text, lang) {
       } catch (e) {}
     }
 
-    const dictData = await fetchDictionaryData(word);
-    if (dictData.audio) {
-      audioCache[word] = dictData.audio;
+    if (dictCache[word] && dictCache[word].audio) {
+      audioCache[word] = dictCache[word].audio;
       try {
-        await playAudioUrl(dictData.audio);
+        await playAudioUrl(dictCache[word].audio);
         return;
       } catch (e) {}
     }
 
     speakWithTTS(text, lang);
+
+    fetchDictionaryData(word).then(data => {
+      if (data.audio) {
+        audioCache[word] = data.audio;
+        preloadAudio(data.audio);
+      }
+    });
   } catch (e) {
     speakWithTTS(text, lang);
   }
 }
 
 export async function speakSentence(text, lang) {
-  if (isPlaying) {
-    stopAll();
-    return;
-  }
+  stopAll();
   speakWithTTS(text, lang, 0.75);
 }
 
