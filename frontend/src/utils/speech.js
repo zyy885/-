@@ -1,9 +1,9 @@
 let cachedVoices = [];
 const audioCache = {};
+const audioFailedCache = {}; // 记录失败的音频URL
 const dictCache = {};
 const translationCache = {};
 let currentAudio = null;
-let isPlaying = false;
 
 function loadVoices() {
   if (typeof speechSynthesis !== 'undefined') {
@@ -29,7 +29,6 @@ function stopAll() {
     } catch (e) {}
     currentAudio = null;
   }
-  isPlaying = false;
 }
 
 async function fetchDictionaryData(word) {
@@ -77,28 +76,41 @@ async function fetchDictionaryData(word) {
   }
 }
 
-function preloadAudio(url) {
-  if (!url || audioCache[url]) return;
-  audioCache[url] = url;
-  const a = new Audio(url);
-  a.preload = 'auto';
-  a.load();
-}
-
 async function playAudioUrl(url) {
   return new Promise((resolve, reject) => {
     stopAll();
-    isPlaying = true;
     const audio = new Audio(url);
     currentAudio = audio;
-    const done = () => {
-      isPlaying = false;
-      currentAudio = null;
+    let resolved = false;
+    
+    const cleanup = () => {
+      if (!resolved) {
+        resolved = true;
+        currentAudio = null;
+      }
     };
-    audio.onended = () => { done(); resolve(); };
-    audio.onerror = (e) => { done(); reject(e); };
+    
+    audio.onended = () => { cleanup(); resolve(); };
+    audio.onerror = (e) => { cleanup(); reject(new Error('Audio load/play failed: ' + url)); };
+    
+    // 设置超时，防止音频加载卡住
+    const timeout = setTimeout(() => {
+      if (!resolved) {
+        cleanup();
+        reject(new Error('Audio load timeout'));
+      }
+    }, 5000);
+    
     const p = audio.play();
-    if (p && p.catch) p.catch((e) => { done(); reject(e); });
+    if (p && p.then) {
+      p.then(() => {
+        clearTimeout(timeout);
+      }).catch((e) => {
+        clearTimeout(timeout);
+        cleanup();
+        reject(e);
+      });
+    }
   });
 }
 
@@ -106,9 +118,8 @@ function speakWithTTS(text, lang, rate) {
   lang = lang || 'en-US';
   rate = rate || 0.9;
   try {
-    if (typeof speechSynthesis === 'undefined') return;
+    if (typeof speechSynthesis === 'undefined') return false;
     stopAll();
-    isPlaying = true;
     const u = new SpeechSynthesisUtterance(text);
     u.lang = lang;
     u.rate = rate;
@@ -117,12 +128,10 @@ function speakWithTTS(text, lang, rate) {
       const v = cachedVoices.find(function(v) { return v.name === savedVoice; });
       if (v) u.voice = v;
     }
-    const done = function() { isPlaying = false; };
-    u.onend = done;
-    u.onerror = done;
     speechSynthesis.speak(u);
+    return true;
   } catch (e) {
-    isPlaying = false;
+    return false;
   }
 }
 
@@ -133,30 +142,46 @@ export async function speak(text, lang) {
     const word = text.trim().toLowerCase();
     if (!word) return;
 
-    if (audioCache[word]) {
+    // 检查是否有缓存且未失败的音频
+    const cachedUrl = audioCache[word];
+    if (cachedUrl && !audioFailedCache[cachedUrl]) {
       try {
-        await playAudioUrl(audioCache[word]);
-        return;
-      } catch (e) {}
+        await playAudioUrl(cachedUrl);
+        return; // 成功播放
+      } catch (e) {
+        // 播放失败，记录并清除缓存
+        audioFailedCache[cachedUrl] = true;
+        delete audioCache[word];
+        // 继续fallback到TTS
+      }
     }
 
-    if (dictCache[word] && dictCache[word].audio) {
-      audioCache[word] = dictCache[word].audio;
+    // 检查字典缓存中是否有音频
+    const cached = dictCache[word];
+    if (cached && cached.audio && !audioFailedCache[cached.audio]) {
+      audioCache[word] = cached.audio;
       try {
-        await playAudioUrl(dictCache[word].audio);
-        return;
-      } catch (e) {}
+        await playAudioUrl(cached.audio);
+        return; // 成功播放
+      } catch (e) {
+        // 播放失败，记录并清除缓存
+        audioFailedCache[cached.audio] = true;
+        delete audioCache[word];
+        // 继续fallback到TTS
+      }
     }
 
+    // 使用TTS播放（立即响应）
     speakWithTTS(text, lang);
 
+    // 后台异步获取真人发音（下次可用）
     fetchDictionaryData(word).then(data => {
-      if (data.audio) {
+      if (data.audio && !audioFailedCache[data.audio]) {
         audioCache[word] = data.audio;
-        preloadAudio(data.audio);
       }
     });
   } catch (e) {
+    // 最后的fallback
     speakWithTTS(text, lang);
   }
 }
