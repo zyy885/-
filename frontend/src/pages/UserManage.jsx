@@ -90,6 +90,11 @@ export default function UserManage() {
     } catch (e) { alert(e.message); }
   };
 
+  const openAddTeacher = () => {
+    setForm({ username: '', password: '', role: 'teacher' });
+    setShowAdd(true);
+  };
+
   const handleBatchImport = async () => {
     if (!batchText.trim()) return alert('请输入用户数据');
     const lines = batchText.trim().split('\n').filter(l => l.trim());
@@ -229,6 +234,7 @@ export default function UserManage() {
         <h2>账号管理</h2>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="btn btn-outline" onClick={() => setShowBatch(true)}>📥 批量导入</button>
+          <button className="btn btn-outline" onClick={openAddTeacher}>👨‍🏫 添加管理员</button>
           <button className="btn btn-primary" onClick={() => setShowAdd(true)}>+ 添加账号</button>
         </div>
       </div>
@@ -361,7 +367,7 @@ export default function UserManage() {
       {showAdd && (
         <div className="modal" onClick={() => setShowAdd(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <h3>添加账号</h3>
+            <h3>{form.role === 'teacher' ? '添加管理员' : '添加账号'}</h3>
             <div className="form-group"><label>用户名</label>
               <input value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} placeholder="请输入用户名" />
             </div>
