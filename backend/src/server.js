@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const db = require('./db');
 const { isPG } = require('./db');
 const { signToken, authMiddleware, requireRole } = require('./auth');
+const { normalizeForCompare } = require('./utils/chinese');
 
 const IS_PUBLIC = isPG ? 'wb.is_public = TRUE' : 'CAST(wb.is_public AS INTEGER) = 1';
 const IS_PUBLIC_ALT = isPG ? 'wb2.is_public = TRUE' : 'CAST(wb2.is_public AS INTEGER) = 1';
@@ -767,13 +768,20 @@ app.post('/api/tests/submit', authMiddleware, async (req, res) => {
         s = s.replace(/^[（(][^）)]*[）)]\s*/, '').trim();
         return s;
       };
+      const normUserAns = normalizeForCompare(userAns);
       if (qType === 'zh_to_en') {
         const validWords = word.word.split(/[;,，；、\/\|]/).map(s => s.trim().toLowerCase()).filter(Boolean);
-        isCorrect = validWords.some(w => w === userAns || userAns.includes(w) || w.includes(userAns));
+        isCorrect = validWords.some(w => {
+          const nw = normalizeForCompare(w);
+          return nw === normUserAns || normUserAns.includes(nw) || nw.includes(normUserAns);
+        });
       } else {
         const rawMeanings = word.meaning.split(/[;,，；、\/\|]/).map(s => s.trim()).filter(Boolean);
         const validMeanings = rawMeanings.map(cleanMeaning).filter(Boolean);
-        isCorrect = validMeanings.some(m => m === userAns || userAns.includes(m) || m.includes(userAns));
+        isCorrect = validMeanings.some(m => {
+          const nm = normalizeForCompare(m);
+          return nm === normUserAns || normUserAns.includes(nm) || nm.includes(normUserAns);
+        });
       }
     }
     if (isCorrect) correct++;
@@ -1801,13 +1809,22 @@ app.post('/api/self-tests/submit', authMiddleware, requireRole('student'), async
     const userAns = (a.user_answer || '').trim().toLowerCase();
     if (userAns.length === 0) {
       a.is_correct = false;
-    } else if (qType === 'zh_to_en') {
-      const validWords = word.word.split(/[;,，；、\/\|]/).map(s => s.trim().toLowerCase()).filter(Boolean);
-      if (validWords.some(w => w === userAns || userAns.includes(w) || w.includes(userAns))) a.is_correct = true;
     } else {
-      const rawMeanings = word.meaning.split(/[;,，；、\/\|]/).map(s => s.trim()).filter(Boolean);
-      const validMeanings = rawMeanings.map(cleanMeaning).filter(Boolean);
-      if (validMeanings.some(m => m === userAns || userAns.includes(m) || m.includes(userAns))) a.is_correct = true;
+      const normUserAns = normalizeForCompare(userAns);
+      if (qType === 'zh_to_en') {
+        const validWords = word.word.split(/[;,，；、\/\|]/).map(s => s.trim().toLowerCase()).filter(Boolean);
+        if (validWords.some(w => {
+          const nw = normalizeForCompare(w);
+          return nw === normUserAns || normUserAns.includes(nw) || nw.includes(normUserAns);
+        })) a.is_correct = true;
+      } else {
+        const rawMeanings = word.meaning.split(/[;,，；、\/\|]/).map(s => s.trim()).filter(Boolean);
+        const validMeanings = rawMeanings.map(cleanMeaning).filter(Boolean);
+        if (validMeanings.some(m => {
+          const nm = normalizeForCompare(m);
+          return nm === normUserAns || normUserAns.includes(nm) || nm.includes(normUserAns);
+        })) a.is_correct = true;
+      }
     }
     if (a.is_correct) correct++;
   }
