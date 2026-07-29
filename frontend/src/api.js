@@ -1,4 +1,4 @@
-﻿const BASE = import.meta.env.VITE_API_BASE || 'https://vocab-1ial.onrender.com/api';
+const BASE = import.meta.env.VITE_API_BASE || '/api';
 
 function getToken() {
   return localStorage.getItem('vocab_token');

@@ -3,10 +3,12 @@ services:
     name: vocab-app
     runtime: node
     rootDir: backend
-    buildCommand: "cd ../frontend && npm install && npm run build && cd ../backend && npm install --production=false"
+    buildCommand: "./build.sh"
     startCommand: "node src/server.js"
     envVars:
       - key: NODE_VERSION
         value: "20"
       - key: PORT
         value: "3001"
+      - key: JWT_SECRET
+        generateValue: true
