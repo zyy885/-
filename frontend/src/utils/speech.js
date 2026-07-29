@@ -1,6 +1,7 @@
 let cachedVoices = [];
 const audioCache = {};
 const dictCache = {};
+const translationCache = {};
 let currentAudio = null;
 let isPlaying = false;
 
@@ -161,6 +162,25 @@ export async function getExampleFromDictionary(word) {
 
 export function getVoices() {
   return cachedVoices;
+}
+
+export async function translateText(text, from, to) {
+  const key = text.trim().toLowerCase() + '|' + from + '|' + to;
+  if (translationCache[key]) return translationCache[key];
+  try {
+    const res = await fetch(
+      'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) + '&langpair=' + from + '|' + to
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    const translated = data?.responseData?.translatedText || null;
+    if (translated) {
+      translationCache[key] = translated;
+    }
+    return translated;
+  } catch (e) {
+    return null;
+  }
 }
 
 export { stopAll };

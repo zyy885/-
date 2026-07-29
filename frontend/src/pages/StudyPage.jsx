@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { api } from '../api.js';
-import { speak, speakSentence, getExampleFromDictionary, stopAll } from '../utils/speech.js';
+import { speak, speakSentence, getExampleFromDictionary, translateText, stopAll } from '../utils/speech.js';
 
 export default function StudyPage() {
   const { id } = useParams();
@@ -16,8 +16,10 @@ export default function StudyPage() {
   const [hints, setHints] = useState({ firstLetter: false, example: false, image: false, syllable: false });
   const [fetchedExamples, setFetchedExamples] = useState({});
   const [loadingWords, setLoadingWords] = useState({});
+  const [translations, setTranslations] = useState({});
   const fetchedRef = useRef({});
   const loadingRef = useRef({});
+  const translationRef = useRef({});
 
   useEffect(() => {
     loadFavs();
@@ -64,6 +66,14 @@ export default function StudyPage() {
         if (ex) {
           fetchedRef.current[word.id] = ex;
           setFetchedExamples(prev => ({ ...prev, [word.id]: ex }));
+          if (!translationRef.current[word.id]) {
+            translateText(ex, 'en', 'zh-CN').then(tr => {
+              if (tr) {
+                translationRef.current[word.id] = tr;
+                setTranslations(prev => ({ ...prev, [word.id]: tr }));
+              }
+            });
+          }
         }
         setLoadingWords(prev => ({ ...prev, [word.id]: false }));
       }).catch(() => {
@@ -229,7 +239,14 @@ export default function StudyPage() {
                 {loadingWords[word.id] && !effectiveExample ? (
                   <span style={{ opacity: 0.7 }}>正在加载例句...</span>
                 ) : (
-                  <span>{effectiveExample}</span>
+                  <div>
+                    <div style={{ marginBottom: 6 }}>{effectiveExample}</div>
+                    {translations[word.id] && (
+                      <div style={{ opacity: 0.85, fontSize: 15, fontStyle: 'normal', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: 8, marginTop: 4 }}>
+                        🀄 {translations[word.id]}
+                      </div>
+                    )}
+                  </div>
                 )}
               </p>
             )}

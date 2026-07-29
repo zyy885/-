@@ -67,9 +67,9 @@ export default function MinePage() {
     {
       title: '学习数据',
       items: [
-        { icon: '📊', label: '学习统计', onClick: () => navigate('/stats') },
-        { icon: '⭐', label: '我的收藏', onClick: () => navigate('/favorites') },
-        { icon: '❌', label: '错题本', onClick: () => navigate('/wrong-book') },
+        { icon: '📊', label: '学习统计', onClick: () => navigate('/student/stats') },
+        { icon: '⭐', label: '我的收藏', onClick: () => navigate('/student/favorites') },
+        { icon: '❌', label: '错题本', onClick: () => navigate('/student/wrong-book') },
       ]
     },
     {
