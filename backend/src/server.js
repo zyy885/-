@@ -1855,6 +1855,14 @@ app.get('/api/self-tests', authMiddleware, requireRole('student'), async (req, r
 });
 
 if (fs.existsSync(FRONTEND_DIST)) {
+  app.use(express.static(FRONTEND_DIST, {
+    maxAge: '1h',
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    }
+  }));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api/')) return next();
     res.sendFile(path.join(FRONTEND_DIST, 'index.html'));
