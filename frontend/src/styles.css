@@ -1,4 +1,4 @@
-﻿* {
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -3090,6 +3090,209 @@ html {
   color: #d1d5db;
   font-size: 24px;
   line-height: 1;
+}
+
+/* ========== 全局美化增强 ========== */
+
+/* 平滑滚动 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 选中文字颜色 */
+::selection {
+  background: rgba(102, 126, 234, 0.25);
+  color: #1a1a2e;
+}
+
+/* 卡片增强 */
+.card,
+.stat-card,
+.mine-stats-card,
+.self-config-card,
+.select-item,
+.comment-card,
+.progress-table,
+.word-table {
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.card:hover,
+.stat-card:hover,
+.mine-stats-card:hover,
+.self-config-card:hover,
+.comment-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* 按钮增强 */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* 输入框增强 */
+.form-group input,
+.form-group select,
+.form-group textarea,
+.test-input {
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+/* 徽章增强 */
+.badge {
+  transition: transform 0.15s ease;
+}
+
+.badge:hover {
+  transform: scale(1.05);
+}
+
+/* 进度条动画 */
+.progress-fill {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* 空状态增强 */
+.empty-state,
+.empty-state-small {
+  transition: all 0.3s ease;
+}
+
+/* 导航栏链接过渡增强 */
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 16px;
+  right: 16px;
+  height: 2px;
+  background: white;
+  border-radius: 2px;
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+}
+
+.nav-link.active::after,
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* 底部导航增强 */
+.tab-item {
+  position: relative;
+}
+
+.tab-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 0 0 3px 3px;
+}
+
+/* 单词卡片悬浮效果 */
+.word-card {
+  transition: all 0.25s ease;
+}
+
+.word-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* 浏览卡片增强 */
+.browse-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.browse-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.4) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.browse-card:hover::before {
+  opacity: 1;
+}
+
+/* 模态框入场动画 */
+.modal,
+.modal-overlay {
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 标签/徽章增强 */
+.chip {
+  transition: all 0.15s ease;
+}
+
+.chip:active {
+  transform: scale(0.95);
+}
+
+/* 表格行悬浮 */
+.word-table tr:hover td,
+.progress-table tr:hover td {
+  background: rgba(102, 126, 234, 0.04);
+}
+
+/* 移动端安全区优化 */
+@supports (padding: max(0px)) {
+  .main-content {
+    padding-left: max(12px, env(safe-area-inset-left));
+    padding-right: max(12px, env(safe-area-inset-right));
+  }
 }
 
 .rank-preview {

@@ -41,13 +41,6 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
 
-app.use((err, req, res, next) => {
-  if (err.type === 'entity.too.large') return res.status(413).json({ error: '请求体过大' });
-  if (err.type === 'entity.parse.failed') return res.status(400).json({ error: '请求格式错误' });
-  console.error('中间件错误:', err);
-  next(err);
-});
-
 async function runMigrations() {
   if (isPG) {
     try {
@@ -109,10 +102,6 @@ function getNextRank(days, words) {
 
 const FRONTEND_DIST = path.join(__dirname, '..', '..', 'frontend', 'dist');
 const fs = require('fs');
-if (fs.existsSync(FRONTEND_DIST)) {
-  console.log('检测到前端构建产物，已启用静态文件托管');
-  app.use(express.static(FRONTEND_DIST));
-}
 
 app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;

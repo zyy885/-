@@ -68,7 +68,7 @@ function Navbar() {
           <Link
             key={l.to}
             to={l.to}
-            className={'nav-link' + (location.pathname === l.to ? ' active' : '')}
+            className={'nav-link' + (location.pathname === l.to || location.pathname.startsWith(l.to + '/') ? ' active' : '')}
           >{l.label}</Link>
         ))}
       </div>
