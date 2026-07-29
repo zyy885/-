@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { api } from '../api.js';
-import { speak } from '../utils/speech.js';
+import { speak, speakSentence, getExampleFromDictionary } from '../utils/speech.js';
 
 export default function StudyPage() {
   const { id } = useParams();
@@ -14,6 +14,8 @@ export default function StudyPage() {
   const [showMeaning, setShowMeaning] = useState(false);
   const [favMap, setFavMap] = useState({});
   const [hints, setHints] = useState({ firstLetter: false, example: false, image: false, syllable: false });
+  const [fetchedExamples, setFetchedExamples] = useState({});
+  const [exampleLoading, setExampleLoading] = useState(false);
 
   useEffect(() => {
     loadFavs();
@@ -43,6 +45,26 @@ export default function StudyPage() {
   useEffect(() => {
     load();
   }, [id]);
+
+  useEffect(() => {
+    const word = words[idx];
+    if (word && !word.example && !fetchedExamples[word.id]) {
+      fetchExample(word);
+    }
+  }, [idx, words]);
+
+  const fetchExample = async (word) => {
+    setExampleLoading(true);
+    try {
+      const ex = await getExampleFromDictionary(word.word);
+      if (ex) {
+        setFetchedExamples(prev => ({ ...prev, [word.id]: ex }));
+      }
+    } catch (e) {}
+    finally {
+      setExampleLoading(false);
+    }
+  };
 
   const load = async () => {
     try {
@@ -97,8 +119,9 @@ export default function StudyPage() {
 
   const firstLetterHint = word.word.charAt(0).toUpperCase() + '... (' + word.word.length + '个字母)';
   const syllableHint = word.word.replace(/[^aeiouAEIOU]/g, '').length + ' 个元音';
-  const exampleWithBlank = word.example
-    ? word.example.replace(new RegExp('\\b' + word.word + '\\b', 'gi'), '______')
+  const effectiveExample = word.example || fetchedExamples[word.id] || '';
+  const exampleWithBlank = effectiveExample
+    ? effectiveExample.replace(new RegExp('\\b' + word.word + '\\b', 'gi'), '______')
     : '';
 
   return (
@@ -146,7 +169,7 @@ export default function StudyPage() {
           <span className="hint-text-large">{syllableHint}</span>
         </div>
       )}
-      {hints.example && !showMeaning && word.example && (
+      {hints.example && !showMeaning && effectiveExample && (
         <div className="hint-panel">
           <span className="badge badge-orange">例句提示</span>
           <span className="hint-text-large">{exampleWithBlank}</span>
@@ -180,9 +203,22 @@ export default function StudyPage() {
         {showMeaning && (
           <div className="flashcard-meaning">
             <p className="meaning-text">{word.meaning}</p>
-            {word.example && (
-              <p className="example">
-                <span style={{ fontWeight: 600 }}>📝 例句：</span>{word.example}
+            {(effectiveExample || exampleLoading) && (
+              <p className="example" style={{ textAlign: 'left', padding: '12px 16px', background: 'rgba(255,255,255,0.15)', borderRadius: 10, marginTop: 12 }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+                  <span style={{ fontWeight: 600 }}>📝 例句：</span>
+                  <button
+                    className="icon-btn"
+                    style={{ color: 'white', fontSize: 16, padding: '2px 6px' }}
+                    onClick={(e) => { e.stopPropagation(); speakSentence(effectiveExample); }}
+                    title="朗读例句"
+                  >🔊</button>
+                </span>
+                {exampleLoading && !effectiveExample ? (
+                  <span style={{ opacity: 0.7 }}>正在加载例句...</span>
+                ) : (
+                  <span>{effectiveExample}</span>
+                )}
               </p>
             )}
             {hints.image || showMeaning ? (
