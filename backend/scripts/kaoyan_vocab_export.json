@@ -1,0 +1,7425 @@
+{
+  "wordBook": {
+    "name": "考研英语阅读真题词汇",
+    "description": "2005-2009年考研英语阅读理解真题词汇",
+    "is_public": 1
+  },
+  "lists": [
+    {
+      "name": "2005年阅读理解Text 1",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "fat",
+          "meaning": "[fæt] a.[僻]大量的；胖的n.脂肪"
+        },
+        {
+          "word": "rise",
+          "meaning": "[rarz] n.上升"
+        },
+        {
+          "word": "pleasure",
+          "meaning": "['pleʒə(r)] n.快乐；快乐；乐事，乐趣"
+        },
+        {
+          "word": "vanish",
+          "meaning": "['vænfʃ] v.消失；逐渐消散"
+        },
+        {
+          "word": "colleague",
+          "meaning": "['kolig] n.同事"
+        },
+        {
+          "word": "indeed",
+          "meaning": "[n'di:d] ad.实际上；确实，实在；真地"
+        },
+        {
+          "word": "reputation",
+          "meaning": "[,repju'teiʃn] n.名声；声望"
+        },
+        {
+          "word": "slack",
+          "meaning": "[slek] v.偷懒adj.不紧的，不严的，松弛的；松懈的，疏忽的；(生意)萧条的，不景气的n.淡季，萧条；(pl)便裤"
+        },
+        {
+          "word": "outrage",
+          "meaning": "['aotrerdʒ] v.激怒；暴行，侮辱；愤怒"
+        },
+        {
+          "word": "behaviour",
+          "meaning": "[bi'hervjə] n.行为"
+        },
+        {
+          "word": "regard",
+          "meaning": "[ri'ga:d] v.把......看作；看待；尊重；考虑；注视n.注意，关心；尊敬，尊重"
+        },
+        {
+          "word": "underlying",
+          "meaning": "[,ʌndə'laŋ] a.潜在的；根本的；在下面的"
+        },
+        {
+          "word": "assumption",
+          "meaning": "[ə'sʌmp jn] n.假设；承担"
+        },
+        {
+          "word": "capable",
+          "meaning": "['keIpəb(a)l] a.有能力的"
+        },
+        {
+          "word": "finely",
+          "meaning": "['fanli] ad.精致地"
+        },
+        {
+          "word": "developed",
+          "meaning": "[dr'veləpt] a.发达的"
+        },
+        {
+          "word": "sense",
+          "meaning": "[sens] n.意识；感觉；判断力；合理性；意义，含义v.感觉到，觉察到"
+        },
+        {
+          "word": "grievance",
+          "meaning": "['gri:vəns] n.不满；委屈；抱怨"
+        },
+        {
+          "word": "study",
+          "meaning": "['stadi] n.研究v.学习"
+        },
+        {
+          "word": "publish",
+          "meaning": "['pʌblf] v.发表；公布，发布；出版"
+        },
+        {
+          "word": "female",
+          "meaning": "['fi:me il] a.雌性的；女(性)的；母的，"
+        },
+        {
+          "word": "brown",
+          "meaning": "[braun] a.棕色的"
+        },
+        {
+          "word": "capuchin",
+          "meaning": "['kaæpjotfin] n.卷尾猴"
+        },
+        {
+          "word": "good-natured",
+          "meaning": "[gud 'nertʃəd] a.性情温和的"
+        },
+        {
+          "word": "cooperative",
+          "meaning": "[kəu'spərətiv] a.合作的，协作的"
+        },
+        {
+          "word": "creature",
+          "meaning": "['kri:tfə(r)] n.生物；人；动物"
+        },
+        {
+          "word": "readily",
+          "meaning": "['redrli] ad.乐意地；容易地"
+        },
+        {
+          "word": "counterpart",
+          "meaning": "['kauntapa:t] n.对应的人或物"
+        },
+        {
+          "word": "tend",
+          "meaning": "[tend] v.倾向于"
+        },
+        {
+          "word": "value",
+          "meaning": "['vælju:] n.价值；重要性；价值观v.估价；重视"
+        },
+        {
+          "word": "goods",
+          "meaning": "[gudz] n.商品"
+        },
+        {
+          "word": "male",
+          "meaning": "[merl] a.雄性的"
+        },
+        {
+          "word": "characteristic",
+          "meaning": "[,kærəkta'ristik] n.特点"
+        },
+        {
+          "word": "perfect",
+          "meaning": "['p3:fikt] a.理想的；完美的；完全的v.使完善；使完美"
+        },
+        {
+          "word": "candidate",
+          "meaning": "['kændrdət] n.候选人"
+        },
+        {
+          "word": "exchange",
+          "meaning": "[iks'tfendʒ] n/v.交易n.交换；交流；交易所；兑换v.交换；交流；交易；兑换"
+        },
+        {
+          "word": "token",
+          "meaning": "['təukən] n.代币"
+        },
+        {
+          "word": "normally",
+          "meaning": "['nɔməli] ad.通常地"
+        },
+        {
+          "word": "piece",
+          "meaning": "[pi:s] n.片"
+        },
+        {
+          "word": "rock",
+          "meaning": "[rpk] n.石头"
+        },
+        {
+          "word": "slice",
+          "meaning": "[slars] n. (切下的食物)薄片"
+        },
+        {
+          "word": "cucumber",
+          "meaning": "['kju:kʌmbə(r)] n.黄瓜"
+        },
+        {
+          "word": "place",
+          "meaning": "[pleɪs] y.放置n.地方；位置；地点；场所v.安置；安放"
+        },
+        {
+          "word": "separate",
+          "meaning": "['sepərert] a.独立的单独的；分开的v.分离；区分；隔开；区别"
+        },
+        {
+          "word": "adjoining",
+          "meaning": "[ə'd3ɔinin] a.毗邻的"
+        },
+        {
+          "word": "chamber",
+          "meaning": "['tfembə(r)] n.房间"
+        },
+        {
+          "word": "observe",
+          "meaning": "[əb'z3:v] v.看到；观察；监视"
+        },
+        {
+          "word": "markedly",
+          "meaning": "['ma:krdli] ad.明显地"
+        },
+        {
+          "word": "luxury",
+          "meaning": "['lakfori] a.奢侈的；奢华的n.奢侈品；奢华；奢侈的享受"
+        },
+        {
+          "word": "preferable",
+          "meaning": "['prefrəb(3)l] a.更合意的；较适合；更可取"
+        },
+        {
+          "word": "hand",
+          "meaning": "[hænd] v.给；递；给n.手；手工"
+        },
+        {
+          "word": "reluctant",
+          "meaning": "[r'laktont] a不愿意的；;勉强的"
+        },
+        {
+          "word": "mere",
+          "meaning": "[mrə(r)] a.仅仅"
+        },
+        {
+          "word": "receive",
+          "meaning": "[ri'si:v] v.得到；接收；收到；接待"
+        },
+        {
+          "word": "toss",
+          "meaning": "[tos] v.扔；抛，掷"
+        },
+        {
+          "word": "refuse",
+          "meaning": "[r'fju:z] v.拒绝"
+        },
+        {
+          "word": "accept",
+          "meaning": "[ək'sept] v.接受"
+        },
+        {
+          "word": "presence",
+          "meaning": "['prezns] n.出现；n.存在；在场；出席"
+        },
+        {
+          "word": "induce",
+          "meaning": "[n'dju:s] y.引起；导致；诱使"
+        },
+        {
+          "word": "resentment",
+          "meaning": "[ri'zentmənt] n.怨恨；愤怒"
+        },
+        {
+          "word": "social",
+          "meaning": "['səoJl] a.社会的；社交的"
+        },
+        {
+          "word": "emotion",
+          "meaning": "[i'məuʃn] n.情感；情绪"
+        },
+        {
+          "word": "wild",
+          "meaning": "[warld] n.荒野；偏远地区；人烟稀少的地区adj.野的；野生的"
+        },
+        {
+          "word": "species",
+          "meaning": "['spifji:z] n.物种；种类"
+        },
+        {
+          "word": "group-living",
+          "meaning": "[gru:p 'Irviŋ] a.群居的"
+        },
+        {
+          "word": "cooperation",
+          "meaning": "[kou,ppə'rerfn] n.协作；合作"
+        },
+        {
+          "word": "stable",
+          "meaning": "['sterb(ə)l] a.稳定的；沉稳的"
+        },
+        {
+          "word": "cheat",
+          "meaning": "[tfi:t] v.欺骗；作弊"
+        },
+        {
+          "word": "righteous",
+          "meaning": "['rartfos] a.正义的；公正的；正直的；正当的"
+        },
+        {
+          "word": "indignation",
+          "meaning": "[,indrg'nerjn] n.愤慨；愤怒"
+        },
+        {
+          "word": "preserve",
+          "meaning": "[pri'zs:v] n.独有或专门的活动v.保护，保存"
+        },
+        {
+          "word": "reward",
+          "meaning": "[ri'wɔ:d] n.酬劳；报酬；奖赏；酬谢"
+        },
+        {
+          "word": "completely",
+          "meaning": "[kom'pli:tli] ad.完全地；非常；彻底地；很"
+        },
+        {
+          "word": "abundantly",
+          "meaning": "[ə'bʌndəntli] ad.十分地；非常明白；大量地"
+        },
+        {
+          "word": "member",
+          "meaning": "['membə(r)] n.成员"
+        },
+        {
+          "word": "fairness",
+          "meaning": "['feanəs] n.公平"
+        },
+        {
+          "word": "evolve",
+          "meaning": "[i'vplv] v.逐步发展；进化"
+        },
+        {
+          "word": "independently",
+          "meaning": "[,indi'pendəntli] ad.独立地；自主地；自立地"
+        },
+        {
+          "word": "common",
+          "meaning": "['komən] a.共同的；普通的；常见的"
+        },
+        {
+          "word": "ancestor",
+          "meaning": "['ænsesta(r)] n.祖先"
+        },
+        {
+          "word": "unanswered",
+          "meaning": "[ʌn'a:nsəd] a.未解答是的；未回答的"
+        },
+        {
+          "word": "pose",
+          "meaning": "[pəuz] y.提出；摆姿势；引起，造成；冒充，假扮n.装腔作势"
+        },
+        {
+          "word": "opening",
+          "meaning": "['əupənrn] a.第一；开始的n.开始；空缺"
+        },
+        {
+          "word": "contrast",
+          "meaning": "['kontra:st] n.对比；差异v.形成对比"
+        },
+        {
+          "word": "justify",
+          "meaning": "['d3ʌstifar] y.证明......正确"
+        },
+        {
+          "word": "comparison",
+          "meaning": "[kəm'pærisn] n. 比较；对比，比喻，比拟"
+        },
+        {
+          "word": "explain",
+          "meaning": "[k'splen] v.解释；说明；阐明"
+        },
+        {
+          "word": "phenomenon",
+          "meaning": "[f'nominən] n.现象"
+        },
+        {
+          "word": "imply",
+          "meaning": "[m'plar] v.暗指；意味着"
+        },
+        {
+          "word": "rival",
+          "meaning": "['rarvl] n.竞争对手；竞争者v.与...... ·竞争；与......匹敌adj.竞争的"
+        },
+        {
+          "word": "resent",
+          "meaning": "[rɪ'zent] v.对.. ...不满；怨恨"
+        },
+        {
+          "word": "unfairness",
+          "meaning": "[,ʌn'feənəs] n.不公平"
+        },
+        {
+          "word": "jealous",
+          "meaning": "['dʒeləs] a.妒忌的；嫉妒的；;妒羡的"
+        },
+        {
+          "word": "inclined",
+          "meaning": "[n'kland] a.倾向于..的"
+        },
+        {
+          "word": "weigh",
+          "meaning": "[weɪ] y. [僻]权衡；加重量n.重；重要性"
+        },
+        {
+          "word": "attentive",
+          "meaning": "[ə'tentiv] a.关注的"
+        },
+        {
+          "word": "instruction",
+          "meaning": "[n'strakjn] n.指示；教导；命令；传授"
+        },
+        {
+          "word": "appearance",
+          "meaning": "[ə'pIorəns] n.外表；出现，出场，露面；外观"
+        },
+        {
+          "word": "temperament",
+          "meaning": "['tempromənt] n.性情；性格；气质；易冲动；(性情)暴躁"
+        },
+        {
+          "word": "generous",
+          "meaning": "['d3enəros] a.慷慨的；丰富的，大量的"
+        },
+        {
+          "word": "companion",
+          "meaning": "[kom'pæniən] n.同伴"
+        },
+        {
+          "word": "infer",
+          "meaning": "[in'f3:(r)] v.推断；推定"
+        },
+        {
+          "word": "uncertain",
+          "meaning": "[ʌn's3:tn] a.不确定的；不定的；无常的"
+        },
+        {
+          "word": "remain",
+          "meaning": "[ri'men] v.保持n.残余(物);遗迹，废墟"
+        }
+      ]
+    },
+    {
+      "name": "2005年阅读理解Text 2",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "argue",
+          "meaning": "['a gju:] v.表明；争论，辩论，主张，说服"
+        },
+        {
+          "word": "doubter",
+          "meaning": "['daotə(r)] n.怀疑者"
+        },
+        {
+          "word": "insist",
+          "meaning": "[in'sist] v.坚决认为；坚决主张，坚持"
+        },
+        {
+          "word": "evidence",
+          "meaning": "['evidəns] n.证据；迹象"
+        },
+        {
+          "word": "inconclusive",
+          "meaning": "[,Inkən'klu:siv] a.无定论的；不确定的；非决定性的"
+        },
+        {
+          "word": "uncertain",
+          "meaning": "[ʌn's3:t()n] a.不确定的；不定的；无常的"
+        },
+        {
+          "word": "antismoking",
+          "meaning": "['ænti'sməukiŋ] a.反对吸烟的"
+        },
+        {
+          "word": "lobby",
+          "meaning": "['lobi] n.游说团体；门廊，门厅v.游说"
+        },
+        {
+          "word": "destroy",
+          "meaning": "[di'stroi] v.摧毁；毁灭"
+        },
+        {
+          "word": "way",
+          "meaning": "[wer] n.方式；方面；方向；道路"
+        },
+        {
+          "word": "buy",
+          "meaning": "[bar] y.[僻]相信；买；购买；收买；贿赂"
+        },
+        {
+          "word": "nonsense",
+          "meaning": "['nons(ans] n.胡言乱语；胡说，废话"
+        },
+        {
+          "word": "decade",
+          "meaning": "['dekerd] n.十年"
+        },
+        {
+          "word": "grave",
+          "meaning": "[grerv] n.坟墓adj.严肃的"
+        },
+        {
+          "word": "upsetting",
+          "meaning": "[Ap'setiŋ] a.令人心情不安的"
+        },
+        {
+          "word": "parallel",
+          "meaning": "['pærəlel] a. [僻]极其相似的；平行的；类似的，相同的n.平行；相似"
+        },
+        {
+          "word": "awaken",
+          "meaning": "[ə'werkən] v.唤醒"
+        },
+        {
+          "word": "growing",
+          "meaning": "['grəuɪŋ] a . 增加的"
+        },
+        {
+          "word": "threatt",
+          "meaning": "[θret] n.威胁；恐吓"
+        },
+        {
+          "word": "latest",
+          "meaning": "['lertrst] a.最近的；最新的；最后的"
+        },
+        {
+          "word": "panel",
+          "meaning": "['pæn(2)l] n.专家咨询组；面，板；控制板，仪表盘；专门小组"
+        },
+        {
+          "word": "academy",
+          "meaning": "[ə'kæedəmi] n.研究院；学院"
+        },
+        {
+          "word": "enlist",
+          "meaning": "[n'list] v.为某事业、企业征集(人员、服务等)"
+        },
+        {
+          "word": "atmosphere",
+          "meaning": "['ætməsfio(r)] n.大气；空气；气氛"
+        },
+        {
+          "word": "definitely",
+          "meaning": "['definəstli] ad.肯定；当然；确实；明确地"
+        },
+        {
+          "word": "largely",
+          "meaning": "['la:dʒli] ad.主要地；大量地；基本上"
+        },
+        {
+          "word": "man-made",
+          "meaning": "[mæn 'meid] a.人造的"
+        },
+        {
+          "word": "clear",
+          "meaning": "[klro(r)] a.清晰的；易懂的，明白的adv.清楚地，清晰地v.使清楚"
+        },
+        {
+          "word": "president",
+          "meaning": "['prezidont] n.院长；总统；总裁；主席；总经理"
+        },
+        {
+          "word": "point",
+          "meaning": "[pɔint] n.观点；要点；条款v. (at,to)指，指向；(out)指出"
+        },
+        {
+          "word": "preface",
+          "meaning": "['prefss] n.前言；序言，引言"
+        },
+        {
+          "word": "available",
+          "meaning": "[ə'verləb(a)l] a.可行的；可利用的；可获得的"
+        },
+        {
+          "word": "critical",
+          "meaning": "['kritik(ə)l] a.至关紧要的；批评的，评论的；危急的"
+        },
+        {
+          "word": "nation",
+          "meaning": "['nerfjn] n.国家；民族"
+        },
+        {
+          "word": "policy",
+          "meaning": "['pplsi] n.政策；方针"
+        },
+        {
+          "word": "judgment",
+          "meaning": "['dʒʌdʒmənt] n.判断；判决；判断力；看法"
+        },
+        {
+          "word": "concerning",
+          "meaning": "[kən's3:niŋ] prep.关于；涉及"
+        },
+        {
+          "word": "consequence",
+          "meaning": "['konsikwəns] n.影响；结果，后果；重要性"
+        },
+        {
+          "word": "quarter",
+          "meaning": "['kwɔ:to(r)] n.群体；四分之一；季度；方向；方面"
+        },
+        {
+          "word": "incomplete",
+          "meaning": "[,Inkom'pli:t] a.不充分的"
+        },
+        {
+          "word": "pour",
+          "meaning": "[pɔ:(r)] v.使(液体)连续流出；下倾盆大雨；涌流"
+        },
+        {
+          "word": "fumes",
+          "meaning": "[fju:mz] n.烟"
+        },
+        {
+          "word": "dangerous",
+          "meaning": "['deindʒoros] a.危险的"
+        },
+        {
+          "word": "obvious",
+          "meaning": "['pbvios] a.明显的；显而易见的；平淡无奇的"
+        },
+        {
+          "word": "growing",
+          "meaning": "['grəuɪn] a.增强的"
+        },
+        {
+          "word": "prudent",
+          "meaning": "['pru:d(o)nt] a.谨慎的；小心的"
+        },
+        {
+          "word": "insurance",
+          "meaning": "[n'fuərəns] n.保险；保险费"
+        },
+        {
+          "word": "policy",
+          "meaning": "['ppləsi] n.措施；政策，方针"
+        },
+        {
+          "word": "people",
+          "meaning": "['pi:pl] [僻]民族；人民，民众"
+        },
+        {
+          "word": "fortunately",
+          "meaning": "['fo:tfonətli] ad.幸运地"
+        },
+        {
+          "word": "majority",
+          "meaning": "[mə'dʒprəti] n.大多数n.法定年龄"
+        },
+        {
+          "word": "president",
+          "meaning": "['prezidont] n.总统；总裁；主席；总经理；院长"
+        },
+        {
+          "word": "adviser",
+          "meaning": "[əd\"varzə(r)] n.顾问"
+        },
+        {
+          "word": "classic",
+          "meaning": "['klæstk] a.典型的；经典的"
+        },
+        {
+          "word": "case",
+          "meaning": "[kers] n.案例；事例；病例"
+        },
+        {
+          "word": "paralysis",
+          "meaning": "[pə'ræləsis] n.瘫痪；麻痹"
+        },
+        {
+          "word": "analysis",
+          "meaning": "[ə'næləsis] n.分析"
+        },
+        {
+          "word": "responsible",
+          "meaning": "[r'sppnsɔbl] a.有责任的；负责的"
+        },
+        {
+          "word": "steward",
+          "meaning": "['stju:ad] n.保护者；乘务员，服务员；管家"
+        },
+        {
+          "word": "planet",
+          "meaning": "['plæenit] n.地球(the planet)"
+        },
+        {
+          "word": "atmospheric",
+          "meaning": "[,aætməs'ferik] a.大气的；空气的；有......气氛的"
+        },
+        {
+          "word": "oceanic",
+          "meaning": "[,əuJi'ænk] a.海洋的"
+        },
+        {
+          "word": "inadequate",
+          "meaning": "[n'ædikwət] a.不够的；不充分的，不适当的"
+        },
+        {
+          "word": "Administration",
+          "meaning": "[əd,min'strerʃ(o)n] n. (尤指美国)政府"
+        },
+        {
+          "word": "legislative",
+          "meaning": "['ledʒislətrv] a.立法的n.立法权；立法机关"
+        },
+        {
+          "word": "initiative",
+          "meaning": "[i'niʃstrv] n. [僻]措施；倡议；主动性(权);积极性"
+        },
+        {
+          "word": "Congress",
+          "meaning": "['kongres] n.国会"
+        },
+        {
+          "word": "fashion",
+          "meaning": "['faʃ(o)n] v. [僻]制作，制定n.方式；时尚"
+        },
+        {
+          "word": "conservation",
+          "meaning": "[,k onsə'verʃ(ə)n] n.保护；保存"
+        },
+        {
+          "word": "measure",
+          "meaning": "['meʒə(r)] n.措施；程度v.量，测量"
+        },
+        {
+          "word": "bill",
+          "meaning": "[bil] n.[僻]议案；账单；招贴，广告"
+        },
+        {
+          "word": "democratic",
+          "meaning": "[,demə'kretik] a.民主的；民主党的；民主制度的"
+        },
+        {
+          "word": "Senator",
+          "meaning": "['s enətə(r)] n.参议员"
+        },
+        {
+          "word": "financial",
+          "meaning": "[fai'nænʃ(a)l] a.财政的；金融的"
+        },
+        {
+          "word": "incentive",
+          "meaning": "[in'sentrv] n.激励；奖励；动机"
+        },
+        {
+          "word": "private",
+          "meaning": "['prarvət] a.私营的；私人的，个人的；秘密的；私立的"
+        },
+        {
+          "word": "industry",
+          "meaning": "['ndostri] n.[僻]行业；工业，产业；勤劳，勤奋"
+        },
+        {
+          "word": "promising",
+          "meaning": "['promisin] a.有希望的，有前途的"
+        },
+        {
+          "word": "plant",
+          "meaning": "[pla:nt] n.[僻]发电厂；植物；工厂v.种植，栽种；灌输"
+        },
+        {
+          "word": "energy",
+          "meaning": "['enədʒi] n.能源；精力；活力，精力"
+        },
+        {
+          "word": "crucial",
+          "meaning": "['kru:ʃ(ə)l] a.至关重要的；决定性的，关键性的"
+        },
+        {
+          "word": "supporter",
+          "meaning": "[sa'pɔ:to(r)] n.支持者"
+        },
+        {
+          "word": "correlation",
+          "meaning": "[,korə'lerʃn] n.关联"
+        },
+        {
+          "word": "insignificant",
+          "meaning": "[,Insig'nifikont] a.微不足道的；无关紧要的"
+        },
+        {
+          "word": "freedom",
+          "meaning": "['fri:dəm] n.自由；自主"
+        },
+        {
+          "word": "protector",
+          "meaning": "[prə'tekta(r)] n.保护人"
+        },
+        {
+          "word": "judge",
+          "meaning": "[dʒʌdʒ] n.法官；裁判员；鉴赏家v.审判，判决；判断"
+        },
+        {
+          "word": "endless",
+          "meaning": "['endləs] a.无休止的；无穷的；无穷尽的"
+        },
+        {
+          "word": "investigation",
+          "meaning": "[n,vest'geifn] n.调查"
+        },
+        {
+          "word": "reveal",
+          "meaning": "[r'vi:l] v.揭示；表明；揭露；展现，显示"
+        },
+        {
+          "word": "hinder",
+          "meaning": "['hində] v.妨碍；阻碍"
+        },
+        {
+          "word": "extensive",
+          "meaning": "[ik'stensiv] a.大量的；广大的，广阔的"
+        },
+        {
+          "word": "decision-making",
+          "meaning": "[di'sIʒn merkn] n.决策"
+        },
+        {
+          "word": "aid",
+          "meaning": "[erd] n.资助；助手；辅助物v.援助，帮助"
+        },
+        {
+          "word": "awareness",
+          "meaning": "[ə'weənəs] n.意识；认知；察觉"
+        },
+        {
+          "word": "issue",
+          "meaning": "['TJu:] n.重要议题；问题；争端；发行(物),(报刊)期号v.发行，发表"
+        },
+        {
+          "word": "negligence",
+          "meaning": "['neglidʒəns] n.疏忽；过失；失职；失误"
+        },
+        {
+          "word": "latter",
+          "meaning": "['lætə] a. (提及的两者中)后者的"
+        },
+        {
+          "word": "applicable",
+          "meaning": "[ə'plikob(3)l] a.适用的"
+        },
+        {
+          "word": "former",
+          "meaning": "['fɔ:mə] a. (两者中)前者的"
+        },
+        {
+          "word": "outcome",
+          "meaning": "['aotkʌm] n.结果；成果"
+        },
+        {
+          "word": "aggravate",
+          "meaning": "['ægrvert] v.使严重；加重；恶化"
+        }
+      ]
+    },
+    {
+      "name": "2005年阅读理解Text 3",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "component",
+          "meaning": "[kom'pəunənt] n.组成部分，成分a.组成的"
+        },
+        {
+          "word": "logic",
+          "meaning": "['lddʒik] n.逻辑"
+        },
+        {
+          "word": "suspend",
+          "meaning": "[sə'spend] v.暂停；悬挂；推迟"
+        },
+        {
+          "word": "formulate",
+          "meaning": "['fo mjulet] v.制定；构想；确切阐释"
+        },
+        {
+          "word": "revolutionary",
+          "meaning": "[,revə'lu:ʃənəri] a.革命性的，创新的；革命的n.革命者"
+        },
+        {
+          "word": "theory",
+          "meaning": "['θrəri] n.理论；学说；看法"
+        },
+        {
+          "word": "disguise",
+          "meaning": "[drs'garz] v.伪装，掩饰"
+        },
+        {
+          "word": "shadow",
+          "meaning": "['Jædəu] n.影子"
+        },
+        {
+          "word": "unconscious",
+          "meaning": "[ʌn'konʃəs] a.潜意识的；无意识的"
+        },
+        {
+          "word": "desire",
+          "meaning": "[di'zarɔ(r)] n.欲望；渴望"
+        },
+        {
+          "word": "neurologist",
+          "meaning": "[njua'rpladʒist] n.神经病学家"
+        },
+        {
+          "word": "switch",
+          "meaning": "[switʃ] v.转变；改变n.开关；转变"
+        },
+        {
+          "word": "mental",
+          "meaning": "['mentl] a.精神的；心理的，智力的，脑力的"
+        },
+        {
+          "word": "random",
+          "meaning": "['rændom] a.随机的；随意的，任意的"
+        },
+        {
+          "word": "byproduct",
+          "meaning": "['barprpdakt] n.副产品"
+        },
+        {
+          "word": "neural",
+          "meaning": "['njuərəl] a.神经的；神经系统的"
+        },
+        {
+          "word": "repair",
+          "meaning": "[n peə(r)] n.修理；修补n.修补"
+        },
+        {
+          "word": "suspect",
+          "meaning": "[sə'spekt] v.猜想；怀疑n.嫌疑犯"
+        },
+        {
+          "word": "emotional",
+          "meaning": "[i'məufan(2)l] a.情绪的，感情的"
+        },
+        {
+          "word": "thermostat",
+          "meaning": "['03:məstat] n.恒温调节器"
+        },
+        {
+          "word": "regulate",
+          "meaning": "['regjulert] v.调节；控制；管理"
+        },
+        {
+          "word": "mood",
+          "meaning": "[mu:d] n.情绪；心情；气氛；语气"
+        },
+        {
+          "word": "off-line",
+          "meaning": "['ɔflain] a.离线的"
+        },
+        {
+          "word": "leading",
+          "meaning": "['li:drŋ] a.卓著的；领导的；第一位的；最主要的"
+        },
+        {
+          "word": "authority",
+          "meaning": "[ɔ:'0prəti] n.权威人士；权力，威信，权威；当局，官方"
+        },
+        {
+          "word": "intensely",
+          "meaning": "[n'tensli] ad.极其地；强烈地；紧张地"
+        },
+        {
+          "word": "harness",
+          "meaning": "['ha:nis] v.[僻]利用；控制；治理n.马具；挽具"
+        },
+        {
+          "word": "actually",
+          "meaning": "['æktfuəli] ad.事实上；实际上"
+        },
+        {
+          "word": "conscious",
+          "meaning": "['konfas] a.有意识的；意识到的，自觉的"
+        },
+        {
+          "word": "chair",
+          "meaning": "[tfeə(r)] n.[僻](大学的)主任；主任；主席；椅子v.担任；主持"
+        },
+        {
+          "word": "psychology",
+          "meaning": "[sar'kplədʒi] n.心理学；心理"
+        },
+        {
+          "word": "medical",
+          "meaning": "['medrkl] a.医疗的；伤病的；内科的"
+        },
+        {
+          "word": "support",
+          "meaning": "[sə'pɔ:t] y.[僻]证实；支持"
+        },
+        {
+          "word": "view",
+          "meaning": "[vju:] n.观点"
+        },
+        {
+          "word": "active",
+          "meaning": "['æktrv] a.活跃的；积极的"
+        },
+        {
+          "word": "rapid",
+          "meaning": "[ræprd] a.快速的"
+        },
+        {
+          "word": "movement",
+          "meaning": "['mu:vmənt] n.转动；移动；活动"
+        },
+        {
+          "word": "vivid",
+          "meaning": "['vivId] a.清晰的；生动的"
+        },
+        {
+          "word": "occur",
+          "meaning": "[ə'k3:(r)] v.发生；出现；存在于"
+        },
+        {
+          "word": "equally",
+          "meaning": "['ikwəli] ad.同等地；同样地；平均地"
+        },
+        {
+          "word": "limbic",
+          "meaning": "['lmbik] a.边缘的"
+        },
+        {
+          "word": "system",
+          "meaning": "['sistom] n.系统；体系；制度；体制"
+        },
+        {
+          "word": "prefrontal",
+          "meaning": "[pri:'frʌnt(a)l] a.前额的"
+        },
+        {
+          "word": "cortex",
+          "meaning": "['kɔ:teks] n. (尤指)大脑皮层"
+        },
+        {
+          "word": "intellect",
+          "meaning": "['ntɔlekt] n.思维能力"
+        },
+        {
+          "word": "reasoning",
+          "meaning": "['ri:zəniŋ] n.推理"
+        },
+        {
+          "word": "relatively",
+          "meaning": "['relətivli] ad.相对地"
+        },
+        {
+          "word": "depressed",
+          "meaning": "[di'prest] a.沮丧的"
+        },
+        {
+          "word": "patient",
+          "meaning": "['peʃ(ə)nt] n.病人"
+        },
+        {
+          "word": "clinic",
+          "meaning": "['klink] n.医疗中心；诊所"
+        },
+        {
+          "word": "negative",
+          "meaning": "['negstrv] a.消极的；负面的；坏的；有害的"
+        },
+        {
+          "word": "generate",
+          "meaning": "['dʒenəreit] y.产生；引起"
+        },
+        {
+          "word": "occupy",
+          "meaning": "['pkjupar] v. 占用"
+        },
+        {
+          "word": "significance",
+          "meaning": "[sig'nfikəns] n.意义；含义；重要性"
+        },
+        {
+          "word": "appear",
+          "meaning": "[ə'prə(r)] v. 出现"
+        },
+        {
+          "word": "process",
+          "meaning": "[prə'ses] n.过程；步骤"
+        },
+        {
+          "word": "recurring",
+          "meaning": "[r'k3:(r)] a.反复出现的"
+        },
+        {
+          "word": "identify",
+          "meaning": "[ar'dentifar] v.确认；鉴定；发现；找到"
+        },
+        {
+          "word": "visualize",
+          "meaning": "['vIʒuəlarz] y.设想；想象；构思"
+        },
+        {
+          "word": "literally",
+          "meaning": "['litərəli] ad.确实地"
+        },
+        {
+          "word": "panic",
+          "meaning": "['pænik] n.恐慌；惊恐a.恐慌的"
+        },
+        {
+          "word": "terrorism",
+          "meaning": "['terərizəm] n.恐怖主义"
+        },
+        {
+          "word": "economic",
+          "meaning": "[,i:ka'nomik] a.经济的；经济学的；有利可图的"
+        },
+        {
+          "word": "uncertainty",
+          "meaning": "[ʌn's3:t()nti] n.拿不定的事；犹豫；无把握"
+        },
+        {
+          "word": "general",
+          "meaning": "['dʒen(a)rəl] a.普遍的；全体的；正常的"
+        },
+        {
+          "word": "insecurity",
+          "meaning": "[,insɪ'kjoərəti] n.不安全"
+        },
+        {
+          "word": "anxiety",
+          "meaning": "[æn'zarəti] n.焦虑；忧虑；担心"
+        },
+        {
+          "word": "persistent",
+          "meaning": "[pə'sistənt] a.持续的；坚持的；固执的"
+        },
+        {
+          "word": "nightmare",
+          "meaning": "['naitmeə(r)] n.噩梦"
+        },
+        {
+          "word": "therapist",
+          "meaning": "['θerəpist] n.治疗专家"
+        },
+        {
+          "word": "rest",
+          "meaning": "[rest] n.剩余部分；休息；静止v.休息；靠；搁在"
+        },
+        {
+          "word": "modify",
+          "meaning": "['mpdfar] v.更改；修改；缓和，减轻；修饰"
+        },
+        {
+          "word": "susceptible",
+          "meaning": "[sə'septab(3)l] a.易受影响的；敏感的；善感的"
+        },
+        {
+          "word": "innermost",
+          "meaning": "['məməust] a.内心深处的；最里面的；内心的"
+        },
+        {
+          "word": "function",
+          "meaning": "['fankjn] n.作用；功能；职务，职责v.运行，起作用"
+        },
+        {
+          "word": "mechanism",
+          "meaning": "['mekənizəm] n.运行机制；机械装置；机构，机制"
+        },
+        {
+          "word": "relation",
+          "meaning": "[r'lerʃn] 关系；联系"
+        },
+        {
+          "word": "aggravate",
+          "meaning": "['ægrəvert] v.加重；恶化"
+        },
+        {
+          "word": "persist",
+          "meaning": "[pə'sist] v.持续；坚持"
+        },
+        {
+          "word": "till",
+          "meaning": "[tul] prep.直到...为止"
+        },
+        {
+          "word": "essential",
+          "meaning": "[i'senʃl] a.至关重要的；必要的，必不可少的；本质的，基本的"
+        },
+        {
+          "word": "rid",
+          "meaning": "[rd] v.使摆脱；使去掉"
+        },
+        {
+          "word": "progression",
+          "meaning": "[prə'grejn] n.进展；进程；发展"
+        },
+        {
+          "word": "professional",
+          "meaning": "[prə'feʃon l] a.专业的"
+        },
+        {
+          "word": "daytime",
+          "meaning": "['dertam] n.白天2005年阅读理解Text4段落单词词义"
+        },
+        {
+          "word": "figure",
+          "meaning": "['figə(r)] n.人物；身材；体形v.认为"
+        },
+        {
+          "word": "command",
+          "meaning": "[kə'ma:nd] v. [僻]掌握；命令；指挥"
+        },
+        {
+          "word": "aspire",
+          "meaning": "[ə'sparə(r)] v.渴望；有志(成为)"
+        },
+        {
+          "word": "degradation",
+          "meaning": "[,degrə'derjn] n.退化；降低"
+        },
+        {
+          "word": "linguist",
+          "meaning": "['lingwist] n.语言学家"
+        },
+        {
+          "word": "controversialist",
+          "meaning": "[,kontrə'və:ʃolist] n.争论者"
+        },
+        {
+          "word": "liberal",
+          "meaning": "['lrbərəl] a.自由的；慷慨的；心胸宽大的"
+        },
+        {
+          "word": "conservative",
+          "meaning": "[kən's3:vətrv] a.保守的；守旧的n.守旧派；保守党"
+        },
+        {
+          "word": "triumph",
+          "meaning": "['traiʌmf] n.胜利"
+        },
+        {
+          "word": "decline",
+          "meaning": "[dr'klan] n.衰退；衰退；减少；谢绝"
+        },
+        {
+          "word": "formal",
+          "meaning": "['fɔ:m(a)l] a.正式的；正规的；庄重的"
+        },
+        {
+          "word": "blame",
+          "meaning": "[blem] v.责怪；把...归咎于；指责n.责备；(坏事或错事的)责任；指责"
+        },
+        {
+          "word": "permissive",
+          "meaning": "[pə'mIsIv] a.放任的；纵容的；姑息的"
+        },
+        {
+          "word": "criticism",
+          "meaning": "['krtisIzəm] n.批判"
+        },
+        {
+          "word": "academic",
+          "meaning": "[,ækə'demik] a.学术的；学院的"
+        },
+        {
+          "word": "speciality",
+          "meaning": "[.speJi'æləti] n.专长"
+        },
+        {
+          "word": "gradual",
+          "meaning": "['grædʒuəl] a.逐渐的"
+        },
+        {
+          "word": "disappearance",
+          "meaning": "[,drsa'pIərəns] n.消失"
+        },
+        {
+          "word": "regrettable",
+          "meaning": "[ri'gretobl] a.令人惋惜的"
+        },
+        {
+          "word": "case-ending",
+          "meaning": "[keis'endŋ] n. (语法)词格尾缀"
+        },
+        {
+          "word": "cult",
+          "meaning": "[kalt] n.狂热崇拜"
+        },
+        {
+          "word": "authentic",
+          "meaning": "[ɔ:'θentik] a.真实的；真正的"
+        },
+        {
+          "word": "personal",
+          "meaning": "['p3:sn(3)l] a.个性的"
+        },
+        {
+          "word": "spell",
+          "meaning": "[spel] v.[僻]导致；拼写"
+        },
+        {
+          "word": "poetry",
+          "meaning": "['pəuətri] n.诗歌"
+        },
+        {
+          "word": "modestly",
+          "meaning": "['mpdrstli] ad.较少的"
+        },
+        {
+          "word": "educated",
+          "meaning": "['edʒuketd] a.受过教育的"
+        },
+        {
+          "word": "elevated",
+          "meaning": "['elivetid] a.高雅的；高贵的；高尚的"
+        },
+        {
+          "word": "tone",
+          "meaning": "[toun] n.格调；音调"
+        },
+        {
+          "word": "capture",
+          "meaning": "['kaæptʃə(r)] v.[僻]充分体现；捕捉；俘虏；占领"
+        },
+        {
+          "word": "spoken",
+          "meaning": "['spəukon] a. 口语的"
+        },
+        {
+          "word": "performative",
+          "meaning": "[pə'fɔ:mətiv] a.表述行为的"
+        },
+        {
+          "word": "genre",
+          "meaning": "['ʒon rə] n.体裁；类型"
+        },
+        {
+          "word": "liveliness",
+          "meaning": "['larvlinəs] n.活泼；生动"
+        },
+        {
+          "word": "oral",
+          "meaning": "['ɔ:rəl] a. 口语的；口头的"
+        },
+        {
+          "word": "spontaneity",
+          "meaning": "[,sppnta'neroti] n.自发行为"
+        },
+        {
+          "word": "craft",
+          "meaning": "[kra:ft] n.技巧v.精心制作"
+        },
+        {
+          "word": "illustrate",
+          "meaning": "['rləstrert] v. (举例)说明；解释；阐明"
+        },
+        {
+          "word": "entertaining",
+          "meaning": "[,entə'teiniŋ] a.有趣的；娱乐的；使人愉快的"
+        },
+        {
+          "word": "array",
+          "meaning": "[ə'rer] n.大量；一系列v.排列；布置"
+        },
+        {
+          "word": "trend",
+          "meaning": "[trend] n.趋势；倾向；潮流"
+        },
+        {
+          "word": "document",
+          "meaning": "['dpkjumənt] v.记录n.文件"
+        },
+        {
+          "word": "unmistakable",
+          "meaning": "[,ʌnmi'sterkəbl] a.确定无疑的"
+        },
+        {
+          "word": "subtitle",
+          "meaning": "['sʌbtartl] n.副标题"
+        },
+        {
+          "word": "acknowledge",
+          "meaning": "[ək'nolidʒ] v.承认；认识"
+        },
+        {
+          "word": "variety",
+          "meaning": "[və'rarəti] n.各种各样"
+        },
+        {
+          "word": "non-standard",
+          "meaning": "[,non 'stændəd] a.不标准的"
+        },
+        {
+          "word": "expressive",
+          "meaning": "[ik'spresiv] a.有表现力的"
+        },
+        {
+          "word": "dialect",
+          "meaning": "['darolekt] n.方言"
+        },
+        {
+          "word": "convey",
+          "meaning": "[kən'veI] v.传达；输送；运送"
+        },
+        {
+          "word": "complex",
+          "meaning": "['kompleks] a.复杂的；难懂的；费解的"
+        },
+        {
+          "word": "straight",
+          "meaning": "[strert] ad.正确地；笔直地a.直的"
+        },
+        {
+          "word": "Russian",
+          "meaning": "['raʃn] n.俄罗斯人"
+        },
+        {
+          "word": "chunk",
+          "meaning": "[tfank] n.大量；大块；厚块"
+        },
+        {
+          "word": "memorize",
+          "meaning": "['memərarz] v.记住；记忆"
+        },
+        {
+          "word": "politician",
+          "meaning": "[.pplə'tfn] n.政治家"
+        },
+        {
+          "word": "elaborate",
+          "meaning": "[i'labərət] y.用心完成；精心制作a.复杂的；详尽的；精心制作的"
+        },
+        {
+          "word": "old-fashioned",
+          "meaning": "[,əuld'fæjnd] a.过时的"
+        },
+        {
+          "word": "propose",
+          "meaning": "[prə'pəuz] v.提议；提名；求婚"
+        },
+        {
+          "word": "radical",
+          "meaning": "['rædik(2)l] a.彻底的；根本的，基本的；激进的n.激进分子"
+        },
+        {
+          "word": "reform",
+          "meaning": "[r'fo:m] n.改革；改良，改进；改造n.改革，变革"
+        },
+        {
+          "word": "grieve",
+          "meaning": "[gri:v] v.使悲伤n.悲伤"
+        },
+        {
+          "word": "china",
+          "meaning": "['tfarnə] n.瓷器"
+        },
+        {
+          "word": "shame",
+          "meaning": "[fem] n.羞耻；惭愧；耻辱"
+        },
+        {
+          "word": "inevitable",
+          "meaning": "[n'evitəbl] a.不可避免的"
+        },
+        {
+          "word": "controversy",
+          "meaning": "['kontrəv3:si] n.争议"
+        },
+        {
+          "word": "modesty",
+          "meaning": "['mpdosti] n.谦虚；谦逊"
+        },
+        {
+          "word": "personality",
+          "meaning": "[.p3:sa'naləti] n.个性；人格"
+        },
+        {
+          "word": "informality",
+          "meaning": "[,infos:'mæləti] n.非正式"
+        },
+        {
+          "word": "logical",
+          "meaning": "['lodʒik(ə)l] a.符合逻辑的；逻辑的"
+        },
+        {
+          "word": "description",
+          "meaning": "[di'skripfn] n.描述；形容；类型"
+        },
+        {
+          "word": "appreciation",
+          "meaning": "[2,pri:ji'efn] n.赞赏；感激；赏识；鉴赏"
+        },
+        {
+          "word": "admiration",
+          "meaning": "[,ædma'reɪf(o)n] n.钦佩；赞赏；羡慕"
+        },
+        {
+          "word": "memory",
+          "meaning": "['meməri] n.记忆力；回忆"
+        },
+        {
+          "word": "contempt",
+          "meaning": "[kon'tempt] n.鄙视；藐视"
+        },
+        {
+          "word": "temporary",
+          "meaning": "['temprəri] a.暂时的；临时的"
+        },
+        {
+          "word": "permanent",
+          "meaning": "['p3:mənənt] a.永恒的；持久的"
+        },
+        {
+          "word": "humble",
+          "meaning": "['hʌmb(a)l] a.谦逊的；低劣的，简陋的"
+        },
+        {
+          "word": "noble",
+          "meaning": "['nəub(ə)l] a.高尚的；高贵的，贵族的2006年阅读理解Text1段落 单词词义"
+        },
+        {
+          "word": "endless",
+          "meaning": "['endləs] a.无止境的；无穷的；无穷尽的"
+        },
+        {
+          "word": "machine",
+          "meaning": "[mə'Jji:n] n.机器；机械"
+        },
+        {
+          "word": "homogenize",
+          "meaning": "[ho'modʒinaiz] v.使大众化"
+        },
+        {
+          "word": "democratize",
+          "meaning": "[di'mokrətaiz] v. (使)大众化；(使)民主化"
+        },
+        {
+          "word": "uniformity",
+          "meaning": "[ju:ni'fs:miti] n.一致性"
+        },
+        {
+          "word": "discourse",
+          "meaning": "['drskɔ:s] n.交谈；论文；演讲v.谈；讲演"
+        },
+        {
+          "word": "casualness",
+          "meaning": "['kæeʒuəlnəs] n.随意；偶然；随便"
+        },
+        {
+          "word": "absence",
+          "meaning": "['æbsəns] n.缺乏；缺席"
+        },
+        {
+          "word": "deference",
+          "meaning": "['deforons] n.尊重；遵从；听从"
+        },
+        {
+          "word": "characteristic",
+          "meaning": "[,kerokta'ristk] n.特征"
+        },
+        {
+          "word": "absorb",
+          "meaning": "[əb'sɔ:b] v.同化；吸引；把.......并入"
+        },
+        {
+          "word": "consumption",
+          "meaning": "[kən'sʌmpfan] n.消费；消耗"
+        },
+        {
+          "word": "launch",
+          "meaning": "[lbɔ:ntʃ] v.发起；发射，发动n.发射"
+        },
+        {
+          "word": "vast",
+          "meaning": "[va:st] a.广大的；巨大的"
+        },
+        {
+          "word": "array",
+          "meaning": "[ə'rei] n.大量；排列，队形v.部署；穿着，打扮"
+        },
+        {
+          "word": "elegant",
+          "meaning": "['eligənt] a.优雅的；简洁的"
+        },
+        {
+          "word": "atmosphere",
+          "meaning": "['ætməs,fia] n.环境；大气，大气层；气氛"
+        },
+        {
+          "word": "intimate",
+          "meaning": "['intimət] a.私人的；亲密的，密切的"
+        },
+        {
+          "word": "knowledgeable",
+          "meaning": "['nolidʒɔbl] a.知识渊博的；博学的；有见识的"
+        },
+        {
+          "word": "elite",
+          "meaning": "[er'li:t] n.精英"
+        },
+        {
+          "word": "store",
+          "meaning": "[stɔ:(r)] n.商店；储存，仓库"
+        },
+        {
+          "word": "class",
+          "meaning": "[kla:s] n.[僻]阶级；班级；等级"
+        },
+        {
+          "word": "background",
+          "meaning": "['bækgraund] n.出身背景"
+        },
+        {
+          "word": "public",
+          "meaning": "['pʌblik] a.平民的；公众的"
+        },
+        {
+          "word": "democratic",
+          "meaning": "[,demə'kretik] a.大众化的；平等的；民主的"
+        },
+        {
+          "word": "advertising",
+          "meaning": "['ædvətarziŋ] n.广告业"
+        },
+        {
+          "word": "homogenization",
+          "meaning": "[həumədʒon aɪ'zeIʃ(en] n.均匀化"
+        },
+        {
+          "word": "immigrant",
+          "meaning": "['imigrənt] n.移民(表示从他国移入的移民)"
+        },
+        {
+          "word": "altogether",
+          "meaning": "[,ɔ:Ita'geoə(r)] ad.太；总共；完全地；总之"
+        },
+        {
+          "word": "elevate",
+          "meaning": "['elrvert] v.提高；举起；抬起；使情绪高昂"
+        },
+        {
+          "word": "hardly",
+          "meaning": "['ha:dli] ad.几乎不"
+        },
+        {
+          "word": "poisonous",
+          "meaning": "['pɔizənəs] a.会造成危害的；有毒的；恶毒的"
+        },
+        {
+          "word": "national",
+          "meaning": "['næʃ(o)nəl] a. 国家的；民族的"
+        },
+        {
+          "word": "immigration",
+          "meaning": "[,imɪ'gr erʃ(ə)n] n.移民(入境);移民人数"
+        },
+        {
+          "word": "forum",
+          "meaning": "['fɔ:rəm] n.论坛；讨论会"
+        },
+        {
+          "word": "unprecedented",
+          "meaning": "[,ʌn'presidəntid] a.前所未有的"
+        },
+        {
+          "word": "resistant",
+          "meaning": "[rn'zistənt] a.抗拒的；抵抗的"
+        },
+        {
+          "word": "assimilation",
+          "meaning": "[ə  simileifon] n.同化"
+        },
+        {
+          "word": "population",
+          "meaning": "[.pppju'lerʃ(ə)n] n. (地区、国家等的)人口，人口数量"
+        },
+        {
+          "word": "resident",
+          "meaning": "['rezidənt] n.居民a.居住的"
+        },
+        {
+          "word": "consider",
+          "meaning": "[kən'sido(r)] v.仔细考虑；认为；顾及"
+        },
+        {
+          "word": "index",
+          "meaning": "['ndeks] n.指标；索引；指数"
+        },
+        {
+          "word": "ownership",
+          "meaning": "['ɔunəfip] n.所有权"
+        },
+        {
+          "word": "intermarriage",
+          "meaning": "[,inta'mæridʒ] n.异族通婚"
+        },
+        {
+          "word": "census",
+          "meaning": "['sensəs] n.人口普查"
+        },
+        {
+          "word": "reveal",
+          "meaning": "[rn'vi:l] y.显示；显露，揭露；展现"
+        },
+        {
+          "word": "origin",
+          "meaning": "['pridʒin] n.出身；起源"
+        },
+        {
+          "word": "residence",
+          "meaning": "['rezidəns] n.定居；住处"
+        },
+        {
+          "word": "bilingual",
+          "meaning": "[,bar'lingwəl] a.使用双语的"
+        },
+        {
+          "word": "proficient",
+          "meaning": "[prə'fiʃ(o)nt] a.精通的；熟练的n.专家；能手；老手"
+        },
+        {
+          "word": "generation",
+          "meaning": "[,dʒenə'rerjn] n.一代(人);产生，发生"
+        },
+        {
+          "word": "original",
+          "meaning": "[ə'rid3ən(a)l] a.最初的；独创的；原作的n.原件"
+        },
+        {
+          "word": "hence",
+          "meaning": "[hens] ad.因此"
+        },
+        {
+          "word": "description",
+          "meaning": "[di'skrIpʃn] n.形容；描述，描写"
+        },
+        {
+          "word": "graveyard",
+          "meaning": "['grervja:d] n.墓地"
+        },
+        {
+          "word": "foreign-born",
+          "meaning": "['forin,bɔ:n] a.在国外出生的"
+        },
+        {
+          "word": "native-born",
+          "meaning": "['neitiv'bɔ:n] a.土著的"
+        },
+        {
+          "word": "rate",
+          "meaning": "[rert] n.比率；速度；费用v.评估，评价"
+        },
+        {
+          "word": "Asian",
+          "meaning": "['erʒ(a)n] n.亚裔"
+        },
+        {
+          "word": "Hispanic",
+          "meaning": "[hi'spænk] n.母语为西班牙语的人"
+        },
+        {
+          "word": "married",
+          "meaning": "['mærid] a.结婚的"
+        },
+        {
+          "word": "non-Asian",
+          "meaning": "[non'er3(3n] 非亚裔"
+        },
+        {
+          "word": "note",
+          "meaning": "[nəut] v.[僻]指出；注意n.笔记；便条；注释"
+        },
+        {
+          "word": "remote",
+          "meaning": "[rɪ'məot] a.偏远的；遥远的；相差很大的"
+        },
+        {
+          "word": "village",
+          "meaning": "['vild3] n.乡村，村庄"
+        },
+        {
+          "word": "remain",
+          "meaning": "[r'mein] v.保持不变；剩余"
+        },
+        {
+          "word": "immune",
+          "meaning": "[i'mju:n] a.不受影响的；豁免的；有免疫力的"
+        },
+        {
+          "word": "assimilative",
+          "meaning": "[ə'smr ltrv] a.同化的；同化力的"
+        },
+        {
+          "word": "divisive",
+          "meaning": "[dr'vaIsIv] a.引起分歧的"
+        },
+        {
+          "word": "issue",
+          "meaning": "['rfu:] n.问题；(报刊)期号；发行v.发表，发布"
+        },
+        {
+          "word": "pocket",
+          "meaning": "['ppktt] n. (与周围不同的)小组织"
+        },
+        {
+          "word": "seething",
+          "meaning": "[si:ð] a.满腔怒火的"
+        },
+        {
+          "word": "indeed",
+          "meaning": "[n'di:d] ad.确实"
+        },
+        {
+          "word": "turbulent",
+          "meaning": "['t3:bjələnt] a.动荡的"
+        },
+        {
+          "word": "dark",
+          "meaning": "[da:k] a.黑暗的；无望的；昏暗的；深色的"
+        },
+        {
+          "word": "deteriorate",
+          "meaning": "[di'troriorert] v.恶化；变坏"
+        },
+        {
+          "word": "identify",
+          "meaning": "[ai'dentifar] v.识别；鉴别，确认，认出；认为......等同于"
+        },
+        {
+          "word": "associate",
+          "meaning": "[ə'səusiert] v.联系；联合，(使)结合；交往n.伙伴a.联合的，联盟的"
+        },
+        {
+          "word": "assimilate",
+          "meaning": "[ə'siməlert] v.使同化；吸收"
+        },
+        {
+          "word": "monopolize",
+          "meaning": "[mə'nppəlarz] y.垄断"
+        },
+        {
+          "word": "spread",
+          "meaning": "[spred] n.传播；展开；散布；延伸n.散布，传播；差额"
+        },
+        {
+          "word": "satisfy",
+          "meaning": "['sæetrsfar] v.满足(要求、需要等);使满意；使确信"
+        },
+        {
+          "word": "emergence",
+          "meaning": "[i'm3:d3əns] n.出现；兴起"
+        },
+        {
+          "word": "resistant",
+          "meaning": "[ri'zistont] a.抵制的；抵抗力的"
+        },
+        {
+          "word": "exert",
+          "meaning": "[1g'zs:t] v.产生(影响等)"
+        },
+        {
+          "word": "constitute",
+          "meaning": "['konstitju:t] v.构成；组成，构成；建立，制定"
+        },
+        {
+          "word": "mention",
+          "meaning": "['menʃn] y.提到；写到"
+        },
+        {
+          "word": "prove",
+          "meaning": "[pru:v] v.证明；证明是，结果是"
+        },
+        {
+          "word": "absorption",
+          "meaning": "[əb'so:pfn] n.吸纳；吸收；专注；同化"
+        },
+        {
+          "word": "rewarding",
+          "meaning": "[r'wɔ:drŋ] a.有所收获的"
+        },
+        {
+          "word": "fruitless",
+          "meaning": "['fru:tləs] a.徒劳的；不结果实的；无结果的"
+        },
+        {
+          "word": "harmful",
+          "meaning": "['ha:mf(a)l] a.有害的；有危害"
+        }
+      ]
+    },
+    {
+      "name": "2006年阅读理解Text 2",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "industry",
+          "meaning": "['indostri] n.[僻]行业；产业；工厂"
+        },
+        {
+          "word": "distinctly",
+          "meaning": "[di'stinktli] ad.明显地"
+        },
+        {
+          "word": "separate",
+          "meaning": "['seprət] a.不同的；分开的；单独的"
+        },
+        {
+          "word": "hostile",
+          "meaning": "['hostarl] a.敌对的；敌意的；反对的，不利的"
+        },
+        {
+          "word": "branch",
+          "meaning": "[bra:ntʃ] n.分支；(树)枝；分部，分店；(学科)分科，部门；支流"
+        },
+        {
+          "word": "company",
+          "meaning": "['kʌmpəni] n.[僻]剧团；公司；陪伴"
+        },
+        {
+          "word": "royal",
+          "meaning": "['rɔrəl] a.王室的；国王的；庄严的；盛大的"
+        },
+        {
+          "word": "present",
+          "meaning": "['prez(a)nt] v.[僻]上演；表现；给予a.到场的；现在的，目前的n.现在，目前"
+        },
+        {
+          "word": "superb",
+          "meaning": "[su:'p3:b] a.优秀的；极好的，一流的"
+        },
+        {
+          "word": "production",
+          "meaning": "[prə'dʌkʃn] n. [僻]作品；生产，产量；产品"
+        },
+        {
+          "word": "play",
+          "meaning": "[pler] n.[僻]戏剧；游戏；作用"
+        },
+        {
+          "word": "memorial",
+          "meaning": "[mə'mɔ:riəl] a.纪念的；追悼的n.纪念物，纪念碑"
+        },
+        {
+          "word": "theatre",
+          "meaning": "['θrata(r)] n.戏院；剧场；戏剧；戏剧工作"
+        },
+        {
+          "word": "townsfolk",
+          "meaning": "['taunzfauk] n.城镇居民"
+        },
+        {
+          "word": "largely",
+          "meaning": "['la:dzli] ad.在很大程度上"
+        },
+        {
+          "word": "touristt",
+          "meaning": "['toərist] n.游客；观光者"
+        },
+        {
+          "word": "cottage",
+          "meaning": "['kptrdʒ] n.小屋；村舍；农舍"
+        },
+        {
+          "word": "birthplace",
+          "meaning": "['b3:0pleis] n.出生地；发源地"
+        },
+        {
+          "word": "sight",
+          "meaning": "[sart] n.风景；视力，视野；情景，景象v.看见"
+        },
+        {
+          "word": "worthy",
+          "meaning": "['w3:8i] a.值得尊敬的；值得......的"
+        },
+        {
+          "word": "resident",
+          "meaning": "['rezidont] n.居民；住户；旅客"
+        },
+        {
+          "word": "doubt",
+          "meaning": "[daut] v.怀疑n.怀疑"
+        },
+        {
+          "word": "penny",
+          "meaning": "['peni] n.便士；少量的钱"
+        },
+        {
+          "word": "revenue",
+          "meaning": "['revənju:] n.收入；财政收入，税收"
+        },
+        {
+          "word": "frankly",
+          "meaning": "['fræenkli] ad.坦率地"
+        },
+        {
+          "word": "beard",
+          "meaning": "[brəd] n.胡须"
+        },
+        {
+          "word": "sandal",
+          "meaning": "['sændl] n.凉鞋"
+        },
+        {
+          "word": "noisiness",
+          "meaning": "['nɔrz inis] n.噪音；吵闹"
+        },
+        {
+          "word": "ironic",
+          "meaning": "[ar'ronik] a.讽刺的"
+        },
+        {
+          "word": "share",
+          "meaning": "[Jeə(r)] n.一份；股份v.分享，分担；分配"
+        },
+        {
+          "word": "stream",
+          "meaning": "[stri:m] n. (人)流；小河，溪流；一连串v.流"
+        },
+        {
+          "word": "entirely",
+          "meaning": "[n'taroli] ad.完全地，彻底地；全部地，完整地"
+        },
+        {
+          "word": "sightseer",
+          "meaning": "['sartsio(r)] n.观光者"
+        },
+        {
+          "word": "castle",
+          "meaning": "['ka:s(2)l] n.城堡；堡垒"
+        },
+        {
+          "word": "palace",
+          "meaning": "['pæləs] n.王宫"
+        },
+        {
+          "word": "playgoer",
+          "meaning": "['plergəuə(r)] n.戏迷"
+        },
+        {
+          "word": "manage",
+          "meaning": "['mænrd3] v.完成(困难的事);勉力完成；管理；应付"
+        },
+        {
+          "word": "sight-seeing",
+          "meaning": "[sart'si:n] 观光"
+        },
+        {
+          "word": "playgoing",
+          "meaning": "['pler,gəuπn] n.看戏"
+        },
+        {
+          "word": "contend",
+          "meaning": "[kən'tend] y.声称；竞争，争夺；主张"
+        },
+        {
+          "word": "nightfall",
+          "meaning": "['nartfo:l] n.傍晚"
+        },
+        {
+          "word": "council",
+          "meaning": "['kauns(3)l] n. (市、郡等的)政务委员会"
+        },
+        {
+          "word": "contribute",
+          "meaning": "[kən'trbju:t] v.捐助；捐献；投(稿);贡献"
+        },
+        {
+          "word": "subsidy",
+          "meaning": "['sabsadi] n.补贴；津贴；补助金"
+        },
+        {
+          "word": "nevertheless",
+          "meaning": "[,nevaðə'les] ad.尽管如此"
+        },
+        {
+          "word": "cocktail",
+          "meaning": "['kpkterl] n.鸡尾酒"
+        },
+        {
+          "word": "lounge",
+          "meaning": "[laondʒ] n.酒吧；休息室；候机厅"
+        },
+        {
+          "word": "wing",
+          "meaning": "[wIŋ] n.侧厅；翼；机翼；(飞行器的)翅膀v.飞行cocktail lounge酒吧间"
+        },
+        {
+          "word": "Hilton",
+          "meaning": "['hiltən] n.希尔顿酒店集团"
+        },
+        {
+          "word": "decorate",
+          "meaning": "['dekərert] v.装饰，布置"
+        },
+        {
+          "word": "banqueting",
+          "meaning": "['bænkwitiŋ] a.宴会的v.宴请n. (通常指正式的)宴会；酒席banqueting room宴会厅；宴会室"
+        },
+        {
+          "word": "break",
+          "meaning": "[brerk] v.打破；违反；弄坏；暂停"
+        },
+        {
+          "word": "attendance",
+          "meaning": "[ə'tendəns] n.出席率；参加；出席；出席人数"
+        },
+        {
+          "word": "occupy",
+          "meaning": "['pkjupar] v.占用；使忙于；占领；担任(职务)"
+        },
+        {
+          "word": "cost",
+          "meaning": "[kost] n.成本；价钱；代价"
+        },
+        {
+          "word": "rocket",
+          "meaning": "['rpkit] v.急速上升；飙升；骤增n.火箭"
+        },
+        {
+          "word": "stay",
+          "meaning": "[ster] v.保持；停留，待；暂住"
+        },
+        {
+          "word": "raise",
+          "meaning": "[rerz] v.提高；增加；提升，举起；筹募"
+        },
+        {
+          "word": "attractive",
+          "meaning": "[ə'traktrv] a.吸引人的；有吸引力的"
+        },
+        {
+          "word": "clientele",
+          "meaning": "[,kli:an'tel] n.顾客"
+        },
+        {
+          "word": "entirely",
+          "meaning": "[n'tarəli] ad.完全地"
+        },
+        {
+          "word": "alike",
+          "meaning": "[ə'lark] a.相似的；相同的adv.同样地"
+        },
+        {
+          "word": "lean",
+          "meaning": "[li:n] a.瘦的；收益少的v.倾斜；有倾向"
+        },
+        {
+          "word": "dedicated",
+          "meaning": "['dedrkertd] a.专注的；专用的"
+        },
+        {
+          "word": "bun",
+          "meaning": "[ban] n.小圆面包"
+        },
+        {
+          "word": "flagstone",
+          "meaning": "['flægstoon] n.石板box office售票处"
+        },
+        {
+          "word": "deny",
+          "meaning": "[di'nar] v.否认；否定"
+        },
+        {
+          "word": "contribution",
+          "meaning": "[,kontr'bju:ʃ(a)n] n.贡献；捐献"
+        },
+        {
+          "word": "imitate",
+          "meaning": "['mitert] v.模仿"
+        },
+        {
+          "word": "tourism",
+          "meaning": "['tuərIzəm] n.旅游业；观光业"
+        },
+        {
+          "word": "infer",
+          "meaning": "[n'f3:(r)] v.推断"
+        },
+        {
+          "word": "expansion",
+          "meaning": "[ik'spænʃ(o)n] n.扩张；扩大；膨胀"
+        },
+        {
+          "word": "financial",
+          "meaning": "[fai'nænʃ(o)l] a.财政的；金融的"
+        },
+        {
+          "word": "poorly",
+          "meaning": "['pɔ:li] ad.不足；糟糕地adj.不适"
+        },
+        {
+          "word": "deserve",
+          "meaning": "[di'z3:v] v.应得；值得"
+        },
+        {
+          "word": "cover",
+          "meaning": "['kavə(r)] v.足够支付；覆盖，遮蔽；包括，涉及；报道；给......保险n.盖子，套子；覆盖物；保险"
+        },
+        {
+          "word": "spending",
+          "meaning": "['spendŋ] n.开销；消费；花费"
+        },
+        {
+          "word": "ill-managed",
+          "meaning": "[il'mænid3d] a.管理不善的"
+        },
+        {
+          "word": "acceptable",
+          "meaning": "[ək'septob(a)l] a.认可的；可接受的"
+        },
+        {
+          "word": "conclude",
+          "meaning": "[kən'klu:d] y.得出结论，推断出"
+        },
+        {
+          "word": "supportive",
+          "meaning": "[sə'pɔ:tiv] a.支持的"
+        },
+        {
+          "word": "favor",
+          "meaning": "['fervə(r)] n.支持；赞成；恩惠；偏爱；利益v.赞成；有利于；偏爱；促进"
+        },
+        {
+          "word": "detached",
+          "meaning": "[di'tæt ft] a.不偏不倚的；单独的；独立的；不带感情的"
+        },
+        {
+          "word": "sympathetic",
+          "meaning": "[,smpə'θetuk] a.同情的；赞同的"
+        }
+      ]
+    },
+    {
+      "name": "2006年阅读理解Text 3",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "prehistoric",
+          "meaning": "[,pri:hi'storik] a.史前的；远古的"
+        },
+        {
+          "word": "strange",
+          "meaning": "[streindʒ] a.奇怪的；陌生的"
+        },
+        {
+          "word": "extinct",
+          "meaning": "[ik'stinkt] a.灭绝的"
+        },
+        {
+          "word": "species",
+          "meaning": "['spi:Ji:z] n.物种；种类"
+        },
+        {
+          "word": "survive",
+          "meaning": "[sə'varv] v.幸存"
+        },
+        {
+          "word": "game",
+          "meaning": "[gem] n.猎物；游戏；比赛v.打赌"
+        },
+        {
+          "word": "hunt",
+          "meaning": "[hʌnt] v.猎杀；打猎；寻找n.打猎"
+        },
+        {
+          "word": "extinction",
+          "meaning": "[ik'stinkfn] n.灭绝"
+        },
+        {
+          "word": "similar",
+          "meaning": "['smələ(r)] a.类似的；相似的"
+        },
+        {
+          "word": "overfish",
+          "meaning": "[,əuvə'fif] v.过度捕捞"
+        },
+        {
+          "word": "data",
+          "meaning": "['detə] n.数据；资料"
+        },
+        {
+          "word": "media",
+          "meaning": "['mi:diə] n.新闻媒体；传媒"
+        },
+        {
+          "word": "fishery",
+          "meaning": "['fifəri] n.渔场"
+        },
+        {
+          "word": "method",
+          "meaning": "['meθəd] n.方法，办法"
+        },
+        {
+          "word": "attempt",
+          "meaning": "[ə'tempt] v.努力，尝试"
+        },
+        {
+          "word": "estimate",
+          "meaning": "['estmət] v/n.估计，估价"
+        },
+        {
+          "word": "biomass",
+          "meaning": "['barəumæs] n.生物量"
+        },
+        {
+          "word": "amount",
+          "meaning": "[ə'maunt] n.数量；金额"
+        },
+        {
+          "word": "living",
+          "meaning": "['lrviŋ] a.活着的"
+        },
+        {
+          "word": "biological",
+          "meaning": "[,barə'lod3ik(a)l] a.生物的；生物学的"
+        },
+        {
+          "word": "particular",
+          "meaning": "[pə'tkjolə(r)] a.特定的；特殊的"
+        },
+        {
+          "word": "predator",
+          "meaning": "['predsto(r)] n.食肉动物"
+        },
+        {
+          "word": "reduce",
+          "meaning": "[rn'dju:s] v.减少；缩小；简化"
+        },
+        {
+          "word": "exploitation",
+          "meaning": "[,eksplɔi'terʃ(ə)n] n.开发；开采；利用；剥削"
+        },
+        {
+          "word": "area",
+          "meaning": "['eəriə] n.地区，区域"
+        },
+        {
+          "word": "halve",
+          "meaning": "[ha:v] v.减半"
+        },
+        {
+          "word": "acknowledge",
+          "meaning": "[ək'nplidʒ] v.承认；认识；感谢；致谢"
+        },
+        {
+          "word": "figure",
+          "meaning": "['figo(r)] n.数据；数字；人物v.估计"
+        },
+        {
+          "word": "conservative",
+          "meaning": "[kən's3:vətrv] a.保守的；守旧的n.保守派；保守党"
+        },
+        {
+          "word": "technology",
+          "meaning": "[tek'nplədʒi] n.技术；科技"
+        },
+        {
+          "word": "improve",
+          "meaning": "[m'pru:v] v.提高；改善，改进"
+        },
+        {
+          "word": "vessel",
+          "meaning": "['ves(a)l] n.船；器皿；血管"
+        },
+        {
+          "word": "prey",
+          "meaning": "[prer] n.猎物；受害者v.折磨；掠夺"
+        },
+        {
+          "word": "satellite",
+          "meaning": "['sætolart] n.人造卫星"
+        },
+        {
+          "word": "sonar",
+          "meaning": "['səuna:(r)] n.声呐"
+        },
+        {
+          "word": "available",
+          "meaning": "[ə'verləb(a)l] a.可获得的；可利用的；有空的"
+        },
+        {
+          "word": "proportion",
+          "meaning": "[prə'pɔ:ʃn] n.份额；比例；部分"
+        },
+        {
+          "word": "catch",
+          "meaning": "[kætʃ] n.捕获量v.接住；抓住"
+        },
+        {
+          "word": "record",
+          "meaning": "['rekɔ:d] v.记录"
+        },
+        {
+          "word": "longline",
+          "meaning": "['loŋlan] n.多钩长线"
+        },
+        {
+          "word": "saturated",
+          "meaning": "['saetʃərer tud] a.充满的；饱和的；湿透的"
+        },
+        {
+          "word": "individual",
+          "meaning": "[imdi'vidʒuəl] n.个体"
+        },
+        {
+          "word": "bait",
+          "meaning": "[bert] v.放诱饵"
+        },
+        {
+          "word": "hook",
+          "meaning": "[hok] v.钩住n.鱼钩"
+        },
+        {
+          "word": "trap",
+          "meaning": "[traæp] v.诱捕；陷阱；诡计"
+        },
+        {
+          "word": "underestimate",
+          "meaning": "[,ʌndər'estmer t] n.低估；轻视"
+        },
+        {
+          "word": "stock",
+          "meaning": "[stok] n.库存；股票；储备v.库存；储备"
+        },
+        {
+          "word": "furthermore",
+          "meaning": "[,f3:oa'mɔ:(r)] ad.此外"
+        },
+        {
+          "word": "shark",
+          "meaning": "[ʃa:k] n.鲨鱼"
+        },
+        {
+          "word": "baseline",
+          "meaning": "['beislan] n.基准"
+        },
+        {
+          "word": "management",
+          "meaning": "['mænidʒmənt] n.管理；经营"
+        },
+        {
+          "word": "current",
+          "meaning": "['kʌrənt] a.流行的；现在的n. 电流；趋势"
+        },
+        {
+          "word": "marine",
+          "meaning": "[mə'ri:n] a.海洋的"
+        },
+        {
+          "word": "biologist",
+          "meaning": "[bar'pladʒist] n.生物学家"
+        },
+        {
+          "word": "notion",
+          "meaning": "['nəujn] n.观点；观念；信念；理解"
+        },
+        {
+          "word": "detect",
+          "meaning": "[di'tekt] v.察觉；查明"
+        },
+        {
+          "word": "massive",
+          "meaning": "['mæsiv] a.巨大的；大量的"
+        },
+        {
+          "word": "relatively",
+          "meaning": "['relətrvli] ad.相对地"
+        },
+        {
+          "word": "matter",
+          "meaning": "['mætə(r)] v.事关重要n.事情，问题；情况；物质(总称)"
+        },
+        {
+          "word": "theory",
+          "meaning": "['θrəri] n.理论，原则；看法"
+        },
+        {
+          "word": "maximum",
+          "meaning": "['maksiməm] a.最大的"
+        },
+        {
+          "word": "sustainable",
+          "meaning": "[sə'sternəb(3)l] a.可持续的"
+        },
+        {
+          "word": "yield",
+          "meaning": "[ji:ld] n.产量；产出；利润v.屈服；让步；放弃"
+        },
+        {
+          "word": "crop",
+          "meaning": "[krpp] v.[僻]收获；剪裁，剪短"
+        },
+        {
+          "word": "target",
+          "meaning": "['ta:git] n. 目标；指标；对象；靶子"
+        },
+        {
+          "word": "original",
+          "meaning": "[ə'rdon(ə)l] a.起初的；最初的；原始的"
+        },
+        {
+          "word": "disappear",
+          "meaning": "[,drsa'pio(r)] v.灭绝，消失"
+        },
+        {
+          "word": "vulnerable",
+          "meaning": "['valn()rob(ə)l] a.易受伤害的；脆弱的"
+        },
+        {
+          "word": "outlive",
+          "meaning": "[,aot'liv] y.比......活得久"
+        },
+        {
+          "word": "drop",
+          "meaning": "[drpp] v. (数量)减少，消弱"
+        },
+        {
+          "word": "restore",
+          "meaning": "[rn'stɔ:(r)] v.使恢复；修复"
+        },
+        {
+          "word": "situation",
+          "meaning": "[,stfu'erf(o)n] n.情况，形势"
+        },
+        {
+          "word": "concerned",
+          "meaning": "[kən's3:nd] a.关注的"
+        },
+        {
+          "word": "efficiency",
+          "meaning": "[i'fiʃ(ə)nsi] n.效率"
+        },
+        {
+          "word": "limit",
+          "meaning": "['lmt] n.限制，极限；界限"
+        },
+        {
+          "word": "application",
+          "meaning": "[,æpli'keɪʃ(o)n] n.应用；运用；申请"
+        }
+      ]
+    },
+    {
+      "name": "2006年阅读理解Text 4",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "weird",
+          "meaning": "[wrod] a.怪异的；奇怪的；古怪的"
+        },
+        {
+          "word": "emotion",
+          "meaning": "[i'məufn] n.情感；情绪"
+        },
+        {
+          "word": "joy",
+          "meaning": "[dʒor] n.喜悦；令人高兴的人(或事);满意"
+        },
+        {
+          "word": "somewhere",
+          "meaning": "['sʌmweə(r)] ad.大约"
+        },
+        {
+          "word": "onward",
+          "meaning": "['pnwəd] ad.从......以后"
+        },
+        {
+          "word": "meaningless",
+          "meaning": "['mi:ninləs] a.无意义的；无价值的；不重要的"
+        },
+        {
+          "word": "phony",
+          "meaning": "['fəuni] a.假的；伪造的n.骗子"
+        },
+        {
+          "word": "daffodil",
+          "meaning": "['defadil] n.水仙花"
+        },
+        {
+          "word": "evil",
+          "meaning": "['i:v(3)l] n.邪恶；恶行；害处"
+        },
+        {
+          "word": "skeptical",
+          "meaning": "['skeptik(2)l] a.怀疑的"
+        },
+        {
+          "word": "modern",
+          "meaning": "['mpd(a)n] a.现代的，近代的；新式的；现代化的"
+        },
+        {
+          "word": "time",
+          "meaning": "[tarm] n.时代；时间"
+        },
+        {
+          "word": "misery",
+          "meaning": "['mizəri] n.痛苦；悲惨"
+        },
+        {
+          "word": "perpetual",
+          "meaning": "[pə'petfuəl] a.连续不断的；持续的；永久的"
+        },
+        {
+          "word": "disaster",
+          "meaning": "[di'za:sta(r)] n.灾祸；灾害；灾难"
+        },
+        {
+          "word": "massacre",
+          "meaning": "['masɔko(r)] n.屠杀"
+        },
+        {
+          "word": "innocent",
+          "meaning": "['məs(a)nt] n.无辜的人a.无辜的；清白的；无罪的"
+        },
+        {
+          "word": "opposite",
+          "meaning": "['ppəzit] n.对立的人(或物);反面；对立面a.对面的；相反的"
+        },
+        {
+          "word": "damn",
+          "meaning": "[dæm] a.讨厌的；该死的"
+        },
+        {
+          "word": "expression",
+          "meaning": "[k'sprefn] n.表示；表达；表情"
+        },
+        {
+          "word": "completely",
+          "meaning": "[kom'pli:tli] ad.完全地"
+        },
+        {
+          "word": "dedicate",
+          "meaning": "['dedrkeit] y.致力于；献身于"
+        },
+        {
+          "word": "depict",
+          "meaning": "[di'pikt] v.描绘；描述；描写"
+        },
+        {
+          "word": "exactly",
+          "meaning": "[rg'zaktli] ad.精确地，确切地"
+        },
+        {
+          "word": "track",
+          "meaning": "[trak] v.追随(潮流等);跟踪n.轨道；路线"
+        },
+        {
+          "word": "emergence",
+          "meaning": "[i'm3:dʒɔns] n.出现"
+        },
+        {
+          "word": "commercial",
+          "meaning": "[kə'm3:J(o)l] a.商业的；贸易的"
+        },
+        {
+          "word": "ideology",
+          "meaning": "[,ardi'plədʒi] n.意识形态"
+        },
+        {
+          "word": "era",
+          "meaning": "['rorə] n.时代，年代"
+        },
+        {
+          "word": "surround",
+          "meaning": "[sə'raond] y.围绕；包围，环绕"
+        },
+        {
+          "word": "reminder",
+          "meaning": "[rɪ'maind(r)] n.引起回忆的事物"
+        },
+        {
+          "word": "exhausted",
+          "meaning": "[Ig'zɔ:stud] a.精疲力尽的；疲惫不堪的；耗尽的"
+        },
+        {
+          "word": "protection",
+          "meaning": "[prə'tekjn] n.保护，防卫"
+        },
+        {
+          "word": "literacy",
+          "meaning": "['ltərosi] n.读写能力"
+        },
+        {
+          "word": "medium",
+          "meaning": "['mi:diom] n.媒体；手段，方法"
+        },
+        {
+          "word": "church",
+          "meaning": "[tf3:tf] n.教堂；教派；教会"
+        },
+        {
+          "word": "remind",
+          "meaning": "[r'maɪnd] v.提醒，使想起"
+        },
+        {
+          "word": "worshipper",
+          "meaning": "['w3:Jipə(r)] n.敬神者"
+        },
+        {
+          "word": "worm",
+          "meaning": "[w3:m] n.蠕虫；寄生虫"
+        },
+        {
+          "word": "bummer",
+          "meaning": "['bamə(r)] n.令人烦恼(或失望)的事"
+        },
+        {
+          "word": "average",
+          "meaning": "['ævəridʒ] a.普通的；平均的v.平均"
+        },
+        {
+          "word": "Westerner",
+          "meaning": "['westonə(r)] n.西方人；(尤指)欧美人"
+        },
+        {
+          "word": "religious",
+          "meaning": "[r'lidʒəs] a.宗教的；虔诚的"
+        },
+        {
+          "word": "fast-food",
+          "meaning": "[,fast 'fu:d] a.快餐的"
+        },
+        {
+          "word": "anchor",
+          "meaning": "['ænko(r)] n.主持人"
+        },
+        {
+          "word": "magazine",
+          "meaning": "[,mæga'zi:n] n.杂志，期刊；专题节目"
+        },
+        {
+          "word": "feature",
+          "meaning": "['fi:tfə(r)] v.以.....为特色n.特征，特色；特写"
+        },
+        {
+          "word": "beam",
+          "meaning": "[bi:m] v.笑容满面n. (光线的)束，柱；(横)梁"
+        },
+        {
+          "word": "celebrity",
+          "meaning": "[sə'lebrəti] n.名人；名望，著名"
+        },
+        {
+          "word": "agenda",
+          "meaning": "[ə'dʒendə] n.潜在意图(或目的)"
+        },
+        {
+          "word": "lure",
+          "meaning": "[luə(r)] v.引诱；诱惑；吸引"
+        },
+        {
+          "word": "wallet",
+          "meaning": "['wplit] n.钱包，皮夹"
+        },
+        {
+          "word": "unreliable",
+          "meaning": "[,anr'larəb(3)l] a.不可靠的"
+        },
+        {
+          "word": "celebrate",
+          "meaning": "['selibrert] y.庆祝，庆贺；赞美"
+        },
+        {
+          "word": "arthritis",
+          "meaning": "[a:'Oratrs] n.关节炎"
+        },
+        {
+          "word": "drug",
+          "meaning": "[drʌg] n.药物；毒品"
+        },
+        {
+          "word": "economy",
+          "meaning": "[i'konəmi] n.经济；节约"
+        },
+        {
+          "word": "pain",
+          "meaning": "[pern] n.痛苦；疼痛"
+        },
+        {
+          "word": "potential",
+          "meaning": "[pə'tenʃ(a)l] n.可能性；潜力；电压a.潜在的，可能的"
+        },
+        {
+          "word": "disappointment",
+          "meaning": "[,drso'pɔintmənt] n.失望"
+        },
+        {
+          "word": "clove",
+          "meaning": "[kləuv] n.丁香；蒜瓣v.劈开；砍开"
+        },
+        {
+          "word": "bitter",
+          "meaning": "['bto(r)] a.味苦的；令人不快的"
+        },
+        {
+          "word": "cigarette",
+          "meaning": "[,sIga'ret] n.香烟"
+        },
+        {
+          "word": "breath",
+          "meaning": "[breθ] n.呼吸；一次吸入的空气"
+        },
+        {
+          "word": "cite",
+          "meaning": "[sart] v.引用；提及"
+        },
+        {
+          "word": "poet",
+          "meaning": "['pəoit] n.诗人"
+        },
+        {
+          "word": "poetry",
+          "meaning": "['pəuətri] n.诗歌"
+        },
+        {
+          "word": "expressive",
+          "meaning": "[ik'spresiv] a.富于表情的，富于表现力的"
+        },
+        {
+          "word": "positive",
+          "meaning": "['ppztiv] a.积极的；自信的；表示赞同的；正面的"
+        },
+        {
+          "word": "negative",
+          "meaning": "['negətrv] a.消极的；否定的；有害的"
+        },
+        {
+          "word": "unpleasant",
+          "meaning": "[an'plez(ə)nt] a.令人不快的"
+        },
+        {
+          "word": "entertaining",
+          "meaning": "[,enta'teiniŋ] a.使人愉快的"
+        },
+        {
+          "word": "emerge",
+          "meaning": "[i'm3:d3] v.出现"
+        },
+        {
+          "word": "replace",
+          "meaning": "[r'plers] v.取代；放回；归还；更换"
+        },
+        {
+          "word": "illusion",
+          "meaning": "[i'lu:3(3)n] n.假象；错觉；幻想"
+        },
+        {
+          "word": "distasteful",
+          "meaning": "[drs'teristfl] la.使人不愉快的；令人反感的"
+        },
+        {
+          "word": "refreshing",
+          "meaning": "[ri'frefiŋ] a.提神的"
+        },
+        {
+          "word": "flourish",
+          "meaning": "['flArʃ] v.昌盛；繁荣；兴旺"
+        },
+        {
+          "word": "boom",
+          "meaning": "[bu:m] v. (经济或生意)繁荣n.繁荣；兴起；激增；低沉有回响的声音"
+        },
+        {
+          "word": "function",
+          "meaning": "['fankJ(o)n] v.起作用；运用n.功能，作用；职务，职责"
+        },
+        {
+          "word": "balance",
+          "meaning": "['bæləns] n.均衡；平衡能力；余额"
+        },
+        {
+          "word": "expectation",
+          "meaning": "[,ekspek'terʃ(6)n] n.希望；预期，期望，指望"
+        },
+        {
+          "word": "cover",
+          "meaning": "['kavə(r)] v. [僻]报道；覆盖，遮蔽；包括，涉及；足以支付；给......保险n.覆盖物；保险"
+        }
+      ]
+    },
+    {
+      "name": "2007年阅读理解Text 1",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "examine",
+          "meaning": "[1g'zæmin] v.调查；检查；测验"
+        },
+        {
+          "word": "certificate",
+          "meaning": "[sə'tfikɔt] n.证明"
+        },
+        {
+          "word": "soccer",
+          "meaning": "['spks(r)] n.足球"
+        },
+        {
+          "word": "tournament",
+          "meaning": "['tuənəmənt] n.锦标赛"
+        },
+        {
+          "word": "noteworthy",
+          "meaning": "['nautw3:ði] a.值得注意的；显著的，重要的"
+        },
+        {
+          "word": "quirk",
+          "meaning": "[kwə:k] n.奇事；怪事"
+        },
+        {
+          "word": "elite",
+          "meaning": "[er'li:t] a.出类拔萃的；精英的"
+        },
+        {
+          "word": "European",
+          "meaning": "[joəra'pi:ən] a.欧洲的"
+        },
+        {
+          "word": "feed",
+          "meaning": "[fi:d] v.供给；供应；喂养"
+        },
+        {
+          "word": "professional",
+          "meaning": "[prə'fefanl] a.职业的；专业的"
+        },
+        {
+          "word": "rank",
+          "meaning": "[renk] n. (团体或组织的)成员；等级；地位"
+        },
+        {
+          "word": "phenomenon",
+          "meaning": "[fa'nominən] n.现象"
+        },
+        {
+          "word": "pronounced",
+          "meaning": "[prə'naun st] a.很明显的"
+        },
+        {
+          "word": "astrological",
+          "meaning": "[,æstrə'lbdʒikl] a.占星术的"
+        },
+        {
+          "word": "sign",
+          "meaning": "[sarn] n. [僻]星座；迹象；符号"
+        },
+        {
+          "word": "confer",
+          "meaning": "[kon'fə:] v.赋予；商谈，商议；授予"
+        },
+        {
+          "word": "superior",
+          "meaning": "[su:'proriə(r)] a.优秀的；卓越的；优于......的n.上级，长官"
+        },
+        {
+          "word": "tend",
+          "meaning": "[tend] v.往往会；倾向；照料"
+        },
+        {
+          "word": "stamina",
+          "meaning": "['steminə] n.耐力；耐性；持久力"
+        },
+        {
+          "word": "conceive",
+          "meaning": "[kən'si:v] v.怀孕；构想出，设想；怀有(某种感情);认为；怀(胎)"
+        },
+        {
+          "word": "springtime",
+          "meaning": "['sprintam] n.春季"
+        },
+        {
+          "word": "peak",
+          "meaning": "[pi:k] n.高峰；山顶，最高点"
+        },
+        {
+          "word": "annual",
+          "meaning": "['ænjuəl] a.每年的； 一年的；年度的"
+        },
+        {
+          "word": "mania",
+          "meaning": "['meinio] n.狂热"
+        },
+        {
+          "word": "psychology",
+          "meaning": "[sar'kplədʒi] n.心理学"
+        },
+        {
+          "word": "state",
+          "meaning": "[stert] n.州；状态；国家"
+        },
+        {
+          "word": "Sweden",
+          "meaning": "['swi:d(a)n] n.瑞典(欧洲国家)"
+        },
+        {
+          "word": "nuclear",
+          "meaning": "['nju:kliə(r)] a.原子核的；核能的；核心的"
+        },
+        {
+          "word": "engineering",
+          "meaning": "[,endʒi'nərŋ] 工程学"
+        },
+        {
+          "word": "opportunity",
+          "meaning": "[,Dpə'tju:nəti] n.机会；时机"
+        },
+        {
+          "word": "conduct",
+          "meaning": "[kən'dʌkt] v.进行；引导，带领；处理，管理；指挥；传导n.行为，举止，品行"
+        },
+        {
+          "word": "experiment",
+          "meaning": "[ik'sperimənt] n/v.实验"
+        },
+        {
+          "word": "involve",
+          "meaning": "[in'vɔlv] v.与......有关；涉及"
+        },
+        {
+          "word": "repeat",
+          "meaning": "[ri'pi:t] v.复述；重复"
+        },
+        {
+          "word": "random",
+          "meaning": "['rændom] a.随机的，随意的n.任意，随意"
+        },
+        {
+          "word": "subject",
+          "meaning": "['sAbdʒikt] n.接受试验者；实验对象"
+        },
+        {
+          "word": "digit",
+          "meaning": "['drdʒit] n. (从0到9中的任何一个)数字"
+        },
+        {
+          "word": "span",
+          "meaning": "[spæn] n.范围；跨度；一段时间"
+        },
+        {
+          "word": "recall",
+          "meaning": "[r'kɔ:l] v.回忆起；收回"
+        },
+        {
+          "word": "cognitive",
+          "meaning": "['kɔgnitiv] a.认知的；有关认识的"
+        },
+        {
+          "word": "intuitive",
+          "meaning": "[in'tju:itiv] a.直觉的"
+        },
+        {
+          "word": "inborn",
+          "meaning": "['in'bɔ:n] a.天生的，先天的"
+        },
+        {
+          "word": "exhibit",
+          "meaning": "[ig'zibit] v.表现，展示；展出，展览"
+        },
+        {
+          "word": "swamp",
+          "meaning": "[swɔmp] v.淹没n.沼泽，沼地"
+        },
+        {
+          "word": "encode",
+          "meaning": "[en'kɔud] v.编码"
+        },
+        {
+          "word": "meaningfully",
+          "meaning": "[mi:ninfəli] ad.有意地；有意义地；意味深长的"
+        },
+        {
+          "word": "entail",
+          "meaning": "[in'terl] y.需要；使(某事物)必要，牵涉；引起"
+        },
+        {
+          "word": "process",
+          "meaning": "['prəuses] n.过程，进展v.处理，加工"
+        },
+        {
+          "word": "deliberate",
+          "meaning": "[dilibərit] a.故意的；深思熟虑的"
+        },
+        {
+          "word": "specific",
+          "meaning": "[spi'sifik] a.明确的，具体的；特定的"
+        },
+        {
+          "word": "obtain",
+          "meaning": "[əb'tern] v.得到，获得"
+        },
+        {
+          "word": "feedback",
+          "meaning": "[fi:dbæk] n.反馈的意见"
+        },
+        {
+          "word": "technique",
+          "meaning": "[tek'ni:k] n.技巧；技术"
+        },
+        {
+          "word": "outcome",
+          "meaning": "['aotkʌm] n.结果，成果"
+        },
+        {
+          "word": "expert",
+          "meaning": "['eksp:t] a.[僻]内行的；经验丰富的；熟练的"
+        },
+        {
+          "word": "performer",
+          "meaning": "[pə'fo:mə(r)] n.表演者；演出者；演员"
+        },
+        {
+          "word": "colleague",
+          "meaning": "['kpli:g] n.同事"
+        },
+        {
+          "word": "performance",
+          "meaning": "[pə'f:məns] n.表现；执行；做；表演；业绩"
+        },
+        {
+          "word": "statistics",
+          "meaning": "[sta'trstiks] n.统计学；统计数字"
+        },
+        {
+          "word": "biographical",
+          "meaning": "[,barə'grefik(o)l] a.生平的"
+        },
+        {
+          "word": "details",
+          "meaning": "['di:terlz] n.详细资料；细节"
+        },
+        {
+          "word": "laboratory",
+          "meaning": "[lə'bprətri] n.实验室"
+        },
+        {
+          "word": "startling",
+          "meaning": "['sta:tlinŋ] a.惊人的；让人震惊的"
+        },
+        {
+          "word": "assertion",
+          "meaning": "[ə's:ʃ(a)n] n.断言；主张；认定；声称"
+        },
+        {
+          "word": "trait",
+          "meaning": "[trert] n.特性；特点，特性"
+        },
+        {
+          "word": "overrate",
+          "meaning": "[,əuvə'rert] y.高估"
+        },
+        {
+          "word": "surgery",
+          "meaning": "[s3:dʒəri] n.外科手术"
+        },
+        {
+          "word": "ballet",
+          "meaning": "['bælei] n.芭蕾舞"
+        },
+        {
+          "word": "programming",
+          "meaning": "['prəu græemin] n.编程 @时空.考研"
+        },
+        {
+          "word": "stress",
+          "meaning": "[stres] v.强调；着重"
+        },
+        {
+          "word": "training",
+          "meaning": "[['treinin] ]n.培训；训练"
+        },
+        {
+          "word": "spotlight",
+          "meaning": "['spptlart] y.使突出n.聚光灯"
+        },
+        {
+          "word": "craze",
+          "meaning": "[krerz] n. (一时的)狂热，风行"
+        },
+        {
+          "word": "hysteria",
+          "meaning": "[hi'strəriə] n.歇斯底里"
+        },
+        {
+          "word": "excitement",
+          "meaning": "[k'sartmənt] n.兴奋；激动；刺激"
+        },
+        {
+          "word": "genetic",
+          "meaning": "[dʒa'netik] a.基因的；遗传学的"
+        },
+        {
+          "word": "psychological",
+          "meaning": "[,sarkə'lodʒik(2)l] a.心理的；精神上的"
+        },
+        {
+          "word": "concentration",
+          "meaning": "[,kons(a)n'trerf(o)n] n.专心；专注"
+        },
+        {
+          "word": "dominating",
+          "meaning": "['damə  netrŋ] a.主导的；统治的，独裁的"
+        },
+        {
+          "word": "overlook",
+          "meaning": "[,əuvə'luk] v.忽略；俯瞰"
+        },
+        {
+          "word": "nurture",
+          "meaning": "['n3:tfə(r)] n.育有；教养，培育v.养育，培养；滋养"
+        },
+        {
+          "word": "proverb",
+          "meaning": "['prDv3:b] n.谚语；格言"
+        },
+        {
+          "word": "convey",
+          "meaning": "[kən'veɪ] y.表达；传递"
+        },
+        {
+          "word": "faith",
+          "meaning": "[ferθ] n.信任；相信；信心"
+        },
+        {
+          "word": "reap",
+          "meaning": "[ri:p] v.收获；收割"
+        },
+        {
+          "word": "sow",
+          "meaning": "[səu] v.播种；传播；激起"
+        }
+      ]
+    },
+    {
+      "name": "2007年阅读理解Text 2",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "supplement",
+          "meaning": "[splim(a)nt] n. (报纸、杂志等的)副刊；补充；增刊v.增补，补充"
+        },
+        {
+          "word": "feature",
+          "meaning": "[fi:tʃə] v. 以 .......为特色n.特征，特色；特写"
+        },
+        {
+          "word": "column",
+          "meaning": "['kpləm] n. (杂志或报刊的)专栏"
+        },
+        {
+          "word": "query",
+          "meaning": "['kwiori] v.提问；怀疑n.疑问，询问"
+        },
+        {
+          "word": "mental",
+          "meaning": "['ment(a)l] a.智力的；精神的，心理的"
+        },
+        {
+          "word": "verbal",
+          "meaning": "['v3:bl] a.言语的；文字的；口头的；动词的"
+        },
+        {
+          "word": "visual",
+          "meaning": "['vIuəl] a.视觉的"
+        },
+        {
+          "word": "analogy",
+          "meaning": "[ə'nælədʒi] n .类比"
+        },
+        {
+          "word": "envision",
+          "meaning": "[in'vI3ən] v.想象；展望"
+        },
+        {
+          "word": "fold",
+          "meaning": "[fuld] v.折叠，对折"
+        },
+        {
+          "word": "deduce",
+          "meaning": "[dr'dju:s] v.推论；演绎"
+        },
+        {
+          "word": "numerical",
+          "meaning": "[nju:'merik(a)l] a.数字的；用数表示的"
+        },
+        {
+          "word": "sequence",
+          "meaning": "[si:kwəns] n.序列；顺序；次序； 一系列；一连串v.按顺序排列"
+        },
+        {
+          "word": "similar",
+          "meaning": "[simələ(r)] a.类似的"
+        },
+        {
+          "word": "confusing",
+          "meaning": "[kən'fju:zin] a.令人困惑的"
+        },
+        {
+          "word": "field",
+          "meaning": "[fi:ld] v.[僻]应付(问题或意见);处理n.场；领域；田野"
+        },
+        {
+          "word": "difference",
+          "meaning": "['dfrəns] n.区别；差异；差别"
+        },
+        {
+          "word": "average",
+          "meaning": "['ævɔrdʒ] a .[僻]普通的；平均的；正常的"
+        },
+        {
+          "word": "fondness",
+          "meaning": "['fondnəs] n.喜爱"
+        },
+        {
+          "word": "nature",
+          "meaning": "['nertfə(r)] n. [僻]本质；自 然"
+        },
+        {
+          "word": "coincidence",
+          "meaning": "[kəv'nsid(a)ns] n.巧合；同时发生"
+        },
+        {
+          "word": "obvious",
+          "meaning": "['pbvios] a.明白的；明显的"
+        },
+        {
+          "word": "capacity",
+          "meaning": "[kə'pæssti] n.能力；容量"
+        },
+        {
+          "word": "visualize",
+          "meaning": "['vI3uəlarz] v.使形象化；想象；设想"
+        },
+        {
+          "word": "object",
+          "meaning": "['pbdʒikt] n.物体；目标v.反对；不同意"
+        },
+        {
+          "word": "pattern",
+          "meaning": "[pæt(a)n] n.模式；方式；模型"
+        },
+        {
+          "word": "elude",
+          "meaning": "[r'(j)u:d] y.把......难住；逃避；躲避"
+        },
+        {
+          "word": "philosopher",
+          "meaning": "[fa'losəfə(r)] n.哲学家"
+        },
+        {
+          "word": "intelligence",
+          "meaning": "[in'telidʒəns] n.智力；智慧；才智"
+        },
+        {
+          "word": "encompass",
+          "meaning": "[n'kʌmpəs] v.包含；包围；围绕"
+        },
+        {
+          "word": "specify",
+          "meaning": "['spesifar] v.明确说明，详细说明"
+        },
+        {
+          "word": "neurology",
+          "meaning": "[,n juə'rpladʒi] n.神经学"
+        },
+        {
+          "word": "genetics",
+          "meaning": "[dʒa'netiks] n.遗传学"
+        },
+        {
+          "word": "field",
+          "meaning": "[fi:ld] n.领域；场；田野v.应付(问题或意见)"
+        },
+        {
+          "word": "primarily",
+          "meaning": "[prar’merəli] ad.主要地"
+        },
+        {
+          "word": "scale",
+          "meaning": "[skeil] n.量表；比例尺；范围；刻度v.攀登"
+        },
+        {
+          "word": "version",
+          "meaning": "[v3:J(o)n] n.版本"
+        },
+        {
+          "word": "psychologist",
+          "meaning": "[sar'kplədʒIst] n.心理学家"
+        },
+        {
+          "word": "variation",
+          "meaning": "[veərrerf(o)n] n.变体"
+        },
+        {
+          "word": "populate",
+          "meaning": "['pppjulert] 出现于(某地方，领域);居住于"
+        },
+        {
+          "word": "population",
+          "meaning": "[.pppju'lerʃ(ə)n] n. (地区、国家等的)人口"
+        },
+        {
+          "word": "statistical",
+          "meaning": "[sta'trstik(ə)l] a.统计的；统计学的"
+        },
+        {
+          "word": "distribution",
+          "meaning": "[,distr'bju:jn] n.分布；分配"
+        },
+        {
+          "word": "peer",
+          "meaning": "[pIə(r)] n.[僻]同龄人v.仔细看；凝视"
+        },
+        {
+          "word": "divide",
+          "meaning": "[dr'vard] v.[僻]除以；划分；分开；分配"
+        },
+        {
+          "word": "chronological",
+          "meaning": "[kronə'ldd3ik(2)l] a.按时间计算的"
+        },
+        {
+          "word": "multiply",
+          "meaning": "['mʌltrp lar] v.乘以"
+        },
+        {
+          "word": "standardize",
+          "meaning": "['stændədarz] yv.使标准化"
+        },
+        {
+          "word": "scholastic",
+          "meaning": "[sk'læestuk] a.学术的；学业的；学校的"
+        },
+        {
+          "word": "assessment",
+          "meaning": "[ə'sesment] n.评估；估价；评定"
+        },
+        {
+          "word": "capture",
+          "meaning": "['kæptʃə] v.[僻]充分体现；v.捕获；采集；俘获；拍摄"
+        },
+        {
+          "word": "aspect",
+          "meaning": "['æspekt] n.特点；方面；层面；外观"
+        },
+        {
+          "word": "assess",
+          "meaning": "[ə'ses] v.评估；评定；评价"
+        },
+        {
+          "word": "element",
+          "meaning": "['elmənt] n.要素；成分；原理"
+        },
+        {
+          "word": "intelligent",
+          "meaning": "[n'telidʒont] a.智能的；有才智的；聪明的；智慧的"
+        },
+        {
+          "word": "analytical",
+          "meaning": "[ænə'litk(ə)l] a.分析的"
+        },
+        {
+          "word": "measure",
+          "meaning": "[meʒə(r)] v.评估；测量n.措施；衡量；方法"
+        },
+        {
+          "word": "creativity",
+          "meaning": "[,kri:er'trvəti] n.创造力"
+        },
+        {
+          "word": "practical",
+          "meaning": "[prektukl] a.实践的；实际的；实用的"
+        },
+        {
+          "word": "component",
+          "meaning": "[kəm'pəunənt] n.要素；组成部分a.组成的"
+        },
+        {
+          "word": "critical",
+          "meaning": "['krituk(ə)l] a.关键的；批评的，评论的；危急的"
+        },
+        {
+          "word": "predict",
+          "meaning": "[pri'dikt] y.预测；预言，预告"
+        },
+        {
+          "word": "situation",
+          "meaning": "[,stfju'erʃn] n.情况；形势，状况；位置"
+        },
+        {
+          "word": "opposite",
+          "meaning": "['ppazit] a.相反的；对面的"
+        },
+        {
+          "word": "toil",
+          "meaning": "[tsil] v.辛苦地工作；艰难n.苦工；劳累的工作"
+        },
+        {
+          "word": "testify",
+          "meaning": "[testifar] v.证实；作证"
+        },
+        {
+          "word": "skip",
+          "meaning": "[skip] v.略过，跳过；蹦蹦跳跳地走"
+        },
+        {
+          "word": "philosophical",
+          "meaning": "[,filə'spfikl] a.哲学的"
+        },
+        {
+          "word": "tell",
+          "meaning": "[tel] v.[僻]区分，辨别；告诉；命令"
+        },
+        {
+          "word": "concept",
+          "meaning": "['konsept] n.概念；观念"
+        },
+        {
+          "word": "graph",
+          "meaning": "[gra:f] n.图表；曲线图"
+        },
+        {
+          "word": "indicator",
+          "meaning": "['rndikeitə] n.指标；标志；迹象"
+        },
+        {
+          "word": "available",
+          "meaning": "[ə'verləbl] a.可获得的；可利用的"
+        },
+        {
+          "word": "content",
+          "meaning": "[kən'tent] n.内容；容量；目录a.满意的，满足的，惬意的"
+        },
+        {
+          "word": "format",
+          "meaning": "['fs:mæt] n.形式；设计，安排v.使格式化"
+        },
+        {
+          "word": "computational",
+          "meaning": "[komp ju'terʃənl] a.计算的"
+        },
+        {
+          "word": "procedure",
+          "meaning": "[prə'si:d₃ə ] n.步骤；程序，手续"
+        },
+        {
+          "word": "emphasize",
+          "meaning": "['emfosarz] v.强调"
+        },
+        {
+          "word": "case",
+          "meaning": "[kers] n.事例；具体情况；实情"
+        },
+        {
+          "word": "extreme",
+          "meaning": "[ik'stri:m] a.极端的；极度的"
+        },
+        {
+          "word": "characteristic",
+          "meaning": "[,kerəkta'rstik] n.特征，特性a.特有的，独特的"
+        },
+        {
+          "word": "reliable",
+          "meaning": "[r'larəb(a)l] a.可靠的"
+        },
+        {
+          "word": "correlate",
+          "meaning": "['kprələt] v.相互关联影响；相互依赖"
+        },
+        {
+          "word": "guesswork",
+          "meaning": "[gesw3:k] n.猜测，猜想"
+        },
+        {
+          "word": "supportive",
+          "meaning": "[sa'pɔ:trv] a.支持的"
+        },
+        {
+          "word": "skeptical",
+          "meaning": "['skeptukəl] a.怀疑的"
+        },
+        {
+          "word": "impartial",
+          "meaning": "[m'pa:ʃ(a)l] a.中立的；公正的"
+        },
+        {
+          "word": "biased",
+          "meaning": "['barst] n.有偏见的"
+        }
+      ]
+    },
+    {
+      "name": "2007年阅读理解Text 3",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "middle-class",
+          "meaning": "[,mrdl 'kla:s] a.中产阶级的"
+        },
+        {
+          "word": "fair",
+          "meaning": "[feə(r)] a.公平的；合理的；相当的；晴朗的；整齐的n.集市，交易会"
+        },
+        {
+          "word": "financially",
+          "meaning": "[far'nænfəli] ad.经济上；财政上；金融上"
+        },
+        {
+          "word": "transform",
+          "meaning": "[træens'fom] v.改变；变换，使改观"
+        },
+        {
+          "word": "reality",
+          "meaning": "[ri'æeləti] n.现实；真实的事物，事实"
+        },
+        {
+          "word": "slip",
+          "meaning": "[slip] n.便条；差错；摔跤v.滑倒；溜走；退步；陷入"
+        },
+        {
+          "word": "diagnosis",
+          "meaning": "[,darag'nəus Is] n.诊断"
+        },
+        {
+          "word": "spouse",
+          "meaning": "[spaus] n.配偶"
+        },
+        {
+          "word": "solidly",
+          "meaning": "['splidli] ad.牢固地；连续地；一致地"
+        },
+        {
+          "word": "newly",
+          "meaning": "['nju:li] ad.最近"
+        },
+        {
+          "word": "scholar",
+          "meaning": "['skplə(r)] n.学者；奖学金获得者"
+        },
+        {
+          "word": "policymaker",
+          "meaning": "['ppləsimerkə(r)] n.政策制定者；决策者"
+        },
+        {
+          "word": "critic",
+          "meaning": "['krituk] n.评论家"
+        },
+        {
+          "word": "stripe",
+          "meaning": "[straip] n.种类"
+        },
+        {
+          "word": "debate",
+          "meaning": "[di'bert] v.争论，辩论n.争论，辩论"
+        },
+        {
+          "word": "implication",
+          "meaning": "[mplr'keiʃ(ə)n] n.可能得影响(或作用、后果);含意，暗示"
+        },
+        {
+          "word": "limit",
+          "meaning": "['lmit] n.极限v.限制，限定"
+        },
+        {
+          "word": "paycheck",
+          "meaning": "['pertfek] n.薪金；工资"
+        },
+        {
+          "word": "status",
+          "meaning": "['sterts] n.状态；地位，身份，职业；情形"
+        },
+        {
+          "word": "parachute",
+          "meaning": "[pærəfu:t] n.降落伞"
+        },
+        {
+          "word": "setback",
+          "meaning": "['setbk] n.挫折；阻碍"
+        },
+        {
+          "word": "back-up",
+          "meaning": "[bæk ʌp] a.备用的，后备的；备份的"
+        },
+        {
+          "word": "earner",
+          "meaning": "['3:nə(r)] n.挣钱人；工资所得者"
+        },
+        {
+          "word": "workforce",
+          "meaning": "[w3:kfo:s] n.劳动力；全体员工"
+        },
+        {
+          "word": "effect",
+          "meaning": "[i'fekt] n.效应；影响；印象，效果"
+        },
+        {
+          "word": "unemployment",
+          "meaning": "[ʌnm'plɔmənt] n.失业"
+        },
+        {
+          "word": "insurance",
+          "meaning": "[n'fuərəns] n.保险"
+        },
+        {
+          "word": "disability",
+          "meaning": "[,drs'brləti] n.伤残"
+        },
+        {
+          "word": "weather",
+          "meaning": "['weoə] v. [僻]平安地渡过(困难);变形n.天气(预报)"
+        },
+        {
+          "word": "disruption",
+          "meaning": "[drs'rapfən] n.破坏，破裂；扰乱，打扰，中断"
+        },
+        {
+          "word": "absorb",
+          "meaning": "[əb'sɔ:b] v. [僻]承担；吸引；吸收"
+        },
+        {
+          "word": "retirement",
+          "meaning": "[r'tarɔm(ə)nt] n.退休"
+        },
+        {
+          "word": "steelworker",
+          "meaning": "['sti:lw3:kə(r)] n.炼钢工人"
+        },
+        {
+          "word": "airline",
+          "meaning": "[eɔlan] n.航空公司"
+        },
+        {
+          "word": "employee",
+          "meaning": "[m'plɔii:] n.雇员；雇工"
+        },
+        {
+          "word": "auto",
+          "meaning": "['ɔ :tau] n.汽车"
+        },
+        {
+          "word": "fluctuation",
+          "meaning": "[,flhktfv'efon] n.波动；变动；起伏"
+        },
+        {
+          "word": "harsh",
+          "meaning": "[ha:ʃ] a.严峻的；严厉的；粗糙的"
+        },
+        {
+          "word": "outlive",
+          "meaning": "[aot'liv] v.继续存在；比...活得长"
+        },
+        {
+          "word": "campaign",
+          "meaning": "[kæm'pein] v.发起运动，开展活动n.战役；运动"
+        },
+        {
+          "word": "saving",
+          "meaning": "['servIŋ] n.储蓄，存款；节省，节约"
+        },
+        {
+          "word": "model",
+          "meaning": "[mpd(a)l] n.模式；模型；范例；模特v.当模特；将....做成模型a.模范的"
+        },
+        {
+          "word": "retiree",
+          "meaning": "[r,tara'ri:] n.退休人员；退休者"
+        },
+        {
+          "word": "guaranteed",
+          "meaning": "[.geærən'ti:d] a.有保障的；必然的"
+        },
+        {
+          "word": "payment",
+          "meaning": "[permənt] n.收入；款额，款项；报答"
+        },
+        {
+          "word": "investment",
+          "meaning": "[n'vestmənt] n.投资；投入"
+        },
+        {
+          "word": "return",
+          "meaning": "[ri't3:n] n.[僻]收益；返回；回报；回来v.返回；回报；回来"
+        },
+        {
+          "word": "picture",
+          "meaning": "[prktə(r)] n. [僻]情况；照片；图画v.想象；描写"
+        },
+        {
+          "word": "absolute",
+          "meaning": "['æbslu:t] a.绝对的；纯粹的，完全的，十足的；,肯定的"
+        },
+        {
+          "word": "healthcare",
+          "meaning": "[helθkeə(r)] n.医疗保健"
+        },
+        {
+          "word": "share",
+          "meaning": "[Jeə(r)] n. [僻]份额；股份；均分，分摊；分配"
+        },
+        {
+          "word": "bear",
+          "meaning": "[ber] v.[僻]承担(费用);忍受，容忍n.熊"
+        },
+        {
+          "word": "deductible",
+          "meaning": "[dr'dʌktib(3)l] n.免赔额"
+        },
+        {
+          "word": "dose",
+          "meaning": "[dəus] n.一次，一番(尤指不愉快的经历);(药物的)剂量"
+        },
+        {
+          "word": "demographics",
+          "meaning": "[demə'grefiks] n.人口统计数据"
+        },
+        {
+          "word": "odds",
+          "meaning": "[pdz] n.概率；不平等，差异；机会"
+        },
+        {
+          "word": "attendant",
+          "meaning": "[ə'tend(ə)nt] a.随之而来的"
+        },
+        {
+          "word": "assistance",
+          "meaning": "[ə'sIstəns] n.援助；帮助"
+        },
+        {
+          "word": "eightfold",
+          "meaning": "[ertfauld] ad.八倍地；八层地"
+        },
+        {
+          "word": "perspective",
+          "meaning": "[pə'spektrv] n.视角；观点；远景，景观"
+        },
+        {
+          "word": "opportunity",
+          "meaning": "[,ppə'tju:nəti] n.机会"
+        },
+        {
+          "word": "exercise",
+          "meaning": "['eksɔsarz] [僻]v.履行(职责、责任等);运用n./v.练习；锻炼"
+        },
+        {
+          "word": "responsibility",
+          "meaning": "[rI,sppnsə'biləti] n.责任"
+        },
+        {
+          "word": "frightening",
+          "meaning": "['frart(ə)nin] a.骇人的；使惊恐额"
+        },
+        {
+          "word": "acceleration",
+          "meaning": "[əkselə'reɪʃ(ə)n] n .增速，加快"
+        },
+        {
+          "word": "wholesale",
+          "meaning": "['həulserl] a.大规模的；批发的"
+        },
+        {
+          "word": "overburden",
+          "meaning": "[,əuvə'b3:d] v.负担过多，使过劳"
+        },
+        {
+          "word": "shoulder",
+          "meaning": "['Jəuld(r)] n.肩膀v.承担，担负；扛，挑"
+        },
+        {
+          "word": "fallout",
+          "meaning": "['fs:lat] n.后果"
+        },
+        {
+          "word": "vulnerable",
+          "meaning": "['valnərəbl] a.易受伤害的；脆弱的"
+        },
+        {
+          "word": "deprive",
+          "meaning": "[di'prarv] v.剥夺；使丧失；使不能享有"
+        },
+        {
+          "word": "reform",
+          "meaning": "[ri'fo m] n.改革；改进；改造，改过自新n.改革，变革"
+        },
+        {
+          "word": "invest",
+          "meaning": "[n'vest] v.投资"
+        },
+        {
+          "word": "popularize",
+          "meaning": "['pppjələrar z] v.使普及；宣传；推广"
+        },
+        {
+          "word": "compensate",
+          "meaning": "['kompenseit] y.补偿，赔偿"
+        },
+        {
+          "word": "pension",
+          "meaning": "['penʃ(ə)n] n.退休金，养老金"
+        },
+        {
+          "word": "outweigh",
+          "meaning": "[,aot'wer] v.超过"
+        },
+        {
+          "word": "indicator",
+          "meaning": "['mdrkeitə(r)] n.指标；标志；迹象；指针"
+        },
+        {
+          "word": "alert",
+          "meaning": "[ə'l3:t] n.警惕；戒备；警报"
+        },
+        {
+          "word": "cliff",
+          "meaning": "[klf] n.悬崖"
+        },
+        {
+          "word": "conflict",
+          "meaning": "['konflikt] n.冲突；矛盾；争执；抵触v.抵触"
+        },
+        {
+          "word": "ruin",
+          "meaning": "['ru:in] n.毁坏；破产；废墟"
+        }
+      ]
+    },
+    {
+      "name": "2007年阅读理解Text 4",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "pour",
+          "meaning": "[pɔ:] v. (雨)倾盆而下"
+        },
+        {
+          "word": "board",
+          "meaning": "[bɔ:d] n. [僻]董事会；木板v.登上(火车、轮船或飞机)"
+        },
+        {
+          "word": "accounting",
+          "meaning": "[ə'kauntin] n.会计"
+        },
+        {
+          "word": "compliance",
+          "meaning": "[kɔm'plarons] n.遵从；顺从"
+        },
+        {
+          "word": "feeble",
+          "meaning": "[fi:b(a)l] a.无效的；虚弱的，无力的"
+        },
+        {
+          "word": "corporation",
+          "meaning": "[,ko:pə'reɪʃ(o)n] n.公司；法人"
+        },
+        {
+          "word": "governance",
+          "meaning": "['gʌv(a)nəns] n.管理；统治"
+        },
+        {
+          "word": "threaten",
+          "meaning": "['Oretən] v. (坏事)可能发生；恐吓，威胁"
+        },
+        {
+          "word": "earn",
+          "meaning": "[3:n] v.[僻]招致；赢得；挣得；挣钱"
+        },
+        {
+          "word": "nasty",
+          "meaning": "['na:st] a.令人不愉快的；严重的；肮脏的；令人厌恶的；恶意的"
+        },
+        {
+          "word": "headline",
+          "meaning": "['hedlarn] n.头条；大字标题；新闻提要"
+        },
+        {
+          "word": "inevitably",
+          "meaning": "[in'evitobli] ad.不可避免地"
+        },
+        {
+          "word": "executive",
+          "meaning": "[Ig'zekjtrv] a.管理的；行政的"
+        },
+        {
+          "word": "suite",
+          "meaning": "[swi:t] n.一批随员；一套，一副；套件"
+        },
+        {
+          "word": "insecurity",
+          "meaning": "[,Inst'kjuɔrət] n.不安全"
+        },
+        {
+          "word": "odd",
+          "meaning": "[pd] a. [僻]临时的，奇数的；奇怪的，古怪的"
+        },
+        {
+          "word": "staff",
+          "meaning": "[sta:f] n.全体职工v.任职于......"
+        },
+        {
+          "word": "concern",
+          "meaning": "[kən's3:n] n.关心的事v.涉及，关系到；关心"
+        },
+        {
+          "word": "telecom",
+          "meaning": "['telikpm] n.电信"
+        },
+        {
+          "word": "agenda",
+          "meaning": "[ə'dʒendə] n.议程表，议事日程"
+        },
+        {
+          "word": "massive",
+          "meaning": "['mæesiv] a.非常严重的；大的；大量的"
+        },
+        {
+          "word": "leakage",
+          "meaning": "[li:kidʒ] n.泄露；泄漏"
+        },
+        {
+          "word": "diverse",
+          "meaning": "[dar'v3s] a各种各样的；多种多样的，不同的"
+        },
+        {
+          "word": "defense",
+          "meaning": "[di'fens] n.国防；防御；防守"
+        },
+        {
+          "word": "contractor",
+          "meaning": "[kən'trektə] n.承包商"
+        },
+        {
+          "word": "application",
+          "meaning": "[,æplr'keIʃ(ə)n] n.应用；申请；申请书(表)"
+        },
+        {
+          "word": "intricate",
+          "meaning": "['rntrkət] a.复杂的；难理解的"
+        },
+        {
+          "word": "potential",
+          "meaning": "[pə'tenʃl] a.潜在的；可能的n.潜在性，可能性；潜力，潜能"
+        },
+        {
+          "word": "vulnerability",
+          "meaning": "[,val nərə'bilət] n.弱点"
+        },
+        {
+          "word": "asset",
+          "meaning": "['æset] n.资产，财产；有价值的人(或事物)"
+        },
+        {
+          "word": "guard",
+          "meaning": "[ga:d] v.保护；守卫，保卫n.守卫，看守"
+        },
+        {
+          "word": "shareholder",
+          "meaning": "[Jeəhəoldə] n.股东"
+        },
+        {
+          "word": "concept",
+          "meaning": "['konsept] n.概念，观念"
+        },
+        {
+          "word": "principle",
+          "meaning": "['prinsɔpl] n.原则；原理"
+        },
+        {
+          "word": "security",
+          "meaning": "[si'kjuərəti] n.安全"
+        },
+        {
+          "word": "investment",
+          "meaning": "[n'vestmənt] n.投资"
+        },
+        {
+          "word": "redundancy",
+          "meaning": "[r'dʌnd(a)ns] n.多余；解雇"
+        },
+        {
+          "word": "recovery",
+          "meaning": "[rn'kavəri] n.恢复，痊愈；重获"
+        },
+        {
+          "word": "mystery",
+          "meaning": "['mistri] n.[僻]难以理解的事物；神秘"
+        },
+        {
+          "word": "dim",
+          "meaning": "[dm] a. [僻]迟钝的；暗淡的，模糊的；愚笨的；不乐观的"
+        },
+        {
+          "word": "executive",
+          "meaning": "[Ig'zekjotrv] n.管理者"
+        },
+        {
+          "word": "valuable",
+          "meaning": "['væljuəbl] a.有价值的"
+        },
+        {
+          "word": "restore",
+          "meaning": "[r'stɔ:] v.恢复；修复；归还"
+        },
+        {
+          "word": "destroy",
+          "meaning": "[dr'stroi] v.破坏；;摧毁；毁灭"
+        },
+        {
+          "word": "sensitive",
+          "meaning": "['senstrv] a.敏感的；灵敏的；体贴的"
+        },
+        {
+          "word": "affair",
+          "meaning": "[ə'feə(r)] n.事务；事情"
+        },
+        {
+          "word": "encourage",
+          "meaning": "[n'kArrdʒ] v. [僻]助长；鼓励；促进"
+        },
+        {
+          "word": "justify",
+          "meaning": "['dʒʌstrfar] v.证明......有理"
+        },
+        {
+          "word": "legal",
+          "meaning": "['li:g(2)l] a.法律的；合法的"
+        },
+        {
+          "word": "penalty",
+          "meaning": "['penəlti] n.惩罚，处罚"
+        },
+        {
+          "word": "firm",
+          "meaning": "[f3:m] n.公司a.坚固的；坚決的，坚定的"
+        },
+        {
+          "word": "victim",
+          "meaning": "['viktm] n.受害者；牺牲品"
+        },
+        {
+          "word": "astray",
+          "meaning": "[ə'strer] ad.迷路；堕落"
+        },
+        {
+          "word": "propose",
+          "meaning": "[prə'pəuz] v.提议；打算；求婚"
+        },
+        {
+          "word": "legislation",
+          "meaning": "[ledʒis'lerʃ(a)n] n.立法；法律；法规"
+        },
+        {
+          "word": "theft",
+          "meaning": "[θeft] n.盗窃，偷窃"
+        },
+        {
+          "word": "disclose",
+          "meaning": "[drs'klauz] v.披露；揭露，透露"
+        },
+        {
+          "word": "overshadow",
+          "meaning": "[əuvə'ædəu] v.使黯然失色"
+        },
+        {
+          "word": "federal",
+          "meaning": "['fedərəl] a.联邦的"
+        },
+        {
+          "word": "trade",
+          "meaning": "[trerd] n.贸易；行业"
+        },
+        {
+          "word": "commission",
+          "meaning": "[kə'mijn] n.委员会；委托；任命"
+        },
+        {
+          "word": "corporate",
+          "meaning": "['ks:p(3)rət] a.公司的，法人的；全体的，共同的"
+        },
+        {
+          "word": "regulator",
+          "meaning": "[regjoleitə] n.监管机构"
+        },
+        {
+          "word": "adequate",
+          "meaning": "[adrkwət] a.充分的；足够的；恰当的"
+        },
+        {
+          "word": "fierce",
+          "meaning": "[fias] a.激烈的；凶猛的；强烈的"
+        },
+        {
+          "word": "competition",
+          "meaning": "[kompa'tJ(o)n] n.竞争；比赛；竞争"
+        },
+        {
+          "word": "severity",
+          "meaning": "[st'veritu] n.严重性"
+        },
+        {
+          "word": "spy",
+          "meaning": "[spar] n.间谍，密探"
+        },
+        {
+          "word": "locate",
+          "meaning": "[ləu'kert] v.找出......的准确位置"
+        },
+        {
+          "word": "interest",
+          "meaning": "['ntrəst] n.[僻]利益；利息；兴趣"
+        },
+        {
+          "word": "due",
+          "meaning": "[dju:] a.应得的；应付的；预期的"
+        },
+        {
+          "word": "attend",
+          "meaning": "[ə'tenʃ(o)n] v.注意；照料；参加"
+        },
+        {
+          "word": "enhance",
+          "meaning": "[n'ha:ns] v.提高；增加，增强"
+        },
+        {
+          "word": "perceive",
+          "meaning": "[pə'si:v] v.意识到"
+        },
+        {
+          "word": "sensitivity",
+          "meaning": "[,sensə'trvəti] n.敏感性"
+        },
+        {
+          "word": "restoration",
+          "meaning": "[,rest'rerjn] n.修复；恢复；归还"
+        },
+        {
+          "word": "severe",
+          "meaning": "[sI'vIə(r)] a.严重的；严苛的；艰巨的"
+        },
+        {
+          "word": "essential",
+          "meaning": "[i's enʃ(ə)l] n.至关重要的"
+        },
+        {
+          "word": "major",
+          "meaning": "['merdʒə(r)] a.主要的；重大的；主修的"
+        }
+      ]
+    },
+    {
+      "name": "2008年阅读理解Text 1",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "sphere",
+          "meaning": "[sfiə] n .[僻]领域，范围；球，球体"
+        },
+        {
+          "word": "undesirable",
+          "meaning": "[,Audi'zaiarəbl] a.不利的；不想要的；不受欢迎的n.不良分子"
+        },
+        {
+          "word": "category",
+          "meaning": "[kaetigəri] n.类别，种类"
+        },
+        {
+          "word": "susceptible",
+          "meaning": "[sə'septobl] a.易受影响的；敏感的，善感的"
+        },
+        {
+          "word": "depression",
+          "meaning": "[dipreən] n.抑郁症"
+        },
+        {
+          "word": "anxiety",
+          "meaning": "[æen'zaroti] n.焦虑症"
+        },
+        {
+          "word": "disorder",
+          "meaning": "[drs'ɔ :do(r)] n.疾病，失调；混乱；骚乱"
+        },
+        {
+          "word": "chief",
+          "meaning": "[tfi:f] a .主任的；主要的，首要的n.首领，领袖"
+        },
+        {
+          "word": "psychiatrist",
+          "meaning": "[sai'kaistrist] n.精神科医生"
+        },
+        {
+          "word": "veteran",
+          "meaning": "['vetərən] n.退伍军人；老手，老兵"
+        },
+        {
+          "word": "administration",
+          "meaning": "[ədmini'streiʃən] n.管理；管理部门；政府"
+        },
+        {
+          "word": "hormone",
+          "meaning": "[ho:məun] n.激素；荷尔蒙"
+        },
+        {
+          "word": "trigger",
+          "meaning": "['trigə] n.诱因；扳机v.引发，触发"
+        },
+        {
+          "word": "ovary",
+          "meaning": "['auvəri] n.卵巢"
+        },
+        {
+          "word": "reproductive",
+          "meaning": "[,ri:prə'dʌktrv] a.生殖的；繁殖的"
+        },
+        {
+          "word": "organ",
+          "meaning": "['ɔ:gən] n.器官；机构，机关"
+        },
+        {
+          "word": "chemical",
+          "meaning": "['kemikl] a.化学的n.化学物"
+        },
+        {
+          "word": "equal",
+          "meaning": "['i:kwəl] a.相当的，相等的；平等的；能胜任的"
+        },
+        {
+          "word": "dose",
+          "meaning": "[dəus] n. (药的)一剂；一份，一次"
+        },
+        {
+          "word": "opportunity",
+          "meaning": "[,opə'tju:niti] n.机会"
+        },
+        {
+          "word": "cope",
+          "meaning": "[kəup] v. (成功地)对付，处理"
+        },
+        {
+          "word": "capacity",
+          "meaning": "[kə'pæsɔti] n.能力；容量，容积"
+        },
+        {
+          "word": "tolerate",
+          "meaning": "['toləreit] v.忍受，容忍"
+        },
+        {
+          "word": "observe",
+          "meaning": "[əb'zə:v] v. [僻]说话；观察，注意到；遵守"
+        },
+        {
+          "word": "visibly",
+          "meaning": "[vizobli] ad.明显地"
+        },
+        {
+          "word": "expose",
+          "meaning": "[ik'spəuz] v.暴露，使显露；揭露"
+        },
+        {
+          "word": "chronic",
+          "meaning": "['krɔnik] a.长期的"
+        },
+        {
+          "word": "combat",
+          "meaning": "['kombæt] n./v.战斗"
+        },
+        {
+          "word": "random",
+          "meaning": "[rendom] a.偶然的，随意的n.任意，随意"
+        },
+        {
+          "word": "physical",
+          "meaning": "['fizikɔl] a.身体的；物理的；物质的，有形的"
+        },
+        {
+          "word": "violence",
+          "meaning": "['vaiələns] n.暴力行为；猛烈"
+        },
+        {
+          "word": "interpersonal",
+          "meaning": "[,inta'pə:sonəl] a.人际关系的"
+        },
+        {
+          "word": "domestic",
+          "meaning": "[dəu'mestik] a. [僻]家庭的；家用的；本国的；国内的"
+        },
+        {
+          "word": "one-shot",
+          "meaning": "['wʌn Jot] a.一次性的"
+        },
+        {
+          "word": "wear-and-tear",
+          "meaning": "[weə(r)ænd teə(r)] n.折磨"
+        },
+        {
+          "word": "relationship",
+          "meaning": "[ri'leiʃənʃip] n.关系，联系"
+        },
+        {
+          "word": "devastating",
+          "meaning": "['devɔstertrnŋ] a.毁灭性的"
+        },
+        {
+          "word": "determined",
+          "meaning": "[di't3:mind] a.下定决心的"
+        },
+        {
+          "word": "struggle",
+          "meaning": "['strʌgl] v.挣扎；努力"
+        },
+        {
+          "word": "degree",
+          "meaning": "[di'gri:] n.学位；程度；度数；等级"
+        },
+        {
+          "word": "frustration",
+          "meaning": "[fra'streifən] n.挫折，沮丧；懊丧"
+        },
+        {
+          "word": "escape",
+          "meaning": "[i'skeip] n.逃跑，逃脱v.逃避"
+        },
+        {
+          "word": "marriage",
+          "meaning": "['mæeridʒ] n.婚姻；婚姻生活；婚礼"
+        },
+        {
+          "word": "rent",
+          "meaning": "[rent] n.房租，租金v.租，租赁"
+        },
+        {
+          "word": "debt",
+          "meaning": "[det] n.债务"
+        },
+        {
+          "word": "paycheck",
+          "meaning": "[peitfek] n.付薪水的支票"
+        },
+        {
+          "word": "experience",
+          "meaning": "[ik'spiorions] v.经历，经验v.体验，经历"
+        },
+        {
+          "word": "severe",
+          "meaning": "[si'viə] a.严重的；严厉的，严峻的；剧烈的；苛刻的"
+        },
+        {
+          "word": "obligation",
+          "meaning": "[,obli'geiʃən] n.责任，义务"
+        },
+        {
+          "word": "strain",
+          "meaning": "[strein] n.焦虑，紧张；拉力；努力v.使紧张；拉紧"
+        },
+        {
+          "word": "demonstrate",
+          "meaning": "['demənstreit] v.说明；证明；表明；游行"
+        },
+        {
+          "word": "diffuse",
+          "meaning": "[di'fju:s] v.[僻]缓解；传播a.弥漫的；冗长的"
+        },
+        {
+          "word": "function",
+          "meaning": "[fankfan] n.机能；功能v.起作用，运作；工作"
+        },
+        {
+          "word": "biologically",
+          "meaning": "[,barə'lbdʒikli] ad.生物学上，生物学地"
+        },
+        {
+          "word": "vulnerable",
+          "meaning": "['valnərəbl] a.脆弱的，易受伤的；易受攻击的"
+        },
+        {
+          "word": "sufferr",
+          "meaning": "['safə(r)] v.遭受；忍受"
+        },
+        {
+          "word": "inclination",
+          "meaning": "[,inkli'nerjn] n.倾向；趋向，趋势"
+        },
+        {
+          "word": "handle",
+          "meaning": "['hænd(a)l] v.应付，处理，操纵n.柄，把手"
+        },
+        {
+          "word": "capable",
+          "meaning": "['keipəbl] a.有能力的"
+        },
+        {
+          "word": "confront",
+          "meaning": "[kən'frʌnt] v.面临；面对"
+        },
+        {
+          "word": "temporary",
+          "meaning": "['temprəri] a.暂时的；临时的"
+        },
+        {
+          "word": "irregular",
+          "meaning": "[i'regjələ(r)] a.无规律的；不整齐的"
+        },
+        {
+          "word": "durable",
+          "meaning": "['djuərəb(3)l] a.持久的；耐用的"
+        },
+        {
+          "word": "trivial",
+          "meaning": "['triviol] a.琐碎的，不重要的"
+        },
+        {
+          "word": "salary",
+          "meaning": "['saæləri] n.工资"
+        },
+        {
+          "word": "barely",
+          "meaning": "['beəli] ad.勉强可能；仅仅；凡乎不"
+        },
+        {
+          "word": "household",
+          "meaning": "['haushəold] n.家庭"
+        },
+        {
+          "word": "expense",
+          "meaning": "[ik'spens] n.开销"
+        },
+        {
+          "word": "practically",
+          "meaning": "['praktikli] ad.几乎"
+        },
+        {
+          "word": "gender",
+          "meaning": "['d3end(r)] n.性别"
+        },
+        {
+          "word": "analysis",
+          "meaning": "[ə'næləsis] n.分析"
+        },
+        {
+          "word": "inequality",
+          "meaning": "[,In'kwDləti] n.不平等"
+        }
+      ]
+    },
+    {
+      "name": "2008年阅读理解Text 2",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "straightforward",
+          "meaning": "[,streit'fs:wəd] a.简单的，易懂的；正直的，坦率的"
+        },
+        {
+          "word": "laboratory",
+          "meaning": "[lə'bɔrətəri] n.实验室"
+        },
+        {
+          "word": "submit",
+          "meaning": "[sob′mit] v.提交，呈递；服从，顺从"
+        },
+        {
+          "word": "journal",
+          "meaning": "['d3ɔ:nəl] n.期刊，杂志"
+        },
+        {
+          "word": "editor",
+          "meaning": "['editə] n. (报刊、杂志的)主编，编辑"
+        },
+        {
+          "word": "affiliation",
+          "meaning": "[ɔ,filileifən] n.隶属机构；从属"
+        },
+        {
+          "word": "paper",
+          "meaning": "['peipə] n.论文"
+        },
+        {
+          "word": "review",
+          "meaning": "[ri'vju:] n.审查，评审"
+        },
+        {
+          "word": "comment",
+          "meaning": "['kɔment] n.意见；评论v.发表评论，发表意见"
+        },
+        {
+          "word": "publication",
+          "meaning": "[,pʌbli'keiʃon] n.出版，发表；出版物"
+        },
+        {
+          "word": "decline",
+          "meaning": "[di'klain] v.[僻]拒绝；下降，减少，衰退"
+        },
+        {
+          "word": "copyright",
+          "meaning": "['kopirait] n.版权"
+        },
+        {
+          "word": "publisher",
+          "meaning": "['pʌbliə] n. 出版商"
+        },
+        {
+          "word": "rest",
+          "meaning": "[rest] v. [僻]归于；休息；靠n.休息；静止"
+        },
+        {
+          "word": "seek",
+          "meaning": "[si:k] v.寻求，寻找；请求；试图"
+        },
+        {
+          "word": "subscribe",
+          "meaning": "[sɔb'skrarb] n.订阅(报纸或杂志),认购；签署；赞成"
+        },
+        {
+          "word": "funding",
+          "meaning": "[fand] n.提供资金"
+        },
+        {
+          "word": "agency",
+          "meaning": "['eidʒən si] n.代理机构"
+        },
+        {
+          "word": "question",
+          "meaning": "['kwestʃən] v. [僻]质问；怀疑n.问题"
+        },
+        {
+          "word": "commercial",
+          "meaning": "[kə'mə:Jə] a.商业的；贸易的"
+        },
+        {
+          "word": "restrict",
+          "meaning": "[ri'strikt] v.限制；约束，限定"
+        },
+        {
+          "word": "access",
+          "meaning": "['ækses] n. (使用或见到的)机会，权利；通道v.接近；使用；访问(电脑文档)"
+        },
+        {
+          "word": "organization",
+          "meaning": "[,ɔ .gənai'zeifən] n.组织；机构；团体"
+        },
+        {
+          "word": "economic",
+          "meaning": "[,i:k'nomik] a.经济的；经济上的"
+        },
+        {
+          "word": "cooperation",
+          "meaning": "[kou,ɔpə'reifən] n.合作；协作"
+        },
+        {
+          "word": "issue",
+          "meaning": "['fu:] v.[僻]发布，发行，发表n.问题；争端；发行(物),(报刊)期号"
+        },
+        {
+          "word": "far-reaching",
+          "meaning": "[,fa:'ri:tfin] a.影响深远的"
+        },
+        {
+          "word": "consequence",
+          "meaning": "['konsikwəns] n.影响；结果；重要性"
+        },
+        {
+          "word": "handsome",
+          "meaning": "['hæensom] a.数量大的；可观的；慷慨的；英俊的"
+        },
+        {
+          "word": "profit",
+          "meaning": "[profit] n.利润；收益"
+        },
+        {
+          "word": "signal",
+          "meaning": "['signəl] v.标志；发信号n.信号，暗号"
+        },
+        {
+          "word": "element",
+          "meaning": "['elmənt] n.要素，元素；组成部分"
+        },
+        {
+          "word": "endeavor",
+          "meaning": "[in'devə] n.尝试；努力v.努力"
+        },
+        {
+          "word": "return",
+          "meaning": "[ri'tə:n] n. [僻]回报；收益；返回v.返回"
+        },
+        {
+          "word": "investment",
+          "meaning": "[in'vestmənt] n.投资"
+        },
+        {
+          "word": "distribution",
+          "meaning": "[,distribju:ʃən] n.传播，散布；分配，分发"
+        },
+        {
+          "word": "estimate",
+          "meaning": "['estimeit] v.估价；估计，判断n.估计，估价；判断，看法"
+        },
+        {
+          "word": "international",
+          "meaning": "[, Inta'næʃ(ə)nəl] a.国际的"
+        },
+        {
+          "word": "association",
+          "meaning": "[ə,sous i'eiʃən] n.协会，团体；联合，联系，交往；联想"
+        },
+        {
+          "word": "medical",
+          "meaning": "['medikl] a.医学的"
+        },
+        {
+          "word": "worldwide",
+          "meaning": "['wə:ld,waid] ad.在全世界"
+        },
+        {
+          "word": "subject",
+          "meaning": "['sʌbdʒikt] n.学科，科目；主题"
+        },
+        {
+          "word": "scholarly",
+          "meaning": "['skɔləli] a.学术的"
+        },
+        {
+          "word": "entirely",
+          "meaning": "[in'taiəli] ad.完全地"
+        },
+        {
+          "word": "model",
+          "meaning": "['mɔdəl] n.模式；模型，模范，典型v.仿效，模仿adj.模范的"
+        },
+        {
+          "word": "emerge",
+          "meaning": "[i'mə:d3] v.出现，显露；兴起；显示"
+        },
+        {
+          "word": "identify",
+          "meaning": "[ai'dentifai] y.发现；确认；鉴别"
+        },
+        {
+          "word": "so-called",
+          "meaning": "[,səu'kɔ:ld] a.所谓的"
+        },
+        {
+          "word": "deal",
+          "meaning": "[di:] n.买卖，交易v.处理"
+        },
+        {
+          "word": "institutional",
+          "meaning": "[,institju:ʃonəl] a.机构的"
+        },
+        {
+          "word": "subscriber",
+          "meaning": "[səb'skrarbə(r)] n. (报刊的)订阅人"
+        },
+        {
+          "word": "license",
+          "meaning": "['larsns] n.许可证"
+        },
+        {
+          "word": "agreement",
+          "meaning": "[ə'gri:mənt] n.协议，协定；一致"
+        },
+        {
+          "word": "open-access",
+          "meaning": "['əupən'ækses] a.开放获取的"
+        },
+        {
+          "word": "typically",
+          "meaning": "['tipikəli] ad.通常；一般"
+        },
+        {
+          "word": "archive",
+          "meaning": "['a:kaiv] n.档案室"
+        },
+        {
+          "word": "repository",
+          "meaning": "[ri'pɔzitəri] n.仓库"
+        },
+        {
+          "word": "hybrid",
+          "meaning": "[haibrid] n.混合体"
+        },
+        {
+          "word": "delay",
+          "meaning": "[di'lei] v.延误；延期"
+        },
+        {
+          "word": "freely",
+          "meaning": "['frily] ad.免费地"
+        },
+        {
+          "word": "available",
+          "meaning": "[ə'veiləbl] a.可获得的；可利用的"
+        },
+        {
+          "word": "background",
+          "meaning": "['bækgraond] n.背景的"
+        },
+        {
+          "word": "edit",
+          "meaning": "['edtɪŋ] v.编辑；剪辑"
+        },
+        {
+          "word": "routine",
+          "meaning": "[ru:'ti:n] n.常规，惯例"
+        },
+        {
+          "word": "relation",
+          "meaning": "[r'lerʃn] n.联系；亲属"
+        },
+        {
+          "word": "criticize",
+          "meaning": "['kritisarz] v.批评；评论"
+        },
+        {
+          "word": "effective",
+          "meaning": "[i'fektrv] a.有效的；生效的；实际的；起作用的"
+        },
+        {
+          "word": "means",
+          "meaning": "[mi:nz] n.方式；途径"
+        },
+        {
+          "word": "profit-making",
+          "meaning": "['profit merkiŋ] a.盈利的"
+        },
+        {
+          "word": "considerably",
+          "meaning": "[kən'sidərəbli] ad.非常"
+        },
+        {
+          "word": "emphasize",
+          "meaning": "['emfosarz] v.强调；重视；着重"
+        },
+        {
+          "word": "crucial",
+          "meaning": "['kru:ʃ(ə)l] a.至关重要的；关键性的"
+        },
+        {
+          "word": "facilitate",
+          "meaning": "[fa'silhtert] v.促进；使变得(更)容易，使便利"
+        },
+        {
+          "word": "cover",
+          "meaning": "['kʌvə(r)] v. [僻]足够支付；覆盖，遮蔽；包括；给......保险n.覆盖物；保"
+        },
+        {
+          "word": "peer-review",
+          "meaning": "[.pIor r'vju:] n.同行评审"
+        },
+        {
+          "word": "submission",
+          "meaning": "[səb'mʃn] n.提交；呈递"
+        },
+        {
+          "word": "summarize",
+          "meaning": "['sʌmərar z] v.总结；概括"
+        },
+        {
+          "word": "pose",
+          "meaning": "[pəuz] v.[僻]造成(威胁、问题等);引起；产生"
+        },
+        {
+          "word": "channel",
+          "meaning": "['tfæn(a)l] n.途径"
+        },
+        {
+          "word": "render",
+          "meaning": "['rendo(r)] v.使成为；使变得"
+        }
+      ]
+    },
+    {
+      "name": "2008年阅读理解Text 3",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "association",
+          "meaning": "[ə,səusi'erʃ(o)n] n.协会；联盟"
+        },
+        {
+          "word": "foot",
+          "meaning": "[fut] n.英尺"
+        },
+        {
+          "word": "season",
+          "meaning": "['si:z(a)n] n. (特定体育运动的)赛季；季节"
+        },
+        {
+          "word": "professional",
+          "meaning": "[prə'fefan(a)l] a.职业的；专业的"
+        },
+        {
+          "word": "dramatically",
+          "meaning": "[drə'mætikli] ad.显著地；明显地"
+        },
+        {
+          "word": "adjust",
+          "meaning": "[ə'dʒʌst] v.调整，调节；使适应"
+        },
+        {
+          "word": "fit",
+          "meaning": "[fit] v.适合，合身；装进"
+        },
+        {
+          "word": "uniform",
+          "meaning": "['ju:nfo m] n.制服；校服"
+        },
+        {
+          "word": "frame",
+          "meaning": "[frem] n. (人的)身躯，身材；框架"
+        },
+        {
+          "word": "obscure",
+          "meaning": "[əb'skjuə(r)] v. [僻]掩盖，遮蔽；使变暗；使难理解a.隐蔽的；难理解的"
+        },
+        {
+          "word": "unrecognized",
+          "meaning": "[an'rekəgnarzd] a.不被注意的"
+        },
+        {
+          "word": "typically",
+          "meaning": "['trprkli] ad.通常，一般；典型地"
+        },
+        {
+          "word": "inch",
+          "meaning": "[ntʃ] n.英寸；少量"
+        },
+        {
+          "word": "generation",
+          "meaning": "[,dʒenə'rerʃ(ə)n] n.一代； 一代人"
+        },
+        {
+          "word": "apparently",
+          "meaning": "[ə'pærontli] ad.显然地，表面上"
+        },
+        {
+          "word": "reach",
+          "meaning": "[ri:t] v.达到(某点);实现"
+        },
+        {
+          "word": "limit",
+          "meaning": "['lmit] n.极限；限度；范围"
+        },
+        {
+          "word": "general",
+          "meaning": "['dʒen(3)rəl] a.总的；大体的；普遍的"
+        },
+        {
+          "word": "population",
+          "meaning": "[.pppju'leJʃ(O)n] n.人口；人口数量"
+        },
+        {
+          "word": "genetic",
+          "meaning": "[dʒə'netuk] a.基因的"
+        },
+        {
+          "word": "environmental",
+          "meaning": "[in,vairən'ment(a)l] a.环境的"
+        },
+        {
+          "word": "pretty",
+          "meaning": "['priti] ad.很；相当地a.漂亮的"
+        },
+        {
+          "word": "anthropologist",
+          "meaning": "[,ænθrə'pplədʒist] n.人类学家"
+        },
+        {
+          "word": "height",
+          "meaning": "[hart] n.身高；高，高度"
+        },
+        {
+          "word": "recruit",
+          "meaning": "[r'kru:t] v.招收；招募，吸引(新成员)n.新兵，新成员"
+        },
+        {
+          "word": "rarely",
+          "meaning": "['reəli] ad.很少"
+        },
+        {
+          "word": "continue",
+          "meaning": "[kən'tɪn ju:] v.持续，继续(做)"
+        },
+        {
+          "word": "beyond",
+          "meaning": "[bi'jpnd] prep.超出；晚于；除......以外"
+        },
+        {
+          "word": "demand",
+          "meaning": "[di'ma:nd] v.需要；强烈要求n.要求"
+        },
+        {
+          "word": "calorie",
+          "meaning": "['kæeləri] n.卡路里(食物的热量单位)"
+        },
+        {
+          "word": "nutrient",
+          "meaning": "['nju:triənt] n.营养物，养分"
+        },
+        {
+          "word": "notably",
+          "meaning": "['nəutobli] ad.特别，(用于举例)尤其；显著地"
+        },
+        {
+          "word": "protein",
+          "meaning": "[prəuti:n] n.蛋白质"
+        },
+        {
+          "word": "feed",
+          "meaning": "[fi:d] v.供给；满足；喂养；灌输"
+        },
+        {
+          "word": "expand",
+          "meaning": "[ik'spænd] v.扩大，增加；扩展"
+        },
+        {
+          "word": "tissue",
+          "meaning": "[tiju:] n. (人、动植物细胞的)组织；纸巾"
+        },
+        {
+          "word": "nutrition",
+          "meaning": "[nju'trʃ(o)n] n.营养；滋养"
+        },
+        {
+          "word": "childhood",
+          "meaning": "['tfarldhud] n.童年；儿童时期"
+        },
+        {
+          "word": "infection",
+          "meaning": "[n'fekʃ(o)n] n.传染病"
+        },
+        {
+          "word": "diet",
+          "meaning": "['darot] n. 日常饮食"
+        },
+        {
+          "word": "improve",
+          "meaning": "[m pru:v] y.改善；改进"
+        },
+        {
+          "word": "adolescent",
+          "meaning": "[,aædə'les(ə)nt] n.青少年"
+        },
+        {
+          "word": "pattern",
+          "meaning": "['paæt()n] n.模式；榜样；图案，方式"
+        },
+        {
+          "word": "secular",
+          "meaning": "['sekjəla(r)] a.长期的；现世的；世俗的"
+        },
+        {
+          "word": "prevention",
+          "meaning": "[pri'venʃn] n.预防；防止"
+        },
+        {
+          "word": "genetically",
+          "meaning": "[d3ə'netikli] ad.遗传地"
+        },
+        {
+          "word": "advantage",
+          "meaning": "[əd'va:ntrdʒ] n.优点；优势；有利条件"
+        },
+        {
+          "word": "substantial",
+          "meaning": "[sɔb'stanʃ()l] a.大量的；重大的"
+        },
+        {
+          "word": "childbirth",
+          "meaning": "['tfarldb3:0] n.分娩"
+        },
+        {
+          "word": "canal",
+          "meaning": "[kə'næl] n. (体内的)管道；运河"
+        },
+        {
+          "word": "struggle",
+          "meaning": "['strʌgl] y.斗争；努力；争夺"
+        },
+        {
+          "word": "bipedal",
+          "meaning": "[,bar'pi:dl] a.双足行走的"
+        },
+        {
+          "word": "posture",
+          "meaning": "['postʃə] n.姿势；态度"
+        },
+        {
+          "word": "withstand",
+          "meaning": "[wio'stend] v.承受；经受住"
+        },
+        {
+          "word": "strain",
+          "meaning": "[stren] n.压力；紧张；拉力；努力；损伤v.紧张；拉紧；使损伤"
+        },
+        {
+          "word": "impose",
+          "meaning": "[im'pəuz] v.使承受；把......强加于；利用"
+        },
+        {
+          "word": "oversize",
+          "meaning": "['auvsarz] a.太大的；超大型的"
+        },
+        {
+          "word": "limb",
+          "meaning": "[lim] n.肢体；臂；(树的)主枝"
+        },
+        {
+          "word": "constraint",
+          "meaning": "[kɔn'streint] n.限制；约束；强制"
+        },
+        {
+          "word": "architecture",
+          "meaning": "['a:kitektʃə(r)] n.结构；建筑，架构"
+        },
+        {
+          "word": "individual",
+          "meaning": "[,indi'vidʒuəl] a.个人的；单独的"
+        },
+        {
+          "word": "organism",
+          "meaning": "['ɔgənizom] n.有机体"
+        },
+        {
+          "word": "maximum",
+          "meaning": "['mæksiməm] n.极限；最大值a.最大的"
+        },
+        {
+          "word": "senior",
+          "meaning": "['si:nio(r)] a. [僻]资深的；n.较年长的人；高年级/毕业班学生"
+        },
+        {
+          "word": "ensure",
+          "meaning": "[n'Juə(r)] v.确保；保证；担保"
+        },
+        {
+          "word": "workstation",
+          "meaning": "['w3:ksterʃn] n.工作站"
+        },
+        {
+          "word": "recruit",
+          "meaning": "[r'kru:t] n.新兵；新成员v.招募，招收"
+        },
+        {
+          "word": "alteration",
+          "meaning": "[,ɔ:lta'rerʃ(ə)n] n.改动；改变；修改"
+        },
+        {
+          "word": "military",
+          "meaning": "['mrlətri] a.军队的；军事的；武装的"
+        },
+        {
+          "word": "predict",
+          "meaning": "[pri'dikt] v.预测，预言；预告；预报"
+        },
+        {
+          "word": "equipment",
+          "meaning": "[i'kwIpmənt] n.设备；器材；装备"
+        },
+        {
+          "word": "fairly",
+          "meaning": "['feəli] ad.相当"
+        },
+        {
+          "word": "confident",
+          "meaning": "['konfidənt] a.有把握的，自信的；坚信的；肯定的"
+        },
+        {
+          "word": "cite",
+          "meaning": "[sart] v.引用"
+        },
+        {
+          "word": "illustrate",
+          "meaning": "['rləstrert] v. (举例)说明，解释"
+        },
+        {
+          "word": "popularity",
+          "meaning": "[.pppju'lerəti] n.受欢迎；普及；流行"
+        },
+        {
+          "word": "compare",
+          "meaning": "[kom'peə(r)] 比较；把.....比作；相比"
+        },
+        {
+          "word": "assess",
+          "meaning": "[ə'ses] v.评估，评定；估算"
+        },
+        {
+          "word": "achievement",
+          "meaning": "[ə'tfi:vmənt] n.成就；完成"
+        },
+        {
+          "word": "modification",
+          "meaning": "[,mpdfi'keɪʃ(ə)n] n.改造；改进；改变；修改"
+        },
+        {
+          "word": "environment",
+          "meaning": "[in'varrənmənt] n.环境；客观环境"
+        },
+        {
+          "word": "standard",
+          "meaning": "['stændad] n.水平，标准；行为标准"
+        },
+        {
+          "word": "condition",
+          "meaning": "[kən'dʃn] v. [僻】限制n.状况，状态；环境，情况"
+        },
+        {
+          "word": "adulthood",
+          "meaning": "['ædAlthod] n.成年"
+        },
+        {
+          "word": "garment",
+          "meaning": "['ga:mənt] n.衣服"
+        },
+        {
+          "word": "reconsider",
+          "meaning": "[,ri:kon'sidə(r)] v.重新考虑"
+        },
+        {
+          "word": "employ",
+          "meaning": "[m'plɔi] v.[僻]使用，应用；雇用"
+        },
+        {
+          "word": "select",
+          "meaning": "[sr'lekt] v.挑选，选择"
+        },
+        {
+          "word": "sportsman",
+          "meaning": "['spɔ:tsmən] n.运动员"
+        },
+        {
+          "word": "existing",
+          "meaning": "[1g'zistɪn] a.现有的"
+        },
+        {
+          "word": "applicable",
+          "meaning": "[ə'plikəb(3)l] a.适用的，合适的"
+        },
+        {
+          "word": "follow",
+          "meaning": "['foləu] v.遵循；跟随"
+        },
+        {
+          "word": "cyclic",
+          "meaning": "['sarklik] a.循环的；周期的"
+        },
+        {
+          "word": "predictable",
+          "meaning": "[pri'drktob(a)l] a.可预测的"
+        },
+        {
+          "word": "alter",
+          "meaning": "['ɔ :lto(r)] v.改变；变更，更改"
+        }
+      ]
+    },
+    {
+      "name": "2008年阅读理解Text 4",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "toothless",
+          "meaning": "['tu:θlis] a.无牙齿的"
+        },
+        {
+          "word": "hire",
+          "meaning": "['haiə] v.雇用；租用"
+        },
+        {
+          "word": "dentist",
+          "meaning": "['dentist] n.牙医"
+        },
+        {
+          "word": "transplant",
+          "meaning": "[træns'pla:nt] v.移植；迁移"
+        },
+        {
+          "word": "jaw",
+          "meaning": "[dʒɔ:] n.颌；下巴"
+        },
+        {
+          "word": "extract",
+          "meaning": "[ik'strakt] y.拔出，取出；提取，提炼；选取，摘录"
+        },
+        {
+          "word": "slave",
+          "meaning": "[sleiv] n.奴隶"
+        },
+        {
+          "word": "chop",
+          "meaning": "[tfop] v.砍，劈；(大幅度地)削减，降低；取消"
+        },
+        {
+          "word": "historian",
+          "meaning": "[hi'sto:riən] n.历史学家；史学工作者"
+        },
+        {
+          "word": "slavery",
+          "meaning": "['sleivəri] n.奴隶制；奴隶身份"
+        },
+        {
+          "word": "available",
+          "meaning": "[ə'verlb(ə)l] a.可获得的；可购得的；有空的"
+        },
+        {
+          "word": "certainly",
+          "meaning": "['s3:t()nli] ad.无疑；确定；当然"
+        },
+        {
+          "word": "prove",
+          "meaning": "[pru:v] yv.证实；证明是，结果是"
+        },
+        {
+          "word": "scholar",
+          "meaning": "['skɔlə] n.学者；奖学金获得者"
+        },
+        {
+          "word": "examine",
+          "meaning": "[ig'zæmin] v.审查；调查；检查"
+        },
+        {
+          "word": "reveal",
+          "meaning": "[ri'vi:l] v/n.揭示，揭露，显露，暴露"
+        },
+        {
+          "word": "moral",
+          "meaning": "['morəl] a.道德上的"
+        },
+        {
+          "word": "compromise",
+          "meaning": "['kompromaiz] n.妥协；和解"
+        },
+        {
+          "word": "fragile",
+          "meaning": "['frædzail] a.脆弱的；易碎的；虚弱的"
+        },
+        {
+          "word": "infancy",
+          "meaning": "['infansi] n.初期；婴儿期"
+        },
+        {
+          "word": "significantly",
+          "meaning": "[sig'nifikontli] ad.值得注意的是；有重大意义的；显著的"
+        },
+        {
+          "word": "founder",
+          "meaning": "['faundə] n.创建者"
+        },
+        {
+          "word": "hamper",
+          "meaning": "['hæmpe] v.阻碍；束缚，限制"
+        },
+        {
+          "word": "privately",
+          "meaning": "[praivitli] ad.私下地"
+        },
+        {
+          "word": "express",
+          "meaning": "[ik'spres] v.表达，表示n.快递服务；特快列车"
+        },
+        {
+          "word": "distaste",
+          "meaning": "[,dis'teist] v/n.厌恶，反感；不喜欢；"
+        },
+        {
+          "word": "bedrock",
+          "meaning": "[,bed'rok] n.基石"
+        },
+        {
+          "word": "afford",
+          "meaning": "[ə'fod] v.承担得起；买得起；提供"
+        },
+        {
+          "word": "own",
+          "meaning": "[əun] v.拥有；承认"
+        },
+        {
+          "word": "imperfect",
+          "meaning": "[im'pə:fikt] a.不完美的；有缺陷的"
+        },
+        {
+          "word": "creation",
+          "meaning": "[kri'erʃ(e)n] n.创造，创建；作品，创作"
+        },
+        {
+          "word": "sourthern",
+          "meaning": "['saoən] a.南方的；向南的"
+        },
+        {
+          "word": "state",
+          "meaning": "[steit] n.州；状态；国家"
+        },
+        {
+          "word": "sign",
+          "meaning": "[sain] v.签字n.标记，符合；迹象"
+        },
+        {
+          "word": "constitution",
+          "meaning": "[,konsti'tju:fən] n.宪法；章程；组成"
+        },
+        {
+          "word": "peculiar",
+          "meaning": "[pi'kju:liə] a.特殊的；独特的"
+        },
+        {
+          "word": "institution",
+          "meaning": "[,institju:ʃən] n.制度；机构；制定"
+        },
+        {
+          "word": "include",
+          "meaning": "[n'klu:d] v.包括，包含；使成为的一部分"
+        },
+        {
+          "word": "clause",
+          "meaning": "[klɔ:z] n. (法律文件等的)条款；[语法]从句"
+        },
+        {
+          "word": "congressional",
+          "meaning": "[kən'grefənəl] a. (美国)国会的；代表大会的；议会的"
+        },
+        {
+          "word": "representation",
+          "meaning": "[,reprizen'teifon] n.代表，表现"
+        },
+        {
+          "word": "statesman",
+          "meaning": "['steitsmən] n.政治家"
+        },
+        {
+          "word": "formula",
+          "meaning": "['fo:mjələ] n.计算式；方案；公式；配方，药方"
+        },
+        {
+          "word": "hand",
+          "meaning": "[hænd] v.[僻]帮助，递，交，给n.手；帮助"
+        },
+        {
+          "word": "narrow",
+          "meaning": "['narəu] a .[僻]勉强的；狭窄的；狭隘的；狭义的"
+        },
+        {
+          "word": "election",
+          "meaning": "[i'lekʃ(o)n] n.选举"
+        },
+        {
+          "word": "victory",
+          "meaning": "['viktəri] n.胜利；成功"
+        },
+        {
+          "word": "inflate",
+          "meaning": "[n'flert] v.使大幅增加；使膨胀，使暴涨"
+        },
+        {
+          "word": "vote",
+          "meaning": "[vɔut] n.选票；投票；选举权v.投票；推举"
+        },
+        {
+          "word": "electoral",
+          "meaning": "[i'lektərəl] a.有关选举的"
+        },
+        {
+          "word": "extend",
+          "meaning": "[ik'stend] v.扩大....的范围(或影响);扩展"
+        },
+        {
+          "word": "purchase",
+          "meaning": "[pə:tfs] n.购买"
+        },
+        {
+          "word": "carve",
+          "meaning": "[ka:v] y.切下(肉片);雕刻"
+        },
+        {
+          "word": "approximately",
+          "meaning": "[ə'prpksimətli] ad.大约；大概"
+        },
+        {
+          "word": "bravery",
+          "meaning": "['brervəri] n.勇敢之举；勇敢"
+        },
+        {
+          "word": "revolutionary",
+          "meaning": "[,revə'lu:ʃənəri] a.革命的；突破性的n.革命家"
+        },
+        {
+          "word": "overcome",
+          "meaning": "[,əuvə'kʌm] v.克服；战胜"
+        },
+        {
+          "word": "opposition",
+          "meaning": "[,Dpə'zʃ(o)n] n.反对；对手；反对派a.比较的；相对的"
+        },
+        {
+          "word": "relative",
+          "meaning": "['relətrv] n.亲属，亲戚"
+        },
+        {
+          "word": "will",
+          "meaning": "[wi1l] n.[僻]遗嘱；毅力；意愿v.想要；决心"
+        },
+        {
+          "word": "grant",
+          "meaning": "[gra:nt] v.同意，准予"
+        },
+        {
+          "word": "freedom",
+          "meaning": "['fri:dm] n.自由"
+        },
+        {
+          "word": "act",
+          "meaning": "[ækt] n.[僻]法令，条例；行为，行动"
+        },
+        {
+          "word": "legislative",
+          "meaning": "['ledʒislətrv] a.立法机构的；立法的，有立法权的n.立法权；立法机构"
+        },
+        {
+          "word": "approval",
+          "meaning": "[ə'pru:v(a)l] n.批准，认可；同意，赞成"
+        },
+        {
+          "word": "dental",
+          "meaning": "['dent(2)l] a.牙齿的，牙科的"
+        },
+        {
+          "word": "surgery",
+          "meaning": "[s3:d3ori] n.外科手术"
+        },
+        {
+          "word": "primitive",
+          "meaning": "['prmətrv] a.原始的；发展水平低的"
+        },
+        {
+          "word": "medical",
+          "meaning": "[['medrkl] ]a.医学的；医疗的；内科的"
+        },
+        {
+          "word": "demonstrate",
+          "meaning": "['demənstrert] v.证明"
+        },
+        {
+          "word": "cruelty",
+          "meaning": "['kru:əlti] n.残酷；残忍"
+        },
+        {
+          "word": "aspect",
+          "meaning": "['æspekt] n.方面；朝向；外表"
+        },
+        {
+          "word": "delicate",
+          "meaning": "['delikət] a.微妙的；虚弱的；精致的；易碎的"
+        },
+        {
+          "word": "deliberately",
+          "meaning": "[di'libərətli] ad.故意地；从容不迫地"
+        },
+        {
+          "word": "throughout",
+          "meaning": "[θru:'aot] prep.遍及；自始至终；贯穿整个时期"
+        },
+        {
+          "word": "status",
+          "meaning": "['stertos] n.身份；地位；状况"
+        },
+        {
+          "word": "complex",
+          "meaning": "['kompleks] a.复杂的；复合的"
+        },
+        {
+          "word": "affair",
+          "meaning": "[ə'feə(r)] n.不正当关系；事件；公共事务"
+        },
+        {
+          "word": "stain",
+          "meaning": "[stern] v.败坏(名声);留下污渍；给 染色(或着色)"
+        },
+        {
+          "word": "prestige",
+          "meaning": "[pre'sti:ʒ] n.名声；声望；威信"
+        },
+        {
+          "word": "right",
+          "meaning": "[rart] n.正确，公正；权利；版权；右边"
+        },
+        {
+          "word": "consideration",
+          "meaning": "[kən sidə'rerfn] n.考虑因素；考虑；体贴；报酬"
+        },
+        {
+          "word": "military",
+          "meaning": "['mrlətri] a.军事的；军人般的"
+        },
+        {
+          "word": "condition",
+          "meaning": "[kən'drfʃn] n.状况；条件，环境；疾病；条款"
+        },
+        {
+          "word": "stand",
+          "meaning": "[stænd] n.[僻]立场；保卫"
+        }
+      ]
+    },
+    {
+      "name": "2009年阅读理解Text 1",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "mindlessly",
+          "meaning": "['marndləsli] ad.单调乏味的；不费心思地"
+        },
+        {
+          "word": "auto-pilot",
+          "meaning": "['ɔ:topailət] n. 自动驾驶；自动舵"
+        },
+        {
+          "word": "unconscious",
+          "meaning": "[ʌn'konfas] a.无意识的；失去知觉的；不知道的，未察觉的"
+        },
+        {
+          "word": "familiar",
+          "meaning": "[fa'milis(r)] a.熟悉的，通晓的，随便的"
+        },
+        {
+          "word": "routine",
+          "meaning": "[ru:'ti:n] n.常规，惯例；无聊"
+        },
+        {
+          "word": "rule",
+          "meaning": "[ru:l] y.支配；控制；统治n.规章；统治"
+        },
+        {
+          "word": "unreflecting",
+          "meaning": "[,Anr'flektiŋ] a.不思考的；不反射的"
+        },
+        {
+          "word": "herd",
+          "meaning": "[hə:d] n.人群"
+        },
+        {
+          "word": "ever-changing",
+          "meaning": "['evə(r)'tferndʒin] a.千变万化的；常变的"
+        },
+        {
+          "word": "carry",
+          "meaning": "['keri] v.带有；携带"
+        },
+        {
+          "word": "negative",
+          "meaning": "['negativ] a.负面的；消极的；否定的"
+        },
+        {
+          "word": "implication",
+          "meaning": "[impli'keiʃən] n.含义；暗示"
+        },
+        {
+          "word": "paradoxical",
+          "meaning": "[,pærə'doksik(a)l] a. 自相矛盾的；悖论的；反常的"
+        },
+        {
+          "word": "context",
+          "meaning": "['kontekst] n.背景；环境；语境"
+        },
+        {
+          "word": "creativity",
+          "meaning": "[krier'tvəti] n.创造力，创造性"
+        },
+        {
+          "word": "innovation",
+          "meaning": "[,inəu'veiʃən] n.创新；改革，革新"
+        },
+        {
+          "word": "parallel",
+          "meaning": "[pærəlel] a. [僻]相应的；相似的；平行的；同时发生的v.与......平行；与......相似"
+        },
+        {
+          "word": "cell",
+          "meaning": "[sel] n.细胞；电池；小房间"
+        },
+        {
+          "word": "innovative",
+          "meaning": "['nəvertrv] a.革新的，创新的"
+        },
+        {
+          "word": "track",
+          "meaning": "[trek] n.轨道，路线；踪迹"
+        },
+        {
+          "word": "dismiss",
+          "meaning": "[drs'ms] v.[僻]不予考虑；开除；摒弃"
+        },
+        {
+          "word": "unchangeable",
+          "meaning": "[ʌn'tfeɪndʒəbl] a.不变的；不能改变的；安定的"
+        },
+        {
+          "word": "creature",
+          "meaning": "['kri:tʃə] n.生物；人，动物"
+        },
+        {
+          "word": "direct",
+          "meaning": "[də'rekt] v.引导；指导；对准；指挥"
+        },
+        {
+          "word": "step",
+          "meaning": "[step] v.走；迈步；踩n.步；台阶；步骤，措施"
+        },
+        {
+          "word": "inherently",
+          "meaning": "[n'herəntli] ad.内在地，固有地"
+        },
+        {
+          "word": "personal",
+          "meaning": "['p3:sn(a)l] a.个人的；私人的"
+        },
+        {
+          "word": "bother",
+          "meaning": "['bpoə(r)] v.费心；(使)烦恼；打扰"
+        },
+        {
+          "word": "rut",
+          "meaning": "[rat] n.车辙"
+        },
+        {
+          "word": "procedure",
+          "meaning": "[prə'si:d3ə] n.步骤；手续；手术"
+        },
+        {
+          "word": "deliberately",
+          "meaning": "[di'libərətli] ad.故意地；慎重地，谨慎地"
+        },
+        {
+          "word": "bypass",
+          "meaning": "['barpa:s] v.绕开，避开；不顾(规章制度)"
+        },
+        {
+          "word": "fascination",
+          "meaning": "[,fæsi'neriʃn] n.着迷"
+        },
+        {
+          "word": "wonder",
+          "meaning": "[wʌnd(r)] n.疑惑；惊叹，惊奇；奇事"
+        },
+        {
+          "word": "possibility",
+          "meaning": "[,ppsa'brləti] n.可能性，可能"
+        },
+        {
+          "word": "innovational",
+          "meaning": "[,inəu'veiʃənəl] a.革新的，创新的"
+        },
+        {
+          "word": "explore",
+          "meaning": "[k'splɔ:(r)] v.探究；探索，探讨"
+        },
+        {
+          "word": "unaware",
+          "meaning": "[ʌnə'weə(r)] a.没意识到的"
+        },
+        {
+          "word": "capacity",
+          "meaning": "[kə'pæsəti] n.能力；容积；产能；职责"
+        },
+        {
+          "word": "approach",
+          "meaning": "[ə'proutʃ] v.[僻]着手处理；接近n.靠近；方法"
+        },
+        {
+          "word": "primary",
+          "meaning": "['prarmərr] a.基本的；首要的；初级的"
+        },
+        {
+          "word": "analytically",
+          "meaning": "[,ænə'littkli] ad.分析地"
+        },
+        {
+          "word": "procedurally",
+          "meaning": "[prə'si:d3ərəli] ad.程序上地"
+        },
+        {
+          "word": "relationally",
+          "meaning": "[ri'lefʃənəli] ad.有关系地，相关地"
+        },
+        {
+          "word": "collaboratively",
+          "meaning": "[k,laebə'retrv li] ad.合作地；协作地"
+        },
+        {
+          "word": "innovatively",
+          "meaning": "['nəvertrv li] ad.独创性地，创新地"
+        },
+        {
+          "word": "adolescence",
+          "meaning": "[,ædə'lesns] n.青春期"
+        },
+        {
+          "word": "preserve",
+          "meaning": "[pri'z3:v] v.保留；保持；保存"
+        },
+        {
+          "word": "mode",
+          "meaning": "[məud] n.方式；模式"
+        },
+        {
+          "word": "valuable",
+          "meaning": "['veljuobl] a.有价值的；贵重的"
+        },
+        {
+          "word": "current",
+          "meaning": "[karənt] a.当前的；流行的"
+        },
+        {
+          "word": "emphasis",
+          "meaning": "['emfsis] n.重视；强调；重点"
+        },
+        {
+          "word": "standardize",
+          "meaning": "['stændədarzd] v.使标准化"
+        },
+        {
+          "word": "highlight",
+          "meaning": "['harlart] v.强调，突出"
+        },
+        {
+          "word": "collaborative",
+          "meaning": "[kə'labərətrv] a.合作的"
+        },
+        {
+          "word": "break",
+          "meaning": "[breik] v.打破；违反；暂停"
+        },
+        {
+          "word": "perpetuate",
+          "meaning": "[pa'petfjuet] v.使持续，使长久"
+        },
+        {
+          "word": "foster",
+          "meaning": "['fost(r)] v.助长，促进，培养"
+        },
+        {
+          "word": "commonness",
+          "meaning": "['komənis] n.平庸；平凡；共同性"
+        },
+        {
+          "word": "excellence",
+          "meaning": "['eksɔləns] n.卓越；优秀；杰出"
+        },
+        {
+          "word": "casual",
+          "meaning": "['kæeʒuəl] a.不经意的；偶然的，随便的"
+        },
+        {
+          "word": "mechanical",
+          "meaning": "[mə'kænkl] a.机械的；呆板的"
+        },
+        {
+          "word": "changeable",
+          "meaning": "['tendʒobl] a.多变的"
+        },
+        {
+          "word": "formation",
+          "meaning": "[fo:'merʃn] n.形成；组成物"
+        },
+        {
+          "word": "predict",
+          "meaning": "[pri'drkt] v.预测，预言，预计"
+        },
+        {
+          "word": "regulate",
+          "meaning": "['regjulert] v.调节；管制，约"
+        },
+        {
+          "word": "trace",
+          "meaning": "[trers] v.追踪；追溯；描绘n.痕迹，踪迹"
+        },
+        {
+          "word": "characteristic",
+          "meaning": "[,karəkta'ristik] n.特征，特色，品质"
+        },
+        {
+          "word": "connection",
+          "meaning": "[kə'nekjn] n.关系，联系；连接"
+        },
+        {
+          "word": "innovativeness",
+          "meaning": "['nəvetivnəs] n.创新性，创新精神"
+        },
+        {
+          "word": "decisiveness",
+          "meaning": "[di'saISIVnəs] n.果断"
+        },
+        {
+          "word": "derive",
+          "meaning": "[di'rarv] v.获得；起源于，源自"
+        },
+        {
+          "word": "fantastic",
+          "meaning": "[fæn'tastuk] a.极好的；奇异的，异想天开的"
+        },
+        {
+          "word": "curiosity",
+          "meaning": "[,kjuəri'psəti] n.好奇心"
+        },
+        {
+          "word": "activate",
+          "meaning": "['æktivert] v.激活；启动"
+        },
+        {
+          "word": "comment",
+          "meaning": "['koment] n.评论，意见"
+        },
+        {
+          "word": "maintain",
+          "meaning": "[meɪn'tern] v.保持；维修，保养"
+        },
+        {
+          "word": "inherent",
+          "meaning": "[n'herənt] a.固有的；内在的"
+        },
+        {
+          "word": "comply",
+          "meaning": "[kəm'plar] y.遵从，服从"
+        }
+      ]
+    },
+    {
+      "name": "2009年阅读理解Text 2",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "wise",
+          "meaning": "[warz] a.明智的；有智慧的，聪明的"
+        },
+        {
+          "word": "boost",
+          "meaning": "[bu:st] v.提高；促进，增强，使增长"
+        },
+        {
+          "word": "paternal",
+          "meaning": "[pə't3:nl] a.父亲的"
+        },
+        {
+          "word": "wisdom",
+          "meaning": "['wizdom] n.智慧；明智"
+        },
+        {
+          "word": "confirm",
+          "meaning": "[kən'f3:m] v.确认，确定；证实；批准"
+        },
+        {
+          "word": "paternity",
+          "meaning": "[pə't3:nati] n.父亲身份"
+        },
+        {
+          "word": "kit",
+          "meaning": "[kit] n.工具包"
+        },
+        {
+          "word": "drugstore",
+          "meaning": "['drAgstɔ:(r)] n.药店"
+        },
+        {
+          "word": "available",
+          "meaning": "[ə'verləb(a)l] a.可获得的；可购得的；有空的"
+        },
+        {
+          "word": "prescription",
+          "meaning": "[pri'skripʃn] n.处方，药方；治疗方法"
+        },
+        {
+          "word": "over-the-counter",
+          "meaning": "[,əuva ðə'kaontɔ(r)] a.非处方的；场外交易的"
+        },
+        {
+          "word": "dozen",
+          "meaning": "[dʌz(ə)n] n.一打，十二个"
+        },
+        {
+          "word": "range",
+          "meaning": "[reindʒ] v.一系列；幅度，范围v.排列；变化"
+        },
+        {
+          "word": "kinship",
+          "meaning": "['kinʃip] n.亲属关系"
+        },
+        {
+          "word": "adopt",
+          "meaning": "[ə'dpptrd] v.收养，领养；采纳，采用"
+        },
+        {
+          "word": "biological",
+          "meaning": "[,barə'lbdʒik(a)l] a.与生命过程有关的；生物的"
+        },
+        {
+          "word": "relative",
+          "meaning": "['relətrv] n.亲戚，亲属"
+        },
+        {
+          "word": "adoption",
+          "meaning": "[ə'dppJn] n.收养；采用；推选"
+        },
+        {
+          "word": "rage",
+          "meaning": "[rerd3] n.风靡一时；狂怒；暴行v.发怒；怒斥"
+        },
+        {
+          "word": "passionate",
+          "meaning": "['pæjonət] a.热情的，热烈的"
+        },
+        {
+          "word": "genealogist",
+          "meaning": "[,d3i:ni'ælad3ist] n.家谱学者"
+        },
+        {
+          "word": "geographic",
+          "meaning": "[,dʒi:ə'grafik] a.地理的，地理学的"
+        },
+        {
+          "word": "root",
+          "meaning": "[ru:t] n.根；起源；基础"
+        },
+        {
+          "word": "cell",
+          "meaning": "[sel] n.细胞；电池；小房间"
+        },
+        {
+          "word": "swab",
+          "meaning": "[swDb] v.用棉花棒擦拭"
+        },
+        {
+          "word": "saliva",
+          "meaning": "[sə'larvə] n.唾液"
+        },
+        {
+          "word": "potential",
+          "meaning": "[pə'tenʃəl] a.可能的，潜在的"
+        },
+        {
+          "word": "candidate",
+          "meaning": "['kændrdət] n.候选人；参加考试的人"
+        },
+        {
+          "word": "skeptical",
+          "meaning": "['skeptrk(a)l] a.怀疑的"
+        },
+        {
+          "word": "false",
+          "meaning": "[fo:ls] a.虚假的；错误的；人造的"
+        },
+        {
+          "word": "precision",
+          "meaning": "[pri'sIʒn] n.准确度，准确性；精确度"
+        },
+        {
+          "word": "hawk",
+          "meaning": "[hɔ:k] v.叫卖，兜售"
+        },
+        {
+          "word": "claim",
+          "meaning": "[klem] v.声称；索取；夺去(生命)"
+        },
+        {
+          "word": "ancestry",
+          "meaning": "['ænsestri] n.血统；祖先"
+        },
+        {
+          "word": "sociologist",
+          "meaning": "[,susi'pladʒist] n.社会学家"
+        },
+        {
+          "word": "individual",
+          "meaning": "[,indi'vidʒuəl] n.个人；个人，个体；与众不同的人a.个人的，单独的；独特的，有个性的"
+        },
+        {
+          "word": "ancestor",
+          "meaning": "['ænsesta(r)] n.祖先，祖宗"
+        },
+        {
+          "word": "single",
+          "meaning": "['sing(a)l] a.单一的；单个的；单身的"
+        },
+        {
+          "word": "lineage",
+          "meaning": "['lnirdʒ] n.血统；世系；家系"
+        },
+        {
+          "word": "chromosome",
+          "meaning": "['krəuməsəum] n.染色体"
+        },
+        {
+          "word": "inherit",
+          "meaning": "[in'herɪt] v.继承；继任；遗传"
+        },
+        {
+          "word": "line",
+          "meaning": "[lan] n.家系；线条；线"
+        },
+        {
+          "word": "mitochondrial",
+          "meaning": "[,martau'kondriəl] a.线粒体的"
+        },
+        {
+          "word": "genetic",
+          "meaning": "[d3a'netik] a.基因的；遗传学的"
+        },
+        {
+          "word": "critic",
+          "meaning": "['krituik] n.批评家；评论家"
+        },
+        {
+          "word": "commercial",
+          "meaning": "[kə'm3:ʃ(o)l] a.商业的n.商业广告"
+        },
+        {
+          "word": "reference",
+          "meaning": "['refrəns] n.参考；谈及"
+        },
+        {
+          "word": "sample",
+          "meaning": "['sa:mp(ə)l] n.样本，样品"
+        },
+        {
+          "word": "database",
+          "meaning": "['deitobers] n.数据库"
+        },
+        {
+          "word": "systematically",
+          "meaning": "[,sIsta'mætikli] ad.系统地，有条理地"
+        },
+        {
+          "word": "lump",
+          "meaning": "[lamp] y.把.....归并在一起n.块；肿块；大量"
+        },
+        {
+          "word": "region",
+          "meaning": "['ri:dʒən] n.地区；区域，范围"
+        },
+        {
+          "word": "differ",
+          "meaning": "[drfa(r)] v.不同于"
+        },
+        {
+          "word": "process",
+          "meaning": "[pra'ses] v. [僻]处理，加工n.过程，进展"
+        },
+        {
+          "word": "estimate",
+          "meaning": "['estmət] v.判断；估算；估价"
+        },
+        {
+          "word": "relationship",
+          "meaning": "[r'lerjnfip] n.血缘关系；关系"
+        },
+        {
+          "word": "patent",
+          "meaning": "['pæt(ə)nt] v.获得专利权n.专利"
+        },
+        {
+          "word": "subject",
+          "meaning": "['sabdʒikt] a.服从于......的，受 支配n.主题；科目；实验对象；主语"
+        },
+        {
+          "word": "review",
+          "meaning": "[r'vju:] n.审查，评审；评论；报告"
+        },
+        {
+          "word": "evaluation",
+          "meaning": "[I,vælju'erfn] n.评估；评价"
+        },
+        {
+          "word": "availability",
+          "meaning": "[ɔ,veila'brləti] n.可得性，可用性"
+        },
+        {
+          "word": "flexibility",
+          "meaning": "[,fleksə'bləti] n.灵活性；弹性"
+        },
+        {
+          "word": "promotion",
+          "meaning": "[prə'məujn] n[僻]促销；提升；促进"
+        },
+        {
+          "word": "household",
+          "meaning": "['haushəuld] n.家庭"
+        },
+        {
+          "word": "promote",
+          "meaning": "[prə'məot] y.促进；晋升；促销"
+        },
+        {
+          "word": "identify",
+          "meaning": "[ai'dentifar] v.鉴定；确认；发现"
+        },
+        {
+          "word": "fail",
+          "meaning": "[feil] v.未能(做到);失败；衰退；破产"
+        },
+        {
+          "word": "distant",
+          "meaning": "['drstənt] a.久远的，遥远的；不同的；远亲的"
+        },
+        {
+          "word": "rebuild",
+          "meaning": "[,ri:'brild] v.重建"
+        },
+        {
+          "word": "reliable",
+          "meaning": "[r'larob(a)l] a.可靠的；可信赖的；确凿的"
+        },
+        {
+          "word": "bloodline",
+          "meaning": "['blʌdlan] n.血统；种系"
+        },
+        {
+          "word": "accuracy",
+          "meaning": "['ækjərəsi] n.准确性"
+        },
+        {
+          "word": "disorganized",
+          "meaning": "[drs'ɔ:gənar zd] a.杂乱无章的；无组织的"
+        },
+        {
+          "word": "overlap",
+          "meaning": "[,əuva'lep] v.重叠n.重叠，重叠部分"
+        },
+        {
+          "word": "excessive",
+          "meaning": "[ik'sesiv] a.过多的；过分的；过度的"
+        },
+        {
+          "word": "evaluation",
+          "meaning": "[1,vælju'erʃn] n.评价，评估"
+        },
+        {
+          "word": "appropriate",
+          "meaning": "[ə'prəupriət] a.合适的；恰当的"
+        }
+      ]
+    },
+    {
+      "name": "2009年阅读理解Text 3",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "formal",
+          "meaning": "['fo məl] a.正规的；正式的"
+        },
+        {
+          "word": "widely",
+          "meaning": "[wardli] ad.普遍地；广泛地；范围广地"
+        },
+        {
+          "word": "misunderstand",
+          "meaning": "[,misʌndə'stænd] v.误解，误会"
+        },
+        {
+          "word": "economist",
+          "meaning": "[i'konəmist] n.经济学家"
+        },
+        {
+          "word": "politician",
+          "meaning": "[.pplə'tfjn] n.政治家；政客"
+        },
+        {
+          "word": "alike",
+          "meaning": "[ə'lark] ad.两者都；同样地；十分相像地a.相同的，相像的"
+        },
+        {
+          "word": "undoubtedly",
+          "meaning": "[ʌn'daotrdli] ad.无疑地"
+        },
+        {
+          "word": "necessary",
+          "meaning": "['nessəri] a.必要的；必需的"
+        },
+        {
+          "word": "intellectual",
+          "meaning": "[intellectual] a.智力的；脑力的；理智的"
+        },
+        {
+          "word": "conventional",
+          "meaning": "[kən'venfan(a)l] a.传统的；依照惯例的；约定俗成的"
+        },
+        {
+          "word": "priority",
+          "meaning": "[prar'orəti] n.优先考虑的事；优先，优先权；优先次序"
+        },
+        {
+          "word": "promote",
+          "meaning": "[prə'məut] v.促进；提升，提拔；促销"
+        },
+        {
+          "word": "fortunate",
+          "meaning": "['fɔ:tfənət] a.幸运的"
+        },
+        {
+          "word": "performance",
+          "meaning": "[pə'fo:məns] n.表现；业绩；性能；工作情况"
+        },
+        {
+          "word": "institution",
+          "meaning": "[,Inst'tju:ʃ(o)n] n.机构；制度"
+        },
+        {
+          "word": "consistently",
+          "meaning": "[kon'sistontli] ad.始终如一地；一贯地；坚持地"
+        },
+        {
+          "word": "radically",
+          "meaning": "['ræedikli] ad.根本地；完全地；彻底地"
+        },
+        {
+          "word": "productivity",
+          "meaning": "[.prpdʌk'trvəti] n.生产力；生产率"
+        },
+        {
+          "word": "ironically",
+          "meaning": "[ar'ronikli] ad.讽刺地，嘲讽地；说反话地"
+        },
+        {
+          "word": "recession",
+          "meaning": "[ri'sefn] n.经济衰退；经济萎缩"
+        },
+        {
+          "word": "workforce",
+          "meaning": "['w3:kfɔ:s] n.劳动力；劳动人口"
+        },
+        {
+          "word": "deride",
+          "meaning": "[dr'rard] v.嘲笑；愚弄"
+        },
+        {
+          "word": "primary",
+          "meaning": "['praməri] a.主要的；首要的"
+        },
+        {
+          "word": "cause",
+          "meaning": "[kɔ:z] n.原因；理由v.导致，引起"
+        },
+        {
+          "word": "assembly",
+          "meaning": "[ə'sembli] n.装配，组装；集会，集合"
+        },
+        {
+          "word": "reveal",
+          "meaning": "[ri'vi:l] n.显示；揭示；透露"
+        },
+        {
+          "word": "counterpart",
+          "meaning": "['kauntopa:t] n.对应的人或事物"
+        },
+        {
+          "word": "training",
+          "meaning": "['treiniŋ] n.培训，训练"
+        },
+        {
+          "word": "examine",
+          "meaning": "[1g'zæmn] v.调查；检查；测试"
+        },
+        {
+          "word": "construction",
+          "meaning": "[kən'strʌkfən] n.建设；建造"
+        },
+        {
+          "word": "illiterate",
+          "meaning": "[i'ltorət] a.不识字的；不会读写的；文盲的；没受教育的"
+        },
+        {
+          "word": "Mexican",
+          "meaning": "['meksikon] a.墨西哥的，墨西哥人的"
+        },
+        {
+          "word": "meet",
+          "meaning": "[mi:t] v.[僻]满足；使满意；遇见"
+        },
+        {
+          "word": "complexity",
+          "meaning": "[kəm'pleksɔti] n.复杂，复杂性，错综复杂的事物"
+        },
+        {
+          "word": "industry",
+          "meaning": "['ndəstri] n. [僻]行业；产业；工业；勤劳，勤奋"
+        },
+        {
+          "word": "hunter",
+          "meaning": "['hant3(r)] n.猎人；狩猎者"
+        },
+        {
+          "word": "gatherer",
+          "meaning": "['gæðərə(r)] n.采集者；收集者"
+        },
+        {
+          "word": "humanity",
+          "meaning": "[hju:'mænəti] n.人类；人物学科；仁慈"
+        },
+        {
+          "word": "productive",
+          "meaning": "[prə'daktrv] a.富有成效的；有效益的"
+        },
+        {
+          "word": "potential",
+          "meaning": "[pə'tenʃ(ə)l] n.潜能；潜在性；可能性"
+        },
+        {
+          "word": "competitive",
+          "meaning": "[kəm'petstrv] a.竞争的；比赛的"
+        },
+        {
+          "word": "push",
+          "meaning": "[puʃ] v.促使；推动n.推；激励；鼓励"
+        },
+        {
+          "word": "afford",
+          "meaning": "[ə'fs:d] v.负担得起；提供；给予"
+        },
+        {
+          "word": "sufficient",
+          "meaning": "[sə'fʃ(o)nt] a.充分的，足够的"
+        },
+        {
+          "word": "condition",
+          "meaning": "[kən'dfʃn] n.条件；状况"
+        },
+        {
+          "word": "advanced",
+          "meaning": "[əd'va:n st] a.先进的；高等的"
+        },
+        {
+          "word": "escape",
+          "meaning": "[i'skep] v.逃脱，摆脱，逃避"
+        },
+        {
+          "word": "poverty",
+          "meaning": "['ppvəti] n.贫穷；贫困"
+        },
+        {
+          "word": "trap",
+          "meaning": "[træp] n.牢笼；困境"
+        },
+        {
+          "word": "broad",
+          "meaning": "[brɔ:d] a.广泛的；宽阔的"
+        },
+        {
+          "word": "constrain",
+          "meaning": "[kən'strein] y.限制，约束；强迫"
+        },
+        {
+          "word": "workforce",
+          "meaning": "['ws:kfɔ:s] n.劳动力；全体员工"
+        },
+        {
+          "word": "substantially",
+          "meaning": "[səb'stænfəli] ad.大幅地；非常；大体上，基本上，本质上地"
+        },
+        {
+          "word": "productivity",
+          "meaning": "[,prpdʌk'trvəti] n.生产率；生产效率"
+        },
+        {
+          "word": "foreseeable",
+          "meaning": "[fo'si:obl] a.可预见的，可预测的"
+        },
+        {
+          "word": "constraint",
+          "meaning": "[kən'streint] n.限制；限定；约束"
+        },
+        {
+          "word": "groundless",
+          "meaning": "['graundləs] a.无根据的；无理由的"
+        },
+        {
+          "word": "victim",
+          "meaning": "['viktm] n.牺牲品；受害者，罹难者"
+        },
+        {
+          "word": "bias",
+          "meaning": "['baros] n.偏见；偏好；倾向"
+        },
+        {
+          "word": "conventionally",
+          "meaning": "[kən'venfənəli] ad.照惯例"
+        },
+        {
+          "word": "downgrade",
+          "meaning": "[,daon'greid] v.低估；贬低；降低"
+        },
+        {
+          "word": "overestimate",
+          "meaning": "[,əuvər'estmerit] v.高估"
+        },
+        {
+          "word": "discipline",
+          "meaning": "['drsplind] a.遵守纪律；训练；惩罚n.纪律；惩罚；训练；学科"
+        },
+        {
+          "word": "quote",
+          "meaning": "[kwəot] v.举例说明；引用；引述"
+        },
+        {
+          "word": "improved",
+          "meaning": "[m'pru:vd] a.改进过的"
+        }
+      ]
+    },
+    {
+      "name": "2009年阅读理解Text 4",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "thoroughly",
+          "meaning": "['θArəli] ad.彻底地，完全地；极其"
+        },
+        {
+          "word": "intellectual",
+          "meaning": "[,ints'lektjuəl] n.知识分子a.知识的，智力的"
+        },
+        {
+          "word": "minister",
+          "meaning": "['minist3(r)] n.牧师；部长"
+        },
+        {
+          "word": "philosophy",
+          "meaning": "[fi'losofi] n.哲学"
+        },
+        {
+          "word": "colonial",
+          "meaning": "[kə'ləuniəl] a.殖民的"
+        },
+        {
+          "word": "preoccupation",
+          "meaning": "[pri,pkju'pejn] n.全神贯注"
+        },
+        {
+          "word": "unfold",
+          "meaning": "[ʌn'fauldrŋ] v.[僻]发展；展开，打开；表露"
+        },
+        {
+          "word": "dominant",
+          "meaning": "['dominənt] a. 占支配地位的；占优势的；首要的；显性的"
+        },
+        {
+          "word": "puritan",
+          "meaning": "['pjuəritən] a.清教徒的"
+        },
+        {
+          "word": "theological",
+          "meaning": "[,0i:a'lbdʒikl] a.神学的"
+        },
+        {
+          "word": "innovation",
+          "meaning": "[,inə'verʃ(o)n] n.创新；革新"
+        },
+        {
+          "word": "distinctive",
+          "meaning": "[di'strnktrv] a.独特的；有特色的，与众不同的"
+        },
+        {
+          "word": "neglect",
+          "meaning": "[ni'glekt] v.忽视：疏忽"
+        },
+        {
+          "word": "original",
+          "meaning": "[ə'rdʒən(3)l] a.最初的；原来的，原版的"
+        },
+        {
+          "word": "carrier",
+          "meaning": "['kaerio(r)] n.携带人"
+        },
+        {
+          "word": "circumstance",
+          "meaning": "['s3:kɔmstəns] n.环境；条件，情况"
+        },
+        {
+          "word": "colony",
+          "meaning": "['koləni] n.殖民地"
+        },
+        {
+          "word": "scene",
+          "meaning": "[si:n] n. (事件或故事的)发生现场，地点；景色，景象"
+        },
+        {
+          "word": "episode",
+          "meaning": "['episəud] n.事件；一段情节；(连续剧的)一集"
+        },
+        {
+          "word": "civility",
+          "meaning": "[sə'viləti] n.礼貌；礼仪"
+        },
+        {
+          "word": "virtuosity",
+          "meaning": "[,v3:tfu'psɔti] n.精湛技艺"
+        },
+        {
+          "word": "settler",
+          "meaning": "['setlə(r)] n.移民"
+        },
+        {
+          "word": "bay",
+          "meaning": "[ber] n.湾；分隔间"
+        },
+        {
+          "word": "impressive",
+          "meaning": "[m'presiv] a.不俗的；给人深刻印象的"
+        },
+        {
+          "word": "learned",
+          "meaning": "['l3:nd] a.知识渊博的"
+        },
+        {
+          "word": "crown",
+          "meaning": "[kraon] n.王国；王冠；王位"
+        },
+        {
+          "word": "journey",
+          "meaning": "['d33:ni] y.旅行"
+        },
+        {
+          "word": "extensively",
+          "meaning": "[ik'stensivli] ad.广泛地；大量地；广阔地"
+        },
+        {
+          "word": "audience",
+          "meaning": "['ɔ :dions] n.读者；听众"
+        },
+        {
+          "word": "atmosphere",
+          "meaning": "['ætməsfiə(r)] n.氛围；气氛，环境；大气"
+        },
+        {
+          "word": "earnestness",
+          "meaning": "['3:nistnəs] n.认真；诚挚"
+        },
+        {
+          "word": "craftsman",
+          "meaning": "['kra:ft smən] n.工匠"
+        },
+        {
+          "word": "dependent",
+          "meaning": "[dr'pendont] n.侍从"
+        },
+        {
+          "word": "servant",
+          "meaning": "['s3:vənt] n.佣人；雇员"
+        },
+        {
+          "word": "literary",
+          "meaning": "['ltərəri] a.文学的；爱好文学的"
+        },
+        {
+          "word": "composition",
+          "meaning": "[,kompə'z(o)n] n.作品；作文；成分"
+        },
+        {
+          "word": "intellectualize",
+          "meaning": "[,Intə'lektfuəlarz] y.使理智化"
+        },
+        {
+          "word": "superstitious",
+          "meaning": "[,sju:pə'stifas] a.迷信的"
+        },
+        {
+          "word": "quality",
+          "meaning": "['kwpləti] n.特征；质量；品质"
+        },
+        {
+          "word": "tailor",
+          "meaning": "['terlo(r)] n.裁缝"
+        },
+        {
+          "word": "emigrate",
+          "meaning": "['emigreit] v.移民"
+        },
+        {
+          "word": "account",
+          "meaning": "[ə'kaont] n. [僻]叙述，描述；账户"
+        },
+        {
+          "word": "confusion",
+          "meaning": "[kən'fju:3n] n.困惑；不确定；混淆"
+        },
+        {
+          "word": "frustration",
+          "meaning": "[fra'streɪʃ(o)n] n.挫败；沮丧"
+        },
+        {
+          "word": "religious",
+          "meaning": "[r'lid3os] a.宗教的"
+        },
+        {
+          "word": "decisive",
+          "meaning": "[di'sarsIv] a.决定性的；果断的；坚定的"
+        },
+        {
+          "word": "Bible",
+          "meaning": "['barb(a)l] n.《圣经》"
+        },
+        {
+          "word": "settle",
+          "meaning": "['setl] y.[僻]决定；解决；定居"
+        },
+        {
+          "word": "fate",
+          "meaning": "[fert] n.命运"
+        },
+        {
+          "word": "sermon",
+          "meaning": "['s smən] n.布道"
+        },
+        {
+          "word": "slight",
+          "meaning": "[slart] a. (程度)轻微的；不足道的"
+        },
+        {
+          "word": "commitment",
+          "meaning": "[kə'mitmənt] n.承诺；忠诚；献身"
+        },
+        {
+          "word": "clergyman",
+          "meaning": "['kl3:dʒimən] n.男牧师"
+        },
+        {
+          "word": "confront",
+          "meaning": "[kən'frʌnt] v.面对，使面临；与......对峙；处理"
+        },
+        {
+          "word": "mock",
+          "meaning": "[mok] v.嘲弄"
+        },
+        {
+          "word": "dominate",
+          "meaning": "['dominert] v.控制，支配；在...中占重要位置"
+        },
+        {
+          "word": "endeavor",
+          "meaning": "[n'devə(r)] n.努力，尽力"
+        },
+        {
+          "word": "liberal",
+          "meaning": "['libərəl] a. 自由的"
+        },
+        {
+          "word": "comparatively",
+          "meaning": "[kom pærətrvli] ad.相对地"
+        },
+        {
+          "word": "affair",
+          "meaning": "[ə'feə(r)] n.事务；事情"
+        },
+        {
+          "word": "abandon",
+          "meaning": "[ə'bandon] v.放弃"
+        },
+        {
+          "word": "position",
+          "meaning": "[pə'zʃn] n.职位；位置；姿势"
+        },
+        {
+          "word": "well-educated",
+          "meaning": "[wel 'edʒukertrd] a.受过良好教育的"
+        },
+        {
+          "word": "superstition",
+          "meaning": "[su:pə'stfʃn] n.迷信；迷信观念"
+        },
+        {
+          "word": "frustrated",
+          "meaning": "[fra'strertrd] a.沮丧"
+        },
+        {
+          "word": "motivate",
+          "meaning": "['məutivert] v.激励；激发"
+        },
+        {
+          "word": "illusory",
+          "meaning": "[i'lu:səri] a.虚幻的；错觉的"
+        },
+        {
+          "word": "prospect",
+          "meaning": "['prpspekt] n.前景；希望；可能性"
+        }
+      ]
+    },
+    {
+      "name": "2005年阅读理解Text 4",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "figure",
+          "meaning": "['figə(r)] n.人物；身材；体形v.认为"
+        },
+        {
+          "word": "command",
+          "meaning": "[kə'ma:nd] v. [僻]掌握；命令；指挥"
+        },
+        {
+          "word": "aspire",
+          "meaning": "[ə'sparə(r)] v.渴望；有志(成为)"
+        },
+        {
+          "word": "degradation",
+          "meaning": "[,degrə'derjn] n.退化；降低"
+        },
+        {
+          "word": "linguist",
+          "meaning": "['lingwist] n.语言学家"
+        },
+        {
+          "word": "controversialist",
+          "meaning": "[,kontrə'və:ʃolist] n.争论者"
+        },
+        {
+          "word": "liberal",
+          "meaning": "['lrbərəl] a.自由的；慷慨的；心胸宽大的"
+        },
+        {
+          "word": "conservative",
+          "meaning": "[kən's3:vətrv] a.保守的；守旧的n.守旧派；保守党"
+        },
+        {
+          "word": "triumph",
+          "meaning": "['traiʌmf] n.胜利"
+        },
+        {
+          "word": "decline",
+          "meaning": "[dr'klan] n.衰退；衰退；减少；谢绝"
+        },
+        {
+          "word": "formal",
+          "meaning": "['fɔ:m(a)l] a.正式的；正规的；庄重的"
+        },
+        {
+          "word": "blame",
+          "meaning": "[blem] v.责怪；把...归咎于；指责n.责备；(坏事或错事的)责任；指责"
+        },
+        {
+          "word": "permissive",
+          "meaning": "[pə'mIsIv] a.放任的；纵容的；姑息的"
+        },
+        {
+          "word": "criticism",
+          "meaning": "['krtisIzəm] n.批判"
+        },
+        {
+          "word": "academic",
+          "meaning": "[,ækə'demik] a.学术的；学院的"
+        },
+        {
+          "word": "speciality",
+          "meaning": "[.speJi'æləti] n.专长"
+        },
+        {
+          "word": "gradual",
+          "meaning": "['grædʒuəl] a.逐渐的"
+        },
+        {
+          "word": "disappearance",
+          "meaning": "[,drsa'pIərəns] n.消失"
+        },
+        {
+          "word": "regrettable",
+          "meaning": "[ri'gretobl] a.令人惋惜的"
+        },
+        {
+          "word": "case-ending",
+          "meaning": "[keis'endŋ] n. (语法)词格尾缀"
+        },
+        {
+          "word": "cult",
+          "meaning": "[kalt] n.狂热崇拜"
+        },
+        {
+          "word": "authentic",
+          "meaning": "[ɔ:'θentik] a.真实的；真正的"
+        },
+        {
+          "word": "personal",
+          "meaning": "['p3:sn(3)l] a.个性的"
+        },
+        {
+          "word": "spell",
+          "meaning": "[spel] v.[僻]导致；拼写"
+        },
+        {
+          "word": "poetry",
+          "meaning": "['pəuətri] n.诗歌"
+        },
+        {
+          "word": "modestly",
+          "meaning": "['mpdrstli] ad.较少的"
+        },
+        {
+          "word": "educated",
+          "meaning": "['edʒuketd] a.受过教育的"
+        },
+        {
+          "word": "elevated",
+          "meaning": "['elivetid] a.高雅的；高贵的；高尚的"
+        },
+        {
+          "word": "tone",
+          "meaning": "[toun] n.格调；音调"
+        },
+        {
+          "word": "capture",
+          "meaning": "['kaæptʃə(r)] v.[僻]充分体现；捕捉；俘虏；占领"
+        },
+        {
+          "word": "spoken",
+          "meaning": "['spəukon] a. 口语的"
+        },
+        {
+          "word": "performative",
+          "meaning": "[pə'fɔ:mətiv] a.表述行为的"
+        },
+        {
+          "word": "genre",
+          "meaning": "['ʒon rə] n.体裁；类型"
+        },
+        {
+          "word": "liveliness",
+          "meaning": "['larvlinəs] n.活泼；生动"
+        },
+        {
+          "word": "oral",
+          "meaning": "['ɔ:rəl] a. 口语的；口头的"
+        },
+        {
+          "word": "spontaneity",
+          "meaning": "[,sppnta'neroti] n.自发行为"
+        },
+        {
+          "word": "craft",
+          "meaning": "[kra:ft] n.技巧v.精心制作"
+        },
+        {
+          "word": "illustrate",
+          "meaning": "['rləstrert] v. (举例)说明；解释；阐明"
+        },
+        {
+          "word": "entertaining",
+          "meaning": "[,entə'teiniŋ] a.有趣的；娱乐的；使人愉快的"
+        },
+        {
+          "word": "array",
+          "meaning": "[ə'rer] n.大量；一系列v.排列；布置"
+        },
+        {
+          "word": "trend",
+          "meaning": "[trend] n.趋势；倾向；潮流"
+        },
+        {
+          "word": "document",
+          "meaning": "['dpkjumənt] v.记录n.文件"
+        },
+        {
+          "word": "unmistakable",
+          "meaning": "[,ʌnmi'sterkəbl] a.确定无疑的"
+        },
+        {
+          "word": "subtitle",
+          "meaning": "['sʌbtartl] n.副标题"
+        },
+        {
+          "word": "acknowledge",
+          "meaning": "[ək'nolidʒ] v.承认；认识"
+        },
+        {
+          "word": "variety",
+          "meaning": "[və'rarəti] n.各种各样"
+        },
+        {
+          "word": "non-standard",
+          "meaning": "[,non 'stændəd] a.不标准的"
+        },
+        {
+          "word": "expressive",
+          "meaning": "[ik'spresiv] a.有表现力的"
+        },
+        {
+          "word": "dialect",
+          "meaning": "['darolekt] n.方言"
+        },
+        {
+          "word": "convey",
+          "meaning": "[kən'veI] v.传达；输送；运送"
+        },
+        {
+          "word": "complex",
+          "meaning": "['kompleks] a.复杂的；难懂的；费解的"
+        },
+        {
+          "word": "straight",
+          "meaning": "[strert] ad.正确地；笔直地a.直的"
+        },
+        {
+          "word": "Russian",
+          "meaning": "['raʃn] n.俄罗斯人"
+        },
+        {
+          "word": "chunk",
+          "meaning": "[tfank] n.大量；大块；厚块"
+        },
+        {
+          "word": "memorize",
+          "meaning": "['memərarz] v.记住；记忆"
+        },
+        {
+          "word": "politician",
+          "meaning": "[.pplə'tfn] n.政治家"
+        },
+        {
+          "word": "elaborate",
+          "meaning": "[i'labərət] y.用心完成；精心制作a.复杂的；详尽的；精心制作的"
+        },
+        {
+          "word": "old-fashioned",
+          "meaning": "[,əuld'fæjnd] a.过时的"
+        },
+        {
+          "word": "propose",
+          "meaning": "[prə'pəuz] v.提议；提名；求婚"
+        },
+        {
+          "word": "radical",
+          "meaning": "['rædik(2)l] a.彻底的；根本的，基本的；激进的n.激进分子"
+        },
+        {
+          "word": "reform",
+          "meaning": "[r'fo:m] n.改革；改良，改进；改造n.改革，变革"
+        },
+        {
+          "word": "grieve",
+          "meaning": "[gri:v] v.使悲伤n.悲伤"
+        },
+        {
+          "word": "china",
+          "meaning": "['tfarnə] n.瓷器"
+        },
+        {
+          "word": "shame",
+          "meaning": "[fem] n.羞耻；惭愧；耻辱"
+        },
+        {
+          "word": "inevitable",
+          "meaning": "[n'evitəbl] a.不可避免的"
+        },
+        {
+          "word": "controversy",
+          "meaning": "['kontrəv3:si] n.争议"
+        },
+        {
+          "word": "modesty",
+          "meaning": "['mpdosti] n.谦虚；谦逊"
+        },
+        {
+          "word": "personality",
+          "meaning": "[.p3:sa'naləti] n.个性；人格"
+        },
+        {
+          "word": "informality",
+          "meaning": "[,infos:'mæləti] n.非正式"
+        },
+        {
+          "word": "logical",
+          "meaning": "['lodʒik(ə)l] a.符合逻辑的；逻辑的"
+        },
+        {
+          "word": "description",
+          "meaning": "[di'skripfn] n.描述；形容；类型"
+        },
+        {
+          "word": "appreciation",
+          "meaning": "[2,pri:ji'efn] n.赞赏；感激；赏识；鉴赏"
+        },
+        {
+          "word": "admiration",
+          "meaning": "[,ædma'reɪf(o)n] n.钦佩；赞赏；羡慕"
+        },
+        {
+          "word": "memory",
+          "meaning": "['meməri] n.记忆力；回忆"
+        }
+      ]
+    },
+    {
+      "name": "2006年阅读理解Text 1",
+      "description": "考研英语阅读理解真题词汇",
+      "words": [
+        {
+          "word": "endless",
+          "meaning": "['endləs] a.无止境的；无穷的；无穷尽的"
+        },
+        {
+          "word": "machine",
+          "meaning": "[mə'Jji:n] n.机器；机械"
+        },
+        {
+          "word": "homogenize",
+          "meaning": "[ho'modʒinaiz] v.使大众化"
+        },
+        {
+          "word": "democratize",
+          "meaning": "[di'mokrətaiz] v. (使)大众化；(使)民主化"
+        },
+        {
+          "word": "uniformity",
+          "meaning": "[ju:ni'fs:miti] n.一致性"
+        },
+        {
+          "word": "discourse",
+          "meaning": "['drskɔ:s] n.交谈；论文；演讲v.谈；讲演"
+        },
+        {
+          "word": "casualness",
+          "meaning": "['kæeʒuəlnəs] n.随意；偶然；随便"
+        },
+        {
+          "word": "absence",
+          "meaning": "['æbsəns] n.缺乏；缺席"
+        },
+        {
+          "word": "deference",
+          "meaning": "['deforons] n.尊重；遵从；听从"
+        },
+        {
+          "word": "characteristic",
+          "meaning": "[,kerokta'ristk] n.特征"
+        },
+        {
+          "word": "absorb",
+          "meaning": "[əb'sɔ:b] v.同化；吸引；把.......并入"
+        },
+        {
+          "word": "consumption",
+          "meaning": "[kən'sʌmpfan] n.消费；消耗"
+        },
+        {
+          "word": "launch",
+          "meaning": "[lbɔ:ntʃ] v.发起；发射，发动n.发射"
+        },
+        {
+          "word": "vast",
+          "meaning": "[va:st] a.广大的；巨大的"
+        },
+        {
+          "word": "array",
+          "meaning": "[ə'rei] n.大量；排列，队形v.部署；穿着，打扮"
+        },
+        {
+          "word": "elegant",
+          "meaning": "['eligənt] a.优雅的；简洁的"
+        },
+        {
+          "word": "atmosphere",
+          "meaning": "['ætməs,fia] n.环境；大气，大气层；气氛"
+        },
+        {
+          "word": "intimate",
+          "meaning": "['intimət] a.私人的；亲密的，密切的"
+        },
+        {
+          "word": "knowledgeable",
+          "meaning": "['nolidʒɔbl] a.知识渊博的；博学的；有见识的"
+        },
+        {
+          "word": "elite",
+          "meaning": "[er'li:t] n.精英"
+        },
+        {
+          "word": "store",
+          "meaning": "[stɔ:(r)] n.商店；储存，仓库"
+        },
+        {
+          "word": "class",
+          "meaning": "[kla:s] n.[僻]阶级；班级；等级"
+        },
+        {
+          "word": "background",
+          "meaning": "['bækgraund] n.出身背景"
+        },
+        {
+          "word": "public",
+          "meaning": "['pʌblik] a.平民的；公众的"
+        },
+        {
+          "word": "democratic",
+          "meaning": "[,demə'kretik] a.大众化的；平等的；民主的"
+        },
+        {
+          "word": "advertising",
+          "meaning": "['ædvətarziŋ] n.广告业"
+        },
+        {
+          "word": "homogenization",
+          "meaning": "[həumədʒon aɪ'zeIʃ(en] n.均匀化"
+        },
+        {
+          "word": "immigrant",
+          "meaning": "['imigrənt] n.移民(表示从他国移入的移民)"
+        },
+        {
+          "word": "altogether",
+          "meaning": "[,ɔ:Ita'geoə(r)] ad.太；总共；完全地；总之"
+        },
+        {
+          "word": "elevate",
+          "meaning": "['elrvert] v.提高；举起；抬起；使情绪高昂"
+        },
+        {
+          "word": "hardly",
+          "meaning": "['ha:dli] ad.几乎不"
+        },
+        {
+          "word": "poisonous",
+          "meaning": "['pɔizənəs] a.会造成危害的；有毒的；恶毒的"
+        },
+        {
+          "word": "national",
+          "meaning": "['næʃ(o)nəl] a. 国家的；民族的"
+        },
+        {
+          "word": "immigration",
+          "meaning": "[,imɪ'gr erʃ(ə)n] n.移民(入境);移民人数"
+        },
+        {
+          "word": "forum",
+          "meaning": "['fɔ:rəm] n.论坛；讨论会"
+        },
+        {
+          "word": "unprecedented",
+          "meaning": "[,ʌn'presidəntid] a.前所未有的"
+        },
+        {
+          "word": "resistant",
+          "meaning": "[rn'zistənt] a.抗拒的；抵抗的"
+        },
+        {
+          "word": "assimilation",
+          "meaning": "[ə  simileifon] n.同化"
+        },
+        {
+          "word": "population",
+          "meaning": "[.pppju'lerʃ(ə)n] n. (地区、国家等的)人口，人口数量"
+        },
+        {
+          "word": "resident",
+          "meaning": "['rezidənt] n.居民a.居住的"
+        },
+        {
+          "word": "consider",
+          "meaning": "[kən'sido(r)] v.仔细考虑；认为；顾及"
+        },
+        {
+          "word": "index",
+          "meaning": "['ndeks] n.指标；索引；指数"
+        },
+        {
+          "word": "ownership",
+          "meaning": "['ɔunəfip] n.所有权"
+        },
+        {
+          "word": "intermarriage",
+          "meaning": "[,inta'mæridʒ] n.异族通婚"
+        },
+        {
+          "word": "census",
+          "meaning": "['sensəs] n.人口普查"
+        },
+        {
+          "word": "reveal",
+          "meaning": "[rn'vi:l] y.显示；显露，揭露；展现"
+        },
+        {
+          "word": "origin",
+          "meaning": "['pridʒin] n.出身；起源"
+        },
+        {
+          "word": "residence",
+          "meaning": "['rezidəns] n.定居；住处"
+        },
+        {
+          "word": "bilingual",
+          "meaning": "[,bar'lingwəl] a.使用双语的"
+        },
+        {
+          "word": "proficient",
+          "meaning": "[prə'fiʃ(o)nt] a.精通的；熟练的n.专家；能手；老手"
+        },
+        {
+          "word": "generation",
+          "meaning": "[,dʒenə'rerjn] n.一代(人);产生，发生"
+        },
+        {
+          "word": "original",
+          "meaning": "[ə'rid3ən(a)l] a.最初的；独创的；原作的n.原件"
+        },
+        {
+          "word": "hence",
+          "meaning": "[hens] ad.因此"
+        },
+        {
+          "word": "description",
+          "meaning": "[di'skrIpʃn] n.形容；描述，描写"
+        },
+        {
+          "word": "graveyard",
+          "meaning": "['grervja:d] n.墓地"
+        },
+        {
+          "word": "foreign-born",
+          "meaning": "['forin,bɔ:n] a.在国外出生的"
+        },
+        {
+          "word": "native-born",
+          "meaning": "['neitiv'bɔ:n] a.土著的"
+        },
+        {
+          "word": "rate",
+          "meaning": "[rert] n.比率；速度；费用v.评估，评价"
+        },
+        {
+          "word": "Asian",
+          "meaning": "['erʒ(a)n] n.亚裔"
+        },
+        {
+          "word": "Hispanic",
+          "meaning": "[hi'spænk] n.母语为西班牙语的人"
+        },
+        {
+          "word": "married",
+          "meaning": "['mærid] a.结婚的"
+        },
+        {
+          "word": "non-Asian",
+          "meaning": "[non'er3(3n] 非亚裔"
+        },
+        {
+          "word": "note",
+          "meaning": "[nəut] v.[僻]指出；注意n.笔记；便条；注释"
+        },
+        {
+          "word": "remote",
+          "meaning": "[rɪ'məot] a.偏远的；遥远的；相差很大的"
+        },
+        {
+          "word": "village",
+          "meaning": "['vild3] n.乡村，村庄"
+        },
+        {
+          "word": "remain",
+          "meaning": "[r'mein] v.保持不变；剩余"
+        },
+        {
+          "word": "immune",
+          "meaning": "[i'mju:n] a.不受影响的；豁免的；有免疫力的"
+        },
+        {
+          "word": "assimilative",
+          "meaning": "[ə'smr ltrv] a.同化的；同化力的"
+        },
+        {
+          "word": "divisive",
+          "meaning": "[dr'vaIsIv] a.引起分歧的"
+        },
+        {
+          "word": "issue",
+          "meaning": "['rfu:] n.问题；(报刊)期号；发行v.发表，发布"
+        },
+        {
+          "word": "pocket",
+          "meaning": "['ppktt] n. (与周围不同的)小组织"
+        },
+        {
+          "word": "seething",
+          "meaning": "[si:ð] a.满腔怒火的"
+        },
+        {
+          "word": "indeed",
+          "meaning": "[n'di:d] ad.确实"
+        },
+        {
+          "word": "turbulent",
+          "meaning": "['t3:bjələnt] a.动荡的"
+        },
+        {
+          "word": "dark",
+          "meaning": "[da:k] a.黑暗的；无望的；昏暗的；深色的"
+        },
+        {
+          "word": "deteriorate",
+          "meaning": "[di'troriorert] v.恶化；变坏"
+        },
+        {
+          "word": "identify",
+          "meaning": "[ai'dentifar] v.识别；鉴别，确认，认出；认为......等同于"
+        },
+        {
+          "word": "associate",
+          "meaning": "[ə'səusiert] v.联系；联合，(使)结合；交往n.伙伴a.联合的，联盟的"
+        },
+        {
+          "word": "assimilate",
+          "meaning": "[ə'siməlert] v.使同化；吸收"
+        },
+        {
+          "word": "monopolize",
+          "meaning": "[mə'nppəlarz] y.垄断"
+        },
+        {
+          "word": "spread",
+          "meaning": "[spred] n.传播；展开；散布；延伸n.散布，传播；差额"
+        },
+        {
+          "word": "satisfy",
+          "meaning": "['sæetrsfar] v.满足(要求、需要等);使满意；使确信"
+        },
+        {
+          "word": "emergence",
+          "meaning": "[i'm3:d3əns] n.出现；兴起"
+        },
+        {
+          "word": "resistant",
+          "meaning": "[ri'zistont] a.抵制的；抵抗力的"
+        },
+        {
+          "word": "exert",
+          "meaning": "[1g'zs:t] v.产生(影响等)"
+        },
+        {
+          "word": "constitute",
+          "meaning": "['konstitju:t] v.构成；组成，构成；建立，制定"
+        },
+        {
+          "word": "mention",
+          "meaning": "['menʃn] y.提到；写到"
+        },
+        {
+          "word": "prove",
+          "meaning": "[pru:v] v.证明；证明是，结果是"
+        },
+        {
+          "word": "absorption",
+          "meaning": "[əb'so:pfn] n.吸纳；吸收；专注；同化"
+        }
+      ]
+    }
+  ]
+}

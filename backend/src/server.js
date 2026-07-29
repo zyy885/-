@@ -440,7 +440,7 @@ app.get('/api/word-lists', authMiddleware, async (req, res) => {
     params.push(word_book_id);
   }
 
-  const finalSQL = baseSQL + whereSQL + ' ORDER BY wl.created_at DESC';
+  const finalSQL = baseSQL + whereSQL + ' ORDER BY wl.sort_order IS NULL, wl.sort_order ASC, wl.created_at DESC';
   rows = await db.prepare(finalSQL).all(...params);
   res.json({ wordLists: rows });
 });

@@ -511,6 +511,7 @@ const buildDDL = () => {
       await db.query(`ALTER TABLE word_books ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE`);
       await db.query(`ALTER TABLE words ADD COLUMN IF NOT EXISTS sort_order INTEGER`);
       await db.query(`UPDATE words SET sort_order = id WHERE sort_order IS NULL`);
+      await db.query(`ALTER TABLE word_lists ADD COLUMN IF NOT EXISTS sort_order INTEGER`);
       await db.query(`CREATE UNIQUE INDEX IF NOT EXISTS idx_study_records_unique ON study_records (task_student_id, word_id)`);
       await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS rank_bonus_days INTEGER DEFAULT 0`);
       await db.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS rank_bonus_words INTEGER DEFAULT 0`);
@@ -530,6 +531,7 @@ const buildDDL = () => {
       try { db.prepare('ALTER TABLE word_books ADD COLUMN is_public INTEGER DEFAULT 0').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE words ADD COLUMN sort_order INTEGER').run(); } catch (e) {}
       try { db.prepare('UPDATE words SET sort_order = id WHERE sort_order IS NULL').run(); } catch (e) {}
+      try { db.prepare('ALTER TABLE word_lists ADD COLUMN sort_order INTEGER').run(); } catch (e) {}
       try { db.prepare('CREATE UNIQUE INDEX IF NOT EXISTS idx_study_records_unique ON study_records (task_student_id, word_id)').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE users ADD COLUMN rank_bonus_days INTEGER DEFAULT 0').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE users ADD COLUMN rank_bonus_words INTEGER DEFAULT 0').run(); } catch (e) {}
