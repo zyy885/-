@@ -100,6 +100,37 @@ function getNextRank(days, words) {
   return null;
 }
 
+function calcStreak(dates) {
+  if (!dates || dates.length === 0) return 0;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayStr = today.toISOString().split('T')[0];
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split('T')[0];
+  const dateSet = new Set(dates.map(d => typeof d === 'string' ? d : d.checkin_date));
+  if (!dateSet.has(todayStr) && !dateSet.has(yesterdayStr)) return 0;
+  let streak = 0;
+  let cursor = new Date(today);
+  if (!dateSet.has(todayStr)) cursor.setDate(cursor.getDate() - 1);
+  while (true) {
+    const cursorStr = cursor.toISOString().split('T')[0];
+    if (dateSet.has(cursorStr)) {
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    } else break;
+  }
+  return streak;
+}
+
+function cleanMeaning(s) {
+  s = s.trim().toLowerCase();
+  s = s.replace(/\(.*?\)/g, '').trim();
+  s = s.replace(/^[a-z]+\.\s*/, '').trim();
+  s = s.replace(/^[（(][^）)]*[）)]\s*/, '').trim();
+  return s;
+}
+
 const FRONTEND_DIST = path.join(__dirname, '..', '..', 'frontend', 'dist');
 const fs = require('fs');
 
@@ -279,29 +310,6 @@ app.get('/api/users/:id/rank-info', authMiddleware, requireRole('teacher'), asyn
     'SELECT checkin_date FROM checkins WHERE student_id = ? ORDER BY checkin_date DESC'
   ).all(userId);
 
-  const calcStreak = (dates) => {
-    if (!dates || dates.length === 0) return 0;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split('T')[0];
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
-    const dateSet = new Set(dates.map(d => typeof d === 'string' ? d : d.checkin_date));
-    if (!dateSet.has(todayStr) && !dateSet.has(yesterdayStr)) return 0;
-    let streak = 0;
-    let cursor = new Date(today);
-    if (!dateSet.has(todayStr)) cursor.setDate(cursor.getDate() - 1);
-    while (true) {
-      const cursorStr = cursor.toISOString().split('T')[0];
-      if (dateSet.has(cursorStr)) {
-        streak++;
-        cursor.setDate(cursor.getDate() - 1);
-      } else break;
-    }
-    return streak;
-  };
-
   const streak = calcStreak(checkinRows);
   const effectiveDays = streak + bonusDays;
   const effectiveWords = totalWords + bonusWords;
@@ -378,29 +386,6 @@ app.get('/api/users/:id/study-detail', authMiddleware, requireRole('teacher'), a
   const checkinRows = await db.prepare(
     'SELECT checkin_date FROM checkins WHERE student_id = ? ORDER BY checkin_date DESC'
   ).all(userId);
-
-  const calcStreak = (dates) => {
-    if (!dates || dates.length === 0) return 0;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split('T')[0];
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
-    const dateSet = new Set(dates.map(d => typeof d === 'string' ? d : d.checkin_date));
-    if (!dateSet.has(todayStr) && !dateSet.has(yesterdayStr)) return 0;
-    let streak = 0;
-    let cursor = new Date(today);
-    if (!dateSet.has(todayStr)) cursor.setDate(cursor.getDate() - 1);
-    while (true) {
-      const cursorStr = cursor.toISOString().split('T')[0];
-      if (dateSet.has(cursorStr)) {
-        streak++;
-        cursor.setDate(cursor.getDate() - 1);
-      } else break;
-    }
-    return streak;
-  };
 
   const streak = calcStreak(checkinRows);
   const totalSessionWords = Number(totalSessionWordsRow.w) || 0;
@@ -878,13 +863,6 @@ app.post('/api/tests/submit', authMiddleware, async (req, res) => {
     if (userAns.length === 0) {
       isCorrect = false;
     } else {
-      const cleanMeaning = (s) => {
-        s = s.trim().toLowerCase();
-        s = s.replace(/\(.*?\)/g, '').trim();
-        s = s.replace(/^[a-z]+\.\s*/, '').trim();
-        s = s.replace(/^[（(][^）)]*[）)]\s*/, '').trim();
-        return s;
-      };
       const normUserAns = normalizeForCompare(userAns);
       if (qType === 'zh_to_en') {
         const validWords = word.word.split(/[;,，；、\/\|]/).map(s => s.trim().toLowerCase()).filter(Boolean);
@@ -1626,34 +1604,6 @@ app.get('/api/checkins/status', authMiddleware, requireRole('student'), async (r
     "SELECT checkin_date FROM checkins WHERE student_id = ? ORDER BY checkin_date DESC"
   ).all(studentId);
 
-  const calcStreak = (dates) => {
-    if (!dates || dates.length === 0) return 0;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString().split('T')[0];
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().split('T')[0];
-
-    const dateSet = new Set(dates.map(d => typeof d === 'string' ? d : d.checkin_date));
-
-    if (!dateSet.has(todayStr) && !dateSet.has(yesterdayStr)) return 0;
-
-    let streak = 0;
-    let cursor = new Date(today);
-    if (!dateSet.has(todayStr)) cursor.setDate(cursor.getDate() - 1);
-    while (true) {
-      const cursorStr = cursor.toISOString().split('T')[0];
-      if (dateSet.has(cursorStr)) {
-        streak++;
-        cursor.setDate(cursor.getDate() - 1);
-      } else {
-        break;
-      }
-    }
-    return streak;
-  };
-
   const totalWordsRow = await db.prepare(
     'SELECT COALESCE(SUM(words_studied), 0) as w FROM study_sessions WHERE student_id = ?'
   ).get(studentId);
@@ -1904,13 +1854,6 @@ app.post('/api/self-tests/submit', authMiddleware, requireRole('student'), async
   if (!answers || !answers.length) return res.status(400).json({ error: '参数错误' });
   if (answers.length > 200) return res.status(400).json({ error: '单次最多 200 题' });
   let correct = 0;
-  const cleanMeaning = (s) => {
-    s = s.trim().toLowerCase();
-    s = s.replace(/\(.*?\)/g, '').trim();
-    s = s.replace(/^[a-z]+\.\s*/, '').trim();
-    s = s.replace(/^[（(][^）)]*[）)]\s*/, '').trim();
-    return s;
-  };
   const wordIds = [...new Set(answers.map(a => a.word_id).filter(Boolean))];
   const placeholders = wordIds.map(() => '?').join(',');
   const words = await db.prepare(

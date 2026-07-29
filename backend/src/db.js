@@ -323,6 +323,8 @@ const buildDDL = () => {
       teacher_id INTEGER NOT NULL,
       deadline DATETIME,
       test_words_count INTEGER DEFAULT 10,
+      test_mode TEXT DEFAULT 'en_to_zh',
+      sentence_list_id INTEGER,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (word_list_id) REFERENCES word_lists(id) ON DELETE CASCADE,
       FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
@@ -359,6 +361,7 @@ const buildDDL = () => {
       word_id INTEGER NOT NULL,
       user_answer TEXT,
       is_correct INTEGER,
+      question_type TEXT DEFAULT 'en_to_zh',
       tested_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (task_student_id) REFERENCES task_students(id) ON DELETE CASCADE,
       FOREIGN KEY (word_id) REFERENCES words(id) ON DELETE CASCADE
