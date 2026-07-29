@@ -48,8 +48,8 @@ function Navbar() {
       ]
     : [
         { to: '/student', label: '我的任务' },
-        { to: '/student/word-lists', label: '词表总览' },
-        { to: '/student/self-test', label: '单词自测' },
+        { to: '/student/word-lists', label: '学习' },
+        { to: '/student/self-test-select', label: '自测' },
         { to: '/student/sentence-practice', label: '长难句' },
         { to: '/student/wrong-book', label: '错题本' },
         { to: '/student/favorites', label: '收藏' },
@@ -115,13 +115,19 @@ function BottomTabBar() {
       key: 'study',
       label: '学习',
       icon: '📚',
+      single: { to: '/student/word-lists', label: '词表总览' },
+      match: ['/student/word-lists'],
+    },
+    {
+      key: 'practice',
+      label: '练习',
+      icon: '✏️',
       items: [
-        { to: '/student/word-lists', label: '词表总览', icon: '📖' },
         { to: '/student/self-test-select', label: '单词自测', icon: '📝' },
         { to: '/student/sentence-practice', label: '长难句', icon: '📄' },
         { to: '/student/wrong-book', label: '错题本', icon: '❌' },
       ],
-      match: ['/student/word-lists', '/student/self-test', '/student/self-test-select', '/student/sentence-practice', '/student/wrong-book'],
+      match: ['/student/self-test', '/student/self-test-select', '/student/sentence-practice', '/student/wrong-book'],
     },
     {
       key: 'discover',
