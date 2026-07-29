@@ -409,7 +409,7 @@ app.get('/api/users/:id/study-detail', authMiddleware, requireRole('teacher'), a
   const rank = getRank(effectiveDays, effectiveWords);
 
   const recentTasks = await db.prepare(
-    `SELECT ts.*, t.name as task_name, t.description as task_description
+    `SELECT ts.*, t.name as task_name
      FROM task_students ts
      INNER JOIN tasks t ON t.id = ts.task_id
      WHERE ts.student_id = ?
