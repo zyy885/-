@@ -336,6 +336,134 @@ app.put('/api/users/:id/rank-bonus', authMiddleware, requireRole('teacher'), asy
   res.json({ ok: true, rank_bonus_days: days, rank_bonus_words: words });
 });
 
+app.get('/api/users/:id/study-detail', authMiddleware, requireRole('teacher'), async (req, res) => {
+  const userId = Number(req.params.id);
+  const user = await db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
+  if (!user) return res.status(404).json({ error: '用户不存在' });
+  if (user.role !== 'student') return res.status(400).json({ error: '仅学生有学习详情' });
+
+  const bonusDays = Number(user.rank_bonus_days) || 0;
+  const bonusWords = Number(user.rank_bonus_words) || 0;
+
+  const totalTasksRow = await db.prepare(
+    'SELECT COUNT(*) as cnt FROM task_students WHERE student_id = ?'
+  ).get(userId);
+  const testedTasksRow = await db.prepare(
+    "SELECT COUNT(*) as cnt FROM task_students WHERE student_id = ? AND status = 'tested'"
+  ).get(userId);
+  const avgScoreRow = await db.prepare(
+    'SELECT AVG(test_score) as avg FROM task_students WHERE student_id = ? AND test_score IS NOT NULL'
+  ).get(userId);
+  const studyDaysRow = await db.prepare(
+    "SELECT COUNT(DISTINCT DATE(last_studied_at)) as cnt FROM task_students WHERE student_id = ? AND last_studied_at IS NOT NULL"
+  ).get(userId);
+  const totalWordsRow = await db.prepare(
+    `SELECT COUNT(DISTINCT sr.word_id) as cnt FROM study_records sr
+     INNER JOIN task_students ts ON ts.id = sr.task_student_id
+     WHERE ts.student_id = ?`
+  ).get(userId);
+  const wrongCountRow = await db.prepare(
+    `SELECT COUNT(DISTINCT tr.word_id) as cnt FROM test_records tr
+     INNER JOIN task_students ts ON ts.id = tr.task_student_id
+     WHERE ts.student_id = ? AND tr.is_correct = 0`
+  ).get(userId);
+
+  const totalSessionWordsRow = await db.prepare(
+    'SELECT COALESCE(SUM(words_studied), 0) as w FROM study_sessions WHERE student_id = ?'
+  ).get(userId);
+  const totalDurationRow = await db.prepare(
+    'SELECT COALESCE(SUM(duration_seconds), 0) as s FROM study_sessions WHERE student_id = ?'
+  ).get(userId);
+
+  const checkinRows = await db.prepare(
+    'SELECT checkin_date FROM checkins WHERE student_id = ? ORDER BY checkin_date DESC'
+  ).all(userId);
+
+  const calcStreak = (dates) => {
+    if (!dates || dates.length === 0) return 0;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayStr = today.toISOString().split('T')[0];
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    const dateSet = new Set(dates.map(d => typeof d === 'string' ? d : d.checkin_date));
+    if (!dateSet.has(todayStr) && !dateSet.has(yesterdayStr)) return 0;
+    let streak = 0;
+    let cursor = new Date(today);
+    if (!dateSet.has(todayStr)) cursor.setDate(cursor.getDate() - 1);
+    while (true) {
+      const cursorStr = cursor.toISOString().split('T')[0];
+      if (dateSet.has(cursorStr)) {
+        streak++;
+        cursor.setDate(cursor.getDate() - 1);
+      } else break;
+    }
+    return streak;
+  };
+
+  const streak = calcStreak(checkinRows);
+  const totalSessionWords = Number(totalSessionWordsRow.w) || 0;
+  const effectiveDays = streak + bonusDays;
+  const effectiveWords = totalSessionWords + bonusWords;
+  const rank = getRank(effectiveDays, effectiveWords);
+
+  const recentTasks = await db.prepare(
+    `SELECT ts.*, t.name as task_name, t.description as task_description
+     FROM task_students ts
+     INNER JOIN tasks t ON t.id = ts.task_id
+     WHERE ts.student_id = ?
+     ORDER BY COALESCE(ts.last_studied_at, ts.created_at) DESC
+     LIMIT 10`
+  ).all(userId);
+
+  const recentCheckins = await db.prepare(
+    'SELECT * FROM checkins WHERE student_id = ? ORDER BY checkin_date DESC LIMIT 14'
+  ).all(userId);
+
+  const recentSelfTests = await db.prepare(
+    `SELECT st.*, COUNT(str.id) as total,
+      SUM(CASE WHEN str.is_correct = 1 THEN 1 ELSE 0 END) as correct
+     FROM self_tests st
+     LEFT JOIN self_test_records str ON str.self_test_id = st.id
+     WHERE st.student_id = ?
+     GROUP BY st.id
+     ORDER BY st.created_at DESC
+     LIMIT 10`
+  ).all(userId);
+
+  res.json({
+    user: { id: user.id, username: user.username, created_at: user.created_at },
+    stats: {
+      totalTasks: Number(totalTasksRow.cnt) || 0,
+      testedTasks: Number(testedTasksRow.cnt) || 0,
+      avgScore: Math.round(Number(avgScoreRow.avg) || 0),
+      studyDays: Number(studyDaysRow.cnt) || 0,
+      totalWords: Number(totalWordsRow.cnt) || 0,
+      wrongCount: Number(wrongCountRow.cnt) || 0,
+      totalSessionWords,
+      totalDuration: Number(totalDurationRow.s) || 0,
+      checkinDays: checkinRows.length,
+      streakDays: streak,
+      rank_bonus_days: bonusDays,
+      rank_bonus_words: bonusWords,
+    },
+    rank,
+    recentTasks: recentTasks.map(t => ({
+      ...t,
+      study_progress: Number(t.study_progress) || 0,
+      test_score: t.test_score != null ? Number(t.test_score) : null,
+    })),
+    recentCheckins,
+    recentSelfTests: recentSelfTests.map(t => ({
+      ...t,
+      total: Number(t.total) || 0,
+      correct: Number(t.correct) || 0,
+      accuracy: t.total > 0 ? Math.round(Number(t.correct) / Number(t.total) * 100) : 0,
+    })),
+  });
+});
+
 app.get('/api/word-books', authMiddleware, async (req, res) => {
   let rows;
   if (req.user.role === 'teacher') {

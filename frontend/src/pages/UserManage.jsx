@@ -33,6 +33,16 @@ function roleBadge(role) {
     : <span className="badge badge-green">学生</span>;
 }
 
+function statusBadge(status) {
+  const map = {
+    pending: { text: '未开始', cls: 'badge-gray' },
+    studying: { text: '学习中', cls: 'badge-blue' },
+    tested: { text: '已测试', cls: 'badge-green' },
+  };
+  const s = map[status] || map.pending;
+  return <span className={'badge ' + s.cls}>{s.text}</span>;
+}
+
 export default function UserManage() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
@@ -47,6 +57,9 @@ export default function UserManage() {
   const [showStudentTagModal, setShowStudentTagModal] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [showRankModal, setShowRankModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailData, setDetailData] = useState(null);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [resetPasswordUser, setResetPasswordUser] = useState(null);
   const [rankInfo, setRankInfo] = useState(null);
@@ -151,6 +164,30 @@ export default function UserManage() {
       setBonusWords(data.rank_bonus_words || 0);
     } catch (e) { console.error(e); }
     setShowRankModal(true);
+  };
+
+  const openStudyDetail = async (student) => {
+    setSelectedStudent(student);
+    setDetailLoading(true);
+    setDetailData(null);
+    try {
+      const data = await api.getUserStudyDetail(student.id);
+      setDetailData(data);
+    } catch (e) {
+      console.error(e);
+      alert('加载学习详情失败：' + e.message);
+    } finally {
+      setDetailLoading(false);
+    }
+    setShowDetailModal(true);
+  };
+
+  const formatDuration = (seconds) => {
+    if (!seconds) return '0 分钟';
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    if (h > 0) return `${h} 小时 ${m} 分钟`;
+    return `${m} 分钟`;
   };
 
   const saveRankBonus = async () => {
@@ -267,7 +304,19 @@ export default function UserManage() {
                   return (
                   <tr key={u.id}>
                     <td>{i + 1}</td>
-                    <td>{roleLabel(u.role)} {u.username}</td>
+                    <td>
+                      {u.role === 'student' ? (
+                        <span
+                          style={{ cursor: 'pointer', textDecoration: 'underline', textDecorationStyle: 'dotted', textUnderlineOffset: 3 }}
+                          onClick={() => openStudyDetail(u)}
+                          title="点击查看学习详情"
+                        >
+                          {roleLabel(u.role)} {u.username}
+                        </span>
+                      ) : (
+                        <span>{roleLabel(u.role)} {u.username}</span>
+                      )}
+                    </td>
                     <td>{roleBadge(u.role)}</td>
                     <td>
                       {u.role === 'student' ? (
@@ -285,7 +334,10 @@ export default function UserManage() {
                     </td>
                     <td className="muted small">{new Date(u.created_at).toLocaleString()}</td>
                     <td>
-                      <button className="btn btn-outline btn-sm" onClick={() => openResetPassword(u)}>🔑 改密码</button>
+                      {u.role === 'student' && (
+                        <button className="btn btn-outline btn-sm" onClick={() => openStudyDetail(u)}>📊 详情</button>
+                      )}
+                      <button className="btn btn-outline btn-sm" style={{ marginLeft: u.role === 'student' ? 6 : 0 }} onClick={() => openResetPassword(u)}>🔑 改密码</button>
                       <button className="btn btn-danger btn-sm" style={{ marginLeft: 6 }} onClick={() => removeUser(u)}>删除</button>
                     </td>
                   </tr>
@@ -553,6 +605,140 @@ export default function UserManage() {
             <div className="modal-actions">
               <button className="btn btn-outline" onClick={() => { setShowRankModal(false); setSelectedStudent(null); }}>取消</button>
               <button className="btn btn-primary" onClick={saveRankBonus}>保存等级奖励</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showDetailModal && selectedStudent && (
+        <div className="modal" onClick={() => { setShowDetailModal(false); setSelectedStudent(null); setDetailData(null); }}>
+          <div className="modal-content modal-lg" onClick={e => e.stopPropagation()} style={{ maxWidth: 900 }}>
+            <h3>
+              🎒「{selectedStudent.username}」的学习详情
+              {detailData?.rank && (
+                <span style={{ marginLeft: 12, fontSize: 16, color: detailData.rank.color }}>
+                  {detailData.rank.icon} {detailData.rank.name}
+                </span>
+              )}
+            </h3>
+
+            {detailLoading ? (
+              <div className="loading">加载中...</div>
+            ) : !detailData ? (
+              <div className="empty-state">加载失败</div>
+            ) : (
+              <>
+                <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+                  <div className="stat-card">
+                    <div className="stat-num">{detailData.stats.streakDays}</div>
+                    <div className="stat-label">🔥 连续打卡</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-num">{detailData.stats.checkinDays}</div>
+                    <div className="stat-label">📅 累计打卡</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-num">{detailData.stats.totalSessionWords}</div>
+                    <div className="stat-label">📚 学习单词</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-num">{formatDuration(detailData.stats.totalDuration)}</div>
+                    <div className="stat-label">⏱️ 学习时长</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-num">{detailData.stats.totalTasks}</div>
+                    <div className="stat-label">📋 分配任务</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-num" style={{ color: '#10b981' }}>{detailData.stats.testedTasks}</div>
+                    <div className="stat-label">✅ 已完成测试</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-num">{detailData.stats.avgScore || '-'}分</div>
+                    <div className="stat-label">📊 平均分数</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-num" style={{ color: '#ef4444' }}>{detailData.stats.wrongCount}</div>
+                    <div className="stat-label">❌ 错题数</div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginTop: 16 }}>
+                  <div>
+                    <h4 style={{ margin: '0 0 10px 0' }}>📋 最近任务</h4>
+                    {detailData.recentTasks.length === 0 ? (
+                      <div className="empty-state" style={{ padding: 12 }}>暂无任务</div>
+                    ) : (
+                      <div style={{ maxHeight: 280, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        {detailData.recentTasks.map(t => (
+                          <div key={t.id} className="card" style={{ padding: 10, margin: 0 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                              <strong style={{ fontSize: 13 }}>{t.task_name}</strong>
+                              {statusBadge(t.status)}
+                            </div>
+                            <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 4 }}>
+                              <div className="progress-bar-small" style={{ flex: 1 }}>
+                                <div className="progress-fill" style={{ width: (t.study_progress || 0) + '%' }} />
+                              </div>
+                              <span className="muted small">{Math.round(t.study_progress || 0)}%</span>
+                            </div>
+                            {t.test_score != null && (
+                              <span className={'score ' + (t.test_score >= 80 ? 'good' : t.test_score >= 60 ? 'mid' : 'low')} style={{ fontSize: 13 }}>
+                                {Math.round(t.test_score)}分
+                              </span>
+                            )}
+                            <div className="muted small" style={{ marginTop: 4 }}>
+                              {t.last_studied_at ? `最近学习：${new Date(t.last_studied_at).toLocaleString()}` : `分配时间：${new Date(t.created_at).toLocaleString()}`}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <h4 style={{ margin: '0 0 10px 0' }}>✅ 最近打卡</h4>
+                    {detailData.recentCheckins.length === 0 ? (
+                      <div className="empty-state" style={{ padding: 12 }}>暂无打卡记录</div>
+                    ) : (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
+                        {detailData.recentCheckins.map(c => (
+                          <span key={c.checkin_date} className="badge badge-green" title={c.checkin_date} style={{ fontSize: 12 }}>
+                            {c.checkin_date.slice(5)}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    <h4 style={{ margin: '16px 0 10px 0' }}>✏️ 最近自测</h4>
+                    {detailData.recentSelfTests.length === 0 ? (
+                      <div className="empty-state" style={{ padding: 12 }}>暂无自测记录</div>
+                    ) : (
+                      <div style={{ maxHeight: 180, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 6 }}>
+                        {detailData.recentSelfTests.map(t => (
+                          <div key={t.id} className="card" style={{ padding: 8, margin: 0 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <span className="muted small">{new Date(t.created_at).toLocaleString()}</span>
+                              <span className={'score ' + (t.accuracy >= 80 ? 'good' : t.accuracy >= 60 ? 'mid' : 'low')} style={{ fontSize: 13 }}>
+                                {t.accuracy}%
+                              </span>
+                            </div>
+                            <div className="muted small">
+                              {t.correct}/{t.total} 题
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+
+            <div className="modal-actions">
+              <button className="btn btn-outline" onClick={() => { setShowDetailModal(false); setSelectedStudent(null); setDetailData(null); }}>
+                关闭
+              </button>
             </div>
           </div>
         </div>

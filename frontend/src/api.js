@@ -74,6 +74,7 @@ export const api = {
   deleteUser: (id) => request('DELETE', '/users/' + id),
   resetUserPassword: (id, password) => request('PUT', `/users/${id}/password`, { password }),
   getUserRankInfo: (id) => request('GET', `/users/${id}/rank-info`),
+  getUserStudyDetail: (id) => request('GET', `/users/${id}/study-detail`),
   updateUserRankBonus: (id, data) => request('PUT', `/users/${id}/rank-bonus`, data),
   getWordBooks: () => request('GET', '/word-books'),
   createWordBook: (data) => request('POST', '/word-books', data),
