@@ -1,6 +1,9 @@
 const jwt = require('jsonwebtoken');
 
 const SECRET = process.env.JWT_SECRET || 'vocab-app-secret-key-change-in-production';
+if (!process.env.JWT_SECRET) {
+  console.warn('⚠️  警告：未设置 JWT_SECRET 环境变量，正在使用默认密钥！生产环境必须配置 JWT_SECRET。');
+}
 
 function signToken(user) {
   return jwt.sign(

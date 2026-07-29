@@ -46,4 +46,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
 );
 setTimeout(removeLoader, 50);
-setTimeout(removeLoader, 50);

@@ -1429,15 +1429,11 @@ app.get('/api/checkins/status', authMiddleware, requireRole('student'), async (r
   }
 
   const todayCheckin = await db.prepare(
-    isPG
-      ? "SELECT * FROM checkins WHERE student_id = $1 AND checkin_date = $2"
-      : "SELECT * FROM checkins WHERE student_id = ? AND checkin_date = ?"
+    "SELECT * FROM checkins WHERE student_id = ? AND checkin_date = ?"
   ).get(studentId, today);
 
   const totalCheckins = await db.prepare(
-    isPG
-      ? "SELECT COUNT(*) as cnt FROM checkins WHERE student_id = $1"
-      : "SELECT COUNT(*) as cnt FROM checkins WHERE student_id = ?"
+    "SELECT COUNT(*) as cnt FROM checkins WHERE student_id = ?"
   ).get(studentId);
 
   let canCheckin = false;
@@ -1445,17 +1441,11 @@ app.get('/api/checkins/status', authMiddleware, requireRole('student'), async (r
   let todayTest = null;
 
   const recentTasks = await db.prepare(
-    isPG
-      ? `SELECT ts.*, t.name as task_name
-         FROM task_students ts
-         LEFT JOIN tasks t ON t.id = ts.task_id
-         WHERE ts.student_id = $1 AND ts.status = 'tested'
-         ORDER BY ts.last_studied_at DESC LIMIT 20`
-      : `SELECT ts.*, t.name as task_name
-         FROM task_students ts
-         LEFT JOIN tasks t ON t.id = ts.task_id
-         WHERE ts.student_id = ? AND ts.status = 'tested'
-         ORDER BY ts.last_studied_at DESC LIMIT 20`
+    `SELECT ts.*, t.name as task_name
+       FROM task_students ts
+       LEFT JOIN tasks t ON t.id = ts.task_id
+       WHERE ts.student_id = ? AND ts.status = 'tested'
+       ORDER BY ts.last_studied_at DESC LIMIT 20`
   ).all(studentId);
 
   const todayTaskTests = recentTasks.filter(ts => {
@@ -1465,19 +1455,12 @@ app.get('/api/checkins/status', authMiddleware, requireRole('student'), async (r
   });
 
   const recentSelfTests = await db.prepare(
-    isPG
-      ? `SELECT st.*, wb.name as word_book_name, wl.name as word_list_name
-         FROM self_tests st
-         LEFT JOIN word_books wb ON wb.id = st.word_book_id
-         LEFT JOIN word_lists wl ON wl.id = st.word_list_id
-         WHERE st.student_id = $1
-         ORDER BY st.created_at DESC LIMIT 20`
-      : `SELECT st.*, wb.name as word_book_name, wl.name as word_list_name
-         FROM self_tests st
-         LEFT JOIN word_books wb ON wb.id = st.word_book_id
-         LEFT JOIN word_lists wl ON wl.id = st.word_list_id
-         WHERE st.student_id = ?
-         ORDER BY st.created_at DESC LIMIT 20`
+    `SELECT st.*, wb.name as word_book_name, wl.name as word_list_name
+       FROM self_tests st
+       LEFT JOIN word_books wb ON wb.id = st.word_book_id
+       LEFT JOIN word_lists wl ON wl.id = st.word_list_id
+       WHERE st.student_id = ?
+       ORDER BY st.created_at DESC LIMIT 20`
   ).all(studentId);
 
   const todaySelfTests = recentSelfTests.filter(st => {
@@ -1506,9 +1489,7 @@ app.get('/api/checkins/status', authMiddleware, requireRole('student'), async (r
   }
 
   const allCheckins = await db.prepare(
-    isPG
-      ? "SELECT checkin_date FROM checkins WHERE student_id = $1 ORDER BY checkin_date DESC"
-      : "SELECT checkin_date FROM checkins WHERE student_id = ? ORDER BY checkin_date DESC"
+    "SELECT checkin_date FROM checkins WHERE student_id = ? ORDER BY checkin_date DESC"
   ).all(studentId);
 
   const calcStreak = (dates) => {
@@ -1577,9 +1558,7 @@ app.post('/api/checkins', authMiddleware, requireRole('student'), async (req, re
   const studentId = req.user.id;
 
   const todayCheckin = await db.prepare(
-    isPG
-      ? "SELECT * FROM checkins WHERE student_id = $1 AND checkin_date = $2"
-      : "SELECT * FROM checkins WHERE student_id = ? AND checkin_date = ?"
+    "SELECT * FROM checkins WHERE student_id = ? AND checkin_date = ?"
   ).get(studentId, today);
 
   if (todayCheckin) {
@@ -1587,11 +1566,8 @@ app.post('/api/checkins', authMiddleware, requireRole('student'), async (req, re
   }
 
   const taskTests = await db.prepare(
-    isPG
-      ? `SELECT ts.* FROM task_students ts
-         WHERE ts.student_id = $1 AND ts.status = 'tested'`
-      : `SELECT ts.* FROM task_students ts
-         WHERE ts.student_id = ? AND ts.status = 'tested'`
+    `SELECT ts.* FROM task_students ts
+       WHERE ts.student_id = ? AND ts.status = 'tested'`
   ).all(studentId);
 
   const todayValidTasks = taskTests.filter(ts => {
@@ -1601,9 +1577,7 @@ app.post('/api/checkins', authMiddleware, requireRole('student'), async (req, re
   });
 
   const selfTests = await db.prepare(
-    isPG
-      ? `SELECT * FROM self_tests WHERE student_id = $1`
-      : `SELECT * FROM self_tests WHERE student_id = ?`
+    `SELECT * FROM self_tests WHERE student_id = ?`
   ).all(studentId);
 
   const todayValidSelf = selfTests.filter(st => {
@@ -1624,11 +1598,8 @@ app.post('/api/checkins', authMiddleware, requireRole('student'), async (req, re
   const bestTest = allValid.reduce((a, b) => a.score > b.score ? a : b);
 
   const info = await db.prepare(
-    isPG
-      ? `INSERT INTO checkins (student_id, checkin_date, task_student_id, test_score)
-         VALUES ($1, $2, $3, $4)`
-      : `INSERT INTO checkins (student_id, checkin_date, task_student_id, test_score)
-         VALUES (?, ?, ?, ?)`
+    `INSERT INTO checkins (student_id, checkin_date, task_student_id, test_score)
+       VALUES (?, ?, ?, ?)`
   ).run(studentId, today, bestTest.type === 'task' ? bestTest.id : null, bestTest.score);
 
   res.json({ ok: true, id: info.lastInsertRowid, test_score: bestTest.score });
@@ -1636,20 +1607,15 @@ app.post('/api/checkins', authMiddleware, requireRole('student'), async (req, re
 
 app.get('/api/checkins', authMiddleware, requireRole('student'), async (req, res) => {
   const rows = await db.prepare(
-    isPG
-      ? `SELECT * FROM checkins WHERE student_id = $1 ORDER BY checkin_date DESC LIMIT 30`
-      : `SELECT * FROM checkins WHERE student_id = ? ORDER BY checkin_date DESC LIMIT 30`
+    `SELECT * FROM checkins WHERE student_id = ? ORDER BY checkin_date DESC LIMIT 30`
   ).all(req.user.id);
   res.json({ checkins: rows });
 });
 
 app.get('/api/tags', authMiddleware, requireRole('teacher'), async (req, res) => {
   const rows = await db.prepare(
-    isPG
-      ? `SELECT t.*, (SELECT COUNT(*) FROM student_tags st WHERE st.tag_id = t.id) as student_count
-         FROM tags t WHERE t.teacher_id = $1 ORDER BY t.created_at DESC`
-      : `SELECT t.*, (SELECT COUNT(*) FROM student_tags st WHERE st.tag_id = t.id) as student_count
-         FROM tags t WHERE t.teacher_id = ? ORDER BY t.created_at DESC`
+    `SELECT t.*, (SELECT COUNT(*) FROM student_tags st WHERE st.tag_id = t.id) as student_count
+       FROM tags t WHERE t.teacher_id = ? ORDER BY t.created_at DESC`
   ).all(req.user.id);
   res.json({ tags: rows });
 });
@@ -1658,9 +1624,7 @@ app.post('/api/tags', authMiddleware, requireRole('teacher'), async (req, res) =
   const { name, color } = req.body;
   if (!name || !name.trim()) return res.status(400).json({ error: '请输入标签名称' });
   const info = await db.prepare(
-    isPG
-      ? 'INSERT INTO tags (name, color, teacher_id) VALUES ($1, $2, $3)'
-      : 'INSERT INTO tags (name, color, teacher_id) VALUES (?, ?, ?)'
+    'INSERT INTO tags (name, color, teacher_id) VALUES (?, ?, ?)'
   ).run(name.trim(), color || '#6366f1', req.user.id);
   res.json({ id: info.lastInsertRowid, ok: true });
 });
@@ -1671,9 +1635,7 @@ app.put('/api/tags/:id', authMiddleware, requireRole('teacher'), async (req, res
   if (!tag) return res.status(404).json({ error: '标签不存在' });
   if (tag.teacher_id !== req.user.id) return res.status(403).json({ error: '无权限' });
   await db.prepare(
-    isPG
-      ? 'UPDATE tags SET name = $1, color = $2 WHERE id = $3'
-      : 'UPDATE tags SET name = ?, color = ? WHERE id = ?'
+    'UPDATE tags SET name = ?, color = ? WHERE id = ?'
   ).run(name || tag.name, color || tag.color, req.params.id);
   res.json({ ok: true });
 });
