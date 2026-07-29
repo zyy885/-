@@ -258,6 +258,17 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (!user) return;
+      e.preventDefault();
+      e.returnValue = '';
+      return '';
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [user]);
+
+  useEffect(() => {
     const applyTheme = () => {
       const theme = localStorage.getItem('vocab_theme') || 'light';
       document.body.classList.remove('theme-light', 'theme-dark', 'theme-eye', 'dark-theme');
