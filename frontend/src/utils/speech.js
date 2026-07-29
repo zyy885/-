@@ -91,15 +91,16 @@ async function playAudioUrl(url) {
   });
 }
 
-function speakWithTTS(text, lang) {
+function speakWithTTS(text, lang, rate) {
   lang = lang || 'en-US';
+  rate = rate || 0.9;
   try {
     if (typeof speechSynthesis === 'undefined') return;
     stopAll();
     isPlaying = true;
     const u = new SpeechSynthesisUtterance(text);
     u.lang = lang;
-    u.rate = 0.9;
+    u.rate = rate;
     const savedVoice = localStorage.getItem('vocab_voice') || 'default';
     if (savedVoice !== 'default') {
       const v = cachedVoices.find(function(v) { return v.name === savedVoice; });
@@ -150,7 +151,7 @@ export async function speakSentence(text, lang) {
     stopAll();
     return;
   }
-  speakWithTTS(text, lang);
+  speakWithTTS(text, lang, 0.75);
 }
 
 export async function getExampleFromDictionary(word) {

@@ -185,10 +185,13 @@ export default function StudyPage() {
       {hints.image && !showMeaning && (
         <div className="hint-panel" style={{ justifyContent: 'center' }}>
           <img
-            src={'https://image.pollinations.ai/prompt/' + encodeURIComponent(word.word + ' ' + (word.meaning || '')) + '?width=400&height=300&nologo=true'}
+            src={'https://image.pollinations.ai/prompt/' + encodeURIComponent(word.word + ' ' + (word.meaning || '')) + '?width=400&height=300&nologo=true&seed=' + word.id}
             alt="提示图片"
             style={{ maxWidth: '100%', borderRadius: 8, maxHeight: 260 }}
-            onError={(e) => { e.target.style.display = 'none'; }}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = 'https://picsum.photos/seed/' + encodeURIComponent(word.word) + '/400/300';
+            }}
           />
         </div>
       )}
@@ -233,10 +236,13 @@ export default function StudyPage() {
             {hints.image || showMeaning ? (
               <div style={{ marginTop: 12, textAlign: 'center' }}>
                 <img
-                  src={'https://image.pollinations.ai/prompt/' + encodeURIComponent(word.word + ' ' + (word.meaning || '')) + '?width=400&height=250&nologo=true'}
+                  src={'https://image.pollinations.ai/prompt/' + encodeURIComponent(word.word + ' ' + (word.meaning || '')) + '?width=400&height=250&nologo=true&seed=' + word.id}
                   alt="关联图片"
                   style={{ maxWidth: '100%', borderRadius: 8, maxHeight: 220 }}
-                  onError={(e) => { e.target.style.display = 'none'; }}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = 'https://picsum.photos/seed/' + encodeURIComponent(word.word) + '/400/250';
+                  }}
                 />
               </div>
             ) : null}

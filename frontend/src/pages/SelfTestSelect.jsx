@@ -26,7 +26,7 @@ export default function SelfTestSelect() {
 
   const startTest = (params) => {
     const qs = new URLSearchParams({ count, mode, ...params }).toString();
-    navigate(`/self-test?${qs}`);
+    navigate(`/student/self-test?${qs}`);
   };
 
   if (loading) return <div className="loading">加载中...</div>;
