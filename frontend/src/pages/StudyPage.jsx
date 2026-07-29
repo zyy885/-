@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { api } from '../api.js';
-import { speak, speakSentence, getExampleFromDictionary } from '../utils/speech.js';
+import { speak, speakSentence, getExampleFromDictionary, stopAll } from '../utils/speech.js';
 
 export default function StudyPage() {
   const { id } = useParams();
@@ -15,10 +15,18 @@ export default function StudyPage() {
   const [favMap, setFavMap] = useState({});
   const [hints, setHints] = useState({ firstLetter: false, example: false, image: false, syllable: false });
   const [fetchedExamples, setFetchedExamples] = useState({});
-  const [exampleLoading, setExampleLoading] = useState(false);
+  const [loadingWords, setLoadingWords] = useState({});
+  const fetchedRef = useRef({});
+  const loadingRef = useRef({});
 
   useEffect(() => {
     loadFavs();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      stopAll();
+    };
   }, []);
 
   const loadFavs = async () => {
@@ -48,23 +56,22 @@ export default function StudyPage() {
 
   useEffect(() => {
     const word = words[idx];
-    if (word && !word.example && !fetchedExamples[word.id]) {
-      fetchExample(word);
+    if (word && !word.example && !fetchedRef.current[word.id] && !loadingRef.current[word.id]) {
+      loadingRef.current[word.id] = true;
+      setLoadingWords(prev => ({ ...prev, [word.id]: true }));
+      getExampleFromDictionary(word.word).then(ex => {
+        loadingRef.current[word.id] = false;
+        if (ex) {
+          fetchedRef.current[word.id] = ex;
+          setFetchedExamples(prev => ({ ...prev, [word.id]: ex }));
+        }
+        setLoadingWords(prev => ({ ...prev, [word.id]: false }));
+      }).catch(() => {
+        loadingRef.current[word.id] = false;
+        setLoadingWords(prev => ({ ...prev, [word.id]: false }));
+      });
     }
   }, [idx, words]);
-
-  const fetchExample = async (word) => {
-    setExampleLoading(true);
-    try {
-      const ex = await getExampleFromDictionary(word.word);
-      if (ex) {
-        setFetchedExamples(prev => ({ ...prev, [word.id]: ex }));
-      }
-    } catch (e) {}
-    finally {
-      setExampleLoading(false);
-    }
-  };
 
   const load = async () => {
     try {
@@ -203,18 +210,20 @@ export default function StudyPage() {
         {showMeaning && (
           <div className="flashcard-meaning">
             <p className="meaning-text">{word.meaning}</p>
-            {(effectiveExample || exampleLoading) && (
+            {(effectiveExample || loadingWords[word.id]) && (
               <p className="example" style={{ textAlign: 'left', padding: '12px 16px', background: 'rgba(255,255,255,0.15)', borderRadius: 10, marginTop: 12 }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                   <span style={{ fontWeight: 600 }}>📝 例句：</span>
-                  <button
-                    className="icon-btn"
-                    style={{ color: 'white', fontSize: 16, padding: '2px 6px' }}
-                    onClick={(e) => { e.stopPropagation(); speakSentence(effectiveExample); }}
-                    title="朗读例句"
-                  >🔊</button>
+                  {effectiveExample && (
+                    <button
+                      className="icon-btn"
+                      style={{ color: 'white', fontSize: 16, padding: '2px 6px' }}
+                      onClick={(e) => { e.stopPropagation(); speakSentence(effectiveExample); }}
+                      title="朗读例句"
+                    >🔊</button>
+                  )}
                 </span>
-                {exampleLoading && !effectiveExample ? (
+                {loadingWords[word.id] && !effectiveExample ? (
                   <span style={{ opacity: 0.7 }}>正在加载例句...</span>
                 ) : (
                   <span>{effectiveExample}</span>
