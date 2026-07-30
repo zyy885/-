@@ -1,6 +1,83 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../api.js';
 
+const chineseNumMap = { '零':0, '一':1, '二':2, '两':2, '三':3, '四':4, '五':5, '六':6, '七':7, '八':8, '九':9, '十':10, '百':100, '千':1000, '万':10000 };
+
+function chineseToNum(s) {
+  s = s.trim();
+  if (/^\d+$/.test(s)) return parseInt(s);
+  let total = 0, temp = 0, lastUnit = 1;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    const v = chineseNumMap[c];
+    if (v === undefined) continue;
+    if (v >= 10) {
+      if (temp === 0) temp = 1;
+      temp *= v;
+      if (v >= 100) { total += temp; temp = 0; }
+      lastUnit = v;
+    } else {
+      if (lastUnit > 10) { total += temp; temp = 0; }
+      temp = v;
+      lastUnit = 1;
+    }
+  }
+  return total + temp;
+}
+
+function numToChinese(n) {
+  if (n === 0) return '零';
+  if (n < 10) return ['零','一','二','三','四','五','六','七','八','九'][n];
+  if (n < 20) return '十' + (n % 10 === 0 ? '' : numToChinese(n % 10));
+  if (n < 100) {
+    const tens = Math.floor(n / 10);
+    const ones = n % 10;
+    return numToChinese(tens) + '十' + (ones === 0 ? '' : numToChinese(ones));
+  }
+  if (n < 1000) {
+    const hundreds = Math.floor(n / 100);
+    const rest = n % 100;
+    let result = numToChinese(hundreds) + '百';
+    if (rest > 0) {
+      if (rest < 10) result += '零';
+      result += numToChinese(rest);
+    }
+    return result;
+  }
+  return String(n);
+}
+
+function parseSeqName(name) {
+  if (!name) return null;
+  const patterns = [
+    /^第([零一二三四五六七八九十百千万两\d]+)[页节章单元]$/,
+    /^第([零一二三四五六七八九十百千万两\d]+)$/,
+    /^([零一二三四五六七八九十百千万两\d]+)[页节章单元]$/,
+    /^List\s*(\d+)$/i,
+    /^Unit\s*(\d+)$/i,
+    /^Lesson\s*(\d+)$/i,
+  ];
+  for (const p of patterns) {
+    const m = name.match(p);
+    if (m) {
+      const n = chineseToNum(m[1]);
+      if (n > 0) return { num: n, baseName: name };
+    }
+  }
+  return null;
+}
+
+function sortListsBySeq(lists) {
+  return [...lists].sort((a, b) => {
+    const pa = parseSeqName(a.name);
+    const pb = parseSeqName(b.name);
+    if (pa && pb) return pa.num - pb.num;
+    if (pa) return -1;
+    if (pb) return 1;
+    return a.name.localeCompare(b.name, 'zh-CN');
+  });
+}
+
 export default function WordListManage() {
   const [wordBooks, setWordBooks] = useState([]);
   const [selectedBookId, setSelectedBookId] = useState(null);
@@ -44,14 +121,7 @@ export default function WordListManage() {
 
   const loadLists = async (bookId) => {
     const data = await api.getWordLists(bookId || undefined);
-    const sorted = [...data.wordLists].sort((a, b) => {
-      const pa = parseSeqName(a.name);
-      const pb = parseSeqName(b.name);
-      if (pa && pb) return pa.num - pb.num;
-      if (pa) return -1;
-      if (pb) return 1;
-      return a.name.localeCompare(b.name, 'zh-CN');
-    });
+    const sorted = sortListsBySeq(data.wordLists || []);
     setLists(sorted);
     if (!selectedId && sorted.length > 0) {
       setSelectedId(sorted[0].id);
@@ -286,68 +356,6 @@ export default function WordListManage() {
     } catch (e) { alert(e.message); }
   };
 
-  const chineseNumMap = { '零':0, '一':1, '二':2, '两':2, '三':3, '四':4, '五':5, '六':6, '七':7, '八':8, '九':9, '十':10, '百':100, '千':1000, '万':10000 };
-  const numToChinese = (n) => {
-    if (n === 0) return '零';
-    if (n < 10) return ['零','一','二','三','四','五','六','七','八','九'][n];
-    if (n < 20) return '十' + (n % 10 === 0 ? '' : numToChinese(n % 10));
-    if (n < 100) {
-      const tens = Math.floor(n / 10);
-      const ones = n % 10;
-      return numToChinese(tens) + '十' + (ones === 0 ? '' : numToChinese(ones));
-    }
-    if (n < 1000) {
-      const hundreds = Math.floor(n / 100);
-      const rest = n % 100;
-      let result = numToChinese(hundreds) + '百';
-      if (rest > 0) {
-        if (rest < 10) result += '零';
-        result += numToChinese(rest);
-      }
-      return result;
-    }
-    return String(n);
-  };
-  const chineseToNum = (s) => {
-    s = s.trim();
-    if (/^\d+$/.test(s)) return parseInt(s);
-    let total = 0, temp = 0, lastUnit = 1;
-    for (let i = 0; i < s.length; i++) {
-      const c = s[i];
-      const v = chineseNumMap[c];
-      if (v === undefined) continue;
-      if (v >= 10) {
-        if (temp === 0) temp = 1;
-        temp *= v;
-        if (v >= 100) { total += temp; temp = 0; }
-        lastUnit = v;
-      } else {
-        if (lastUnit > 10) { total += temp; temp = 0; }
-        temp = v;
-        lastUnit = 1;
-      }
-    }
-    return total + temp;
-  };
-  const parseSeqName = (name) => {
-    if (!name) return null;
-    const patterns = [
-      /^第([零一二三四五六七八九十百千万两\d]+)[页节章单元]$/,
-      /^第([零一二三四五六七八九十百千万两\d]+)$/,
-      /^([零一二三四五六七八九十百千万两\d]+)[页节章单元]$/,
-      /^List\s*(\d+)$/i,
-      /^Unit\s*(\d+)$/i,
-      /^Lesson\s*(\d+)$/i,
-    ];
-    for (const p of patterns) {
-      const m = name.match(p);
-      if (m) {
-        const n = chineseToNum(m[1]);
-        if (n > 0) return { num: n, baseName: name };
-      }
-    }
-    return null;
-  };
   const getNextSeqName = () => {
     const seqs = lists.map(l => parseSeqName(l.name)).filter(Boolean).sort((a, b) => b.num - a.num);
     if (seqs.length === 0) return null;
