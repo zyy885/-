@@ -28,12 +28,13 @@ const chineseToNum = (s) => {
 const parseSeqName = (name) => {
   if (!name) return null;
   const patterns = [
-    /^第([零一二三四五六七八九十百千万两\d]+)[页节章单元]$/,
+    /^第([零一二三四五六七八九十百千万两\d]+)[页节章单元天]/,
     /^第([零一二三四五六七八九十百千万两\d]+)$/,
-    /^([零一二三四五六七八九十百千万两\d]+)[页节章单元]$/,
-    /^List\s*(\d+)$/i,
-    /^Unit\s*(\d+)$/i,
-    /^Lesson\s*(\d+)$/i,
+    /^([零一二三四五六七八九十百千万两\d]+)[页节章单元天]/,
+    /List\s*(\d+)/i,
+    /Unit\s*(\d+)/i,
+    /Lesson\s*(\d+)/i,
+    /(\d+)/,
   ];
   for (const p of patterns) {
     const m = name.match(p);
@@ -46,6 +47,9 @@ const parseSeqName = (name) => {
 };
 const sortListsBySeq = (lists) => {
   return [...lists].sort((a, b) => {
+    if (a.sort_order !== undefined && b.sort_order !== undefined && a.sort_order !== null && b.sort_order !== null) {
+      if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
+    }
     const pa = parseSeqName(a.name);
     const pb = parseSeqName(b.name);
     if (pa && pb) return pa.num - pb.num;

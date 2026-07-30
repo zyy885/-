@@ -2,6 +2,62 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api.js';
 
+const chineseNumMap = { '零':0, '一':1, '二':2, '两':2, '三':3, '四':4, '五':5, '六':6, '七':7, '八':8, '九':9, '十':10, '百':100, '千':1000, '万':10000 };
+function chineseToNum(s) {
+  s = s.trim();
+  if (/^\d+$/.test(s)) return parseInt(s);
+  let total = 0, temp = 0, lastUnit = 1;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    const v = chineseNumMap[c];
+    if (v === undefined) continue;
+    if (v >= 10) {
+      if (temp === 0) temp = 1;
+      temp *= v;
+      if (v >= 100) { total += temp; temp = 0; }
+      lastUnit = v;
+    } else {
+      if (lastUnit >= 10) { total += temp; temp = 0; }
+      temp = v;
+      lastUnit = 1;
+    }
+  }
+  return total + temp;
+}
+function parseSeqName(name) {
+  if (!name) return null;
+  const patterns = [
+    /^第([零一二三四五六七八九十百千万两\d]+)[页节章单元天]/,
+    /^第([零一二三四五六七八九十百千万两\d]+)$/,
+    /^([零一二三四五六七八九十百千万两\d]+)[页节章单元天]/,
+    /List\s*(\d+)/i,
+    /Unit\s*(\d+)/i,
+    /Lesson\s*(\d+)/i,
+    /(\d+)/,
+  ];
+  for (const p of patterns) {
+    const m = name.match(p);
+    if (m) {
+      const n = chineseToNum(m[1]);
+      if (n > 0) return { num: n };
+    }
+  }
+  return null;
+}
+function sortListsBySeq(lists) {
+  return [...lists].sort((a, b) => {
+    if (a.sort_order !== undefined && b.sort_order !== undefined && a.sort_order !== null && b.sort_order !== null) {
+      if (a.sort_order !== b.sort_order) return a.sort_order - b.sort_order;
+    }
+    const pa = parseSeqName(a.name);
+    const pb = parseSeqName(b.name);
+    if (pa && pb) return pa.num - pb.num;
+    if (pa) return -1;
+    if (pb) return 1;
+    return a.name.localeCompare(b.name, 'zh-CN');
+  });
+}
+
 export default function TaskManage() {
   const [tasks, setTasks] = useState([]);
   const [wordBooks, setWordBooks] = useState([]);
@@ -31,9 +87,10 @@ export default function TaskManage() {
   const loadLists = async () => {
     try {
       const data = await api.getWordLists(selectedBookId || undefined);
-      setLists(data.wordLists);
-      if (data.wordLists.length > 0 && !form.word_list_id) {
-        setForm(f => ({ ...f, word_list_id: data.wordLists[0].id }));
+      const sorted = sortListsBySeq(data.wordLists || []);
+      setLists(sorted);
+      if (sorted.length > 0 && !form.word_list_id) {
+        setForm(f => ({ ...f, word_list_id: sorted[0].id }));
       }
     } catch (e) {}
   };

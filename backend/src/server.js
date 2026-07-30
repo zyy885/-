@@ -572,14 +572,18 @@ app.put('/api/word-lists/:id', authMiddleware, requireRole('teacher'), async (re
   const list = await db.prepare('SELECT * FROM word_lists WHERE id = ? AND teacher_id = ?').get(req.params.id, req.user.id);
   if (!list) return res.status(404).json({ error: '词表不存在或无权限' });
   
+  const finalName = name !== undefined ? name : list.name;
+  const finalDesc = description !== undefined ? description : list.description;
+  const finalBookId = word_book_id !== undefined ? (word_book_id || null) : list.word_book_id;
+  
   if (sort_order !== undefined) {
     await db.prepare(
-      'UPDATE word_lists SET sort_order = ? WHERE id = ? AND teacher_id = ?'
-    ).run(sort_order, req.params.id, req.user.id);
+      'UPDATE word_lists SET name = ?, description = ?, word_book_id = ?, sort_order = ? WHERE id = ? AND teacher_id = ?'
+    ).run(finalName, finalDesc || '', finalBookId, sort_order, req.params.id, req.user.id);
   } else {
     await db.prepare(
       'UPDATE word_lists SET name = ?, description = ?, word_book_id = ? WHERE id = ? AND teacher_id = ?'
-    ).run(name, description || '', word_book_id || null, req.params.id, req.user.id);
+    ).run(finalName, finalDesc || '', finalBookId, req.params.id, req.user.id);
   }
   res.json({ ok: true });
 });
