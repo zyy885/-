@@ -369,21 +369,20 @@ export default function WordListManage() {
   };
 
   const formatSeqName = (num, baseName) => {
-    const cnNum = numToChinese(num);
     const base = baseName || '第X页';
-    if (/^第.+[页节章单元]$/.test(base)) {
-      const suffix = base.match(/[页节章单元]$/)[0];
-      return `第${cnNum}${suffix}`;
+    if (/^第.+[页节章单元天]$/.test(base)) {
+      const suffix = base.match(/[页节章单元天]$/)[0];
+      return `第${num}${suffix}`;
     }
-    if (/^第.+$/.test(base)) return `第${cnNum}`;
-    if (/^.+[页节章单元]$/.test(base)) {
-      const suffix = base.match(/[页节章单元]$/)[0];
-      return `${cnNum}${suffix}`;
+    if (/^第.+$/.test(base)) return `第${num}`;
+    if (/^.+[页节章单元天]$/.test(base)) {
+      const suffix = base.match(/[页节章单元天]$/)[0];
+      return `${num}${suffix}`;
     }
     if (/^List\s*\d+$/i.test(base)) return `List ${num}`;
     if (/^Unit\s*\d+$/i.test(base)) return `Unit ${num}`;
     if (/^Lesson\s*\d+$/i.test(base)) return `Lesson ${num}`;
-    return `第${cnNum}页`;
+    return `第${num}页`;
   };
 
   const smartParse = (text, fileName = '') => {
