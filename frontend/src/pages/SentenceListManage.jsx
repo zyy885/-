@@ -1,9 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../api.js';
+import { api, getHomeRoute } from '../api.js';
+
+const chineseNumMap = { '零':0, '一':1, '二':2, '两':2, '三':3, '四':4, '五':5, '六':6, '七':7, '八':8, '九':9, '十':10, '百':100, '千':1000, '万':10000 };
+const chineseToNum = (s) => {
+  s = s.trim();
+  if (/^\d+$/.test(s)) return parseInt(s);
+  let total = 0, temp = 0, lastUnit = 1;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    const v = chineseNumMap[c];
+    if (v === undefined) continue;
+    if (v >= 10) {
+      if (temp === 0) temp = 1;
+      temp *= v;
+      if (v >= 100) { total += temp; temp = 0; }
+      lastUnit = v;
+    } else {
+      if (lastUnit > 10) { total += temp; temp = 0; }
+      temp = v;
+      lastUnit = 1;
+    }
+  }
+  return total + temp;
+};
+const parseSeqName = (name) => {
+  if (!name) return null;
+  const patterns = [
+    /^第([零一二三四五六七八九十百千万两\d]+)[页节章单元]$/,
+    /^第([零一二三四五六七八九十百千万两\d]+)$/,
+    /^([零一二三四五六七八九十百千万两\d]+)[页节章单元]$/,
+    /^List\s*(\d+)$/i,
+    /^Unit\s*(\d+)$/i,
+    /^Lesson\s*(\d+)$/i,
+  ];
+  for (const p of patterns) {
+    const m = name.match(p);
+    if (m) {
+      const n = chineseToNum(m[1]);
+      if (n > 0) return { num: n };
+    }
+  }
+  return null;
+};
+const sortListsBySeq = (lists) => {
+  return [...lists].sort((a, b) => {
+    const pa = parseSeqName(a.name);
+    const pb = parseSeqName(b.name);
+    if (pa && pb) return pa.num - pb.num;
+    if (pa) return -1;
+    if (pb) return 1;
+    return a.name.localeCompare(b.name, 'zh-CN');
+  });
+};
 
 export default function SentenceListManage() {
   const navigate = useNavigate();
+  const goBack = () => { if (window.history.length > 2) navigate(-1); else navigate(getHomeRoute()); };
   const [lists, setLists] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const [sentences, setSentences] = useState([]);
@@ -23,8 +76,9 @@ export default function SentenceListManage() {
   const load = async () => {
     try {
       const data = await api.getSentenceLists();
-      setLists(data.sentenceLists || []);
-      if ((data.sentenceLists || []).length > 0) setSelectedId(data.sentenceLists[0].id);
+      const sorted = sortListsBySeq(data.sentenceLists || []);
+      setLists(sorted);
+      if (sorted.length > 0) setSelectedId(sorted[0].id);
     } finally { setLoading(false); }
   };
 
@@ -110,7 +164,7 @@ export default function SentenceListManage() {
   return (
     <div className="word-manage">
       <div className="page-header">
-        <button className="btn-link" onClick={() => navigate(-1)}>← 返回</button>
+        <button className="btn-link" onClick={goBack}>← 返回</button>
         <h2>📚 长难句管理</h2>
         <button className="btn btn-primary btn-sm" onClick={() => setShowCreate(true)}>+ 新建句集</button>
       </div>

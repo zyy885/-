@@ -22,6 +22,12 @@ export function getCurrentUser() {
   }
 }
 
+export function getHomeRoute() {
+  const user = getCurrentUser();
+  if (!user) return '/login';
+  return '/' + user.role;
+}
+
 function handleAuthError() {
   clearAuth();
   if (window.location.pathname !== '/login') {
