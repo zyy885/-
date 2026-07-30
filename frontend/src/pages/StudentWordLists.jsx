@@ -3,6 +3,58 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
 import { speak } from '../utils/speech.js';
 
+const chineseNumMap = { '零':0, '一':1, '二':2, '两':2, '三':3, '四':4, '五':5, '六':6, '七':7, '八':8, '九':9, '十':10, '百':100, '千':1000, '万':10000 };
+const chineseToNum = (s) => {
+  s = s.trim();
+  if (/^\d+$/.test(s)) return parseInt(s);
+  let total = 0, temp = 0, lastUnit = 1;
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    const v = chineseNumMap[c];
+    if (v === undefined) continue;
+    if (v >= 10) {
+      if (temp === 0) temp = 1;
+      temp *= v;
+      if (v >= 100) { total += temp; temp = 0; }
+      lastUnit = v;
+    } else {
+      if (lastUnit > 10) { total += temp; temp = 0; }
+      temp = v;
+      lastUnit = 1;
+    }
+  }
+  return total + temp;
+};
+const parseSeqName = (name) => {
+  if (!name) return null;
+  const patterns = [
+    /^第([零一二三四五六七八九十百千万两\d]+)[页节章单元]$/,
+    /^第([零一二三四五六七八九十百千万两\d]+)$/,
+    /^([零一二三四五六七八九十百千万两\d]+)[页节章单元]$/,
+    /^List\s*(\d+)$/i,
+    /^Unit\s*(\d+)$/i,
+    /^Lesson\s*(\d+)$/i,
+  ];
+  for (const p of patterns) {
+    const m = name.match(p);
+    if (m) {
+      const n = chineseToNum(m[1]);
+      if (n > 0) return { num: n };
+    }
+  }
+  return null;
+};
+const sortListsBySeq = (lists) => {
+  return [...lists].sort((a, b) => {
+    const pa = parseSeqName(a.name);
+    const pb = parseSeqName(b.name);
+    if (pa && pb) return pa.num - pb.num;
+    if (pa) return -1;
+    if (pb) return 1;
+    return a.name.localeCompare(b.name, 'zh-CN');
+  });
+};
+
 export default function StudentWordLists() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -57,7 +109,7 @@ export default function StudentWordLists() {
         api.getWordLists(),
       ]);
       setWordBooks(wbData.wordBooks);
-      setAllLists(wlData.wordLists);
+      setAllLists(sortListsBySeq(wlData.wordLists));
     } catch (e) {}
     setLoading(false);
   };

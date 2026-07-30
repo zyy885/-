@@ -44,10 +44,18 @@ export default function WordListManage() {
 
   const loadLists = async (bookId) => {
     const data = await api.getWordLists(bookId || undefined);
-    setLists(data.wordLists);
-    if (!selectedId && data.wordLists.length > 0) {
-      setSelectedId(data.wordLists[0].id);
-    } else if (data.wordLists.length === 0) {
+    const sorted = [...data.wordLists].sort((a, b) => {
+      const pa = parseSeqName(a.name);
+      const pb = parseSeqName(b.name);
+      if (pa && pb) return pa.num - pb.num;
+      if (pa) return -1;
+      if (pb) return 1;
+      return a.name.localeCompare(b.name, 'zh-CN');
+    });
+    setLists(sorted);
+    if (!selectedId && sorted.length > 0) {
+      setSelectedId(sorted[0].id);
+    } else if (sorted.length === 0) {
       setSelectedId(null);
     }
   };
