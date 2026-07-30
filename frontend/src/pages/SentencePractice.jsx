@@ -18,7 +18,7 @@ const chineseToNum = (s) => {
       if (v >= 100) { total += temp; temp = 0; }
       lastUnit = v;
     } else {
-      if (lastUnit > 10) { total += temp; temp = 0; }
+      if (lastUnit >= 10) { total += temp; temp = 0; }
       temp = v;
       lastUnit = 1;
     }
