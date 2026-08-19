@@ -68,7 +68,7 @@ export default function TaskManage() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({
-    name: '', word_list_id: '', deadline: '', test_words_count: 10, test_mode: 'mixed', student_ids: [] });
+    name: '', word_list_ids: [], deadline: '', test_words_count: 10, test_mode: 'mixed', student_ids: [] });
 
   useEffect(() => { load(); }, []);
   useEffect(() => { loadLists(); }, [selectedBookId]);
@@ -89,8 +89,10 @@ export default function TaskManage() {
       const data = await api.getWordLists(selectedBookId || undefined);
       const sorted = sortListsBySeq(data.wordLists || []);
       setLists(sorted);
-      if (sorted.length > 0 && !form.word_list_id) {
-        setForm(f => ({ ...f, word_list_id: sorted[0].id }));
+      if (sorted.length > 0) {
+        setForm(f => ({ ...f, word_list_ids: [sorted[0].id] }));
+      } else {
+        setForm(f => ({ ...f, word_list_ids: [] }));
       }
     } catch (e) {}
   };
@@ -100,6 +102,28 @@ export default function TaskManage() {
       const exists = f.student_ids.includes(id);
       return { ...f, student_ids: exists ? f.student_ids.filter(s => s !== id) : [...f.student_ids, id] };
     });
+  };
+
+  const toggleWordList = (id) => {
+    setForm(f => {
+      const exists = f.word_list_ids.includes(id);
+      return { ...f, word_list_ids: exists ? f.word_list_ids.filter(s => s !== id) : [...f.word_list_ids, id] };
+    });
+  };
+
+  const toggleAllWordLists = () => {
+    if (form.word_list_ids.length === lists.length) {
+      setForm(f => ({ ...f, word_list_ids: [] }));
+    } else {
+      setForm(f => ({ ...f, word_list_ids: lists.map(l => l.id) }));
+    }
+  };
+
+  const getTotalWordsCount = () => {
+    return form.word_list_ids.reduce((sum, id) => {
+      const list = lists.find(l => l.id === id);
+      return sum + (list?.word_count || 0);
+    }, 0);
   };
 
   const toggleAllStudents = () => {
@@ -123,18 +147,19 @@ export default function TaskManage() {
 
   const create = async () => {
     if (!form.name.trim()) return alert('请输入任务名称');
-    if (!form.word_list_id) return alert('请选择词表');
+    if (form.word_list_ids.length === 0) return alert('请至少选择一个词表');
     if (form.student_ids.length === 0) return alert('请至少选择一个学生');
     try {
       await api.createTask({
-      name: form.name,
-      word_list_id: Number(form.word_list_id),
-      deadline: form.deadline || null,
-      test_words_count: Number(form.test_words_count) || 10,
-      test_mode: form.test_mode,
-      student_ids: form.student_ids,
-    });
-      setForm({ name: '', word_list_id: lists[0]?.id || '', deadline: '', test_words_count: 10, test_mode: 'mixed', student_ids: [] });
+        name: form.name,
+        word_list_ids: form.word_list_ids,
+        word_list_id: form.word_list_ids[0],
+        deadline: form.deadline || null,
+        test_words_count: Number(form.test_words_count) || 10,
+        test_mode: form.test_mode,
+        student_ids: form.student_ids,
+      });
+      setForm({ name: '', word_list_ids: lists[0] ? [lists[0].id] : [], deadline: '', test_words_count: 10, test_mode: 'mixed', student_ids: [] });
       setShowCreate(false);
       load();
     } catch (e) { alert(e.message); }
@@ -163,15 +188,30 @@ export default function TaskManage() {
               <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="如：Unit 1 测试" />
             </div>
             <div className="form-group"><label>选择单词书</label>
-              <select value={selectedBookId || ''} onChange={e => { setSelectedBookId(e.target.value || null); setForm(f => ({ ...f, word_list_id: '' })); }}>
+              <select value={selectedBookId || ''} onChange={e => { const newBookId = e.target.value || null; setSelectedBookId(newBookId); setForm(f => ({ ...f, word_list_ids: [] })); }}>
                 <option value="">全部词表</option>
                 {wordBooks.map(b => <option key={b.id} value={b.id}>{b.name} ({b.list_count || 0}个词表)</option>)}
               </select>
             </div>
-            <div className="form-group"><label>选择词表</label>
-              <select value={form.word_list_id} onChange={e => setForm({ ...form, word_list_id: e.target.value })}>
-                {lists.map(l => <option key={l.id} value={l.id}>{l.name} ({l.word_count}词)</option>)}
-              </select>
+            <div className="form-group"><label>选择词表（可多选）</label>
+              <div style={{ marginBottom: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
+                <button type="button" className="btn btn-outline btn-sm" onClick={toggleAllWordLists}>
+                  {form.word_list_ids.length === lists.length && lists.length > 0 ? '清空' : '全选'}
+                </button>
+                <span className="muted small">已选 {form.word_list_ids.length} 个词表 · 共 {getTotalWordsCount()} 词</span>
+              </div>
+              <div className="wordlist-checkboxes" style={{ maxHeight: 200, overflowY: 'auto', border: '1px solid #e5e7eb', borderRadius: 8, padding: 8 }}>
+                {lists.length === 0 ? (
+                  <span className="muted">该单词书下暂无词表</span>
+                ) : (
+                  lists.map(l => (
+                    <label key={l.id} className="checkbox-item" style={{ display: 'flex', alignItems: 'center', padding: '4px 0' }}>
+                      <input type="checkbox" checked={form.word_list_ids.includes(l.id)} onChange={() => toggleWordList(l.id)} />
+                      <span style={{ marginLeft: 8 }}>{l.name} <span className="muted">({l.word_count}词)</span></span>
+                    </label>
+                  ))
+                )}
+              </div>
             </div>
             <div className="form-row">
               <div className="form-group"><label>测试题数</label>
@@ -235,7 +275,7 @@ export default function TaskManage() {
                 <span className="badge badge-blue">{task.student_count}人</span>
               </div>
               <div className="card-body">
-                <p className="muted">词表：{task.word_list_name}</p>
+                <p className="muted">词表：{task.word_list_count > 1 ? `${task.word_list_count} 个词表` : task.word_list_name}</p>
                 <p className="muted">测试题数：{task.test_words_count || 10}</p>
                 {task.deadline && <p className="muted">截止：{new Date(task.deadline).toLocaleString()}</p>}
               </div>

@@ -134,6 +134,17 @@ function cleanMeaning(s) {
 const FRONTEND_DIST = path.join(__dirname, '..', '..', 'frontend', 'dist');
 const fs = require('fs');
 
+function getTaskWordListIds(task) {
+  if (task.word_list_ids) {
+    try {
+      const ids = JSON.parse(task.word_list_ids);
+      if (Array.isArray(ids) && ids.length > 0) return ids.map(Number);
+    } catch (e) {}
+  }
+  if (task.word_list_id) return [Number(task.word_list_id)];
+  return [];
+}
+
 app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -704,37 +715,79 @@ app.get('/api/tasks', authMiddleware, async (req, res) => {
   let rows;
   if (req.user.role === 'teacher') {
     rows = await db.prepare(
-      `SELECT t.*, wl.name as word_list_name,
+      `SELECT t.*,
         (SELECT COUNT(DISTINCT student_id) FROM task_students ts WHERE ts.task_id = t.id) as student_count
        FROM tasks t
-       INNER JOIN word_lists wl ON wl.id = t.word_list_id
        WHERE t.teacher_id = ? ORDER BY t.created_at DESC`
     ).all(req.user.id);
   } else {
     rows = await db.prepare(
-      `SELECT t.*, wl.name as word_list_name, ts.status, ts.study_progress, ts.test_score, ts.last_studied_at,
-        (SELECT COUNT(*) FROM words w WHERE w.word_list_id = t.word_list_id) as total_words
+      `SELECT t.*, ts.status, ts.study_progress, ts.test_score, ts.last_studied_at
        FROM tasks t
-       INNER JOIN word_lists wl ON wl.id = t.word_list_id
        INNER JOIN task_students ts ON ts.task_id = t.id AND ts.student_id = ?
        ORDER BY t.created_at DESC`
     ).all(req.user.id);
   }
-  res.json({ tasks: rows });
+
+  const wlNameCache = {};
+  const getWlName = async (id) => {
+    if (wlNameCache[id]) return wlNameCache[id];
+    const wl = await db.prepare('SELECT name FROM word_lists WHERE id = ?').get(id);
+    const name = wl ? wl.name : '未知词表';
+    wlNameCache[id] = name;
+    return name;
+  };
+
+  const tasksWithNames = [];
+  for (const t of rows) {
+    const listIds = getTaskWordListIds(t);
+    const names = [];
+    let totalWords = 0;
+    for (const lid of listIds) {
+      const name = await getWlName(lid);
+      names.push(name);
+      const wc = await db.prepare('SELECT COUNT(*) as cnt FROM words WHERE word_list_id = ?').get(lid);
+      totalWords += Number(wc.cnt) || 0;
+    }
+    const wordListName = names.length > 1 ? `${names.join('、')}` : (names[0] || '未知词表');
+    tasksWithNames.push({
+      ...t,
+      word_list_name: wordListName,
+      word_list_count: listIds.length,
+      total_words: totalWords,
+    });
+  }
+
+  res.json({ tasks: tasksWithNames });
 });
 
 app.post('/api/tasks', authMiddleware, requireRole('teacher'), async (req, res) => {
-  const { name, word_list_id, deadline, test_words_count, test_mode, student_ids, sentence_list_id } = req.body;
-  if (!name || !word_list_id) return res.status(400).json({ error: '参数错误' });
-  const wl = await db.prepare('SELECT * FROM word_lists WHERE id = ? AND teacher_id = ?').get(word_list_id, req.user.id);
-  if (!wl) return res.status(403).json({ error: '词表不存在或无权限' });
+  const { name, word_list_id, word_list_ids, deadline, test_words_count, test_mode, student_ids, sentence_list_id } = req.body;
+  if (!name) return res.status(400).json({ error: '请输入任务名称' });
+
+  let listIds = [];
+  if (word_list_ids && Array.isArray(word_list_ids) && word_list_ids.length > 0) {
+    listIds = word_list_ids.map(Number);
+  } else if (word_list_id) {
+    listIds = [Number(word_list_id)];
+  }
+  if (listIds.length === 0) return res.status(400).json({ error: '请至少选择一个词表' });
+
+  for (const lid of listIds) {
+    const wl = await db.prepare('SELECT * FROM word_lists WHERE id = ? AND teacher_id = ?').get(lid, req.user.id);
+    if (!wl) return res.status(403).json({ error: `词表 ID ${lid} 不存在或无权限` });
+  }
   if (sentence_list_id) {
     const sl = await db.prepare('SELECT * FROM sentence_lists WHERE id = ? AND teacher_id = ?').get(sentence_list_id, req.user.id);
     if (!sl) return res.status(403).json({ error: '句子列表不存在或无权限' });
   }
+
+  const wordListIdsJson = JSON.stringify(listIds);
+  const primaryListId = listIds[0];
+
   const info = await db.prepare(
-    'INSERT INTO tasks (name, word_list_id, teacher_id, deadline, test_words_count, test_mode, sentence_list_id) VALUES (?, ?, ?, ?, ?, ?, ?)'
-  ).run(name, word_list_id, req.user.id, deadline || null, test_words_count || 10, test_mode || 'mixed', sentence_list_id || null);
+    'INSERT INTO tasks (name, word_list_id, word_list_ids, teacher_id, deadline, test_words_count, test_mode, sentence_list_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+  ).run(name, primaryListId, wordListIdsJson, req.user.id, deadline || null, test_words_count || 10, test_mode || 'mixed', sentence_list_id || null);
   const taskId = info.lastInsertRowid;
   if (student_ids && student_ids.length) {
     const stmt = db.prepare(
@@ -762,20 +815,27 @@ app.delete('/api/tasks/:id', authMiddleware, requireRole('teacher'), async (req,
 app.get('/api/tasks/:id/progress', authMiddleware, requireRole('teacher'), async (req, res) => {
   const task = await db.prepare('SELECT * FROM tasks WHERE id = ? AND teacher_id = ?').get(req.params.id, req.user.id);
   if (!task) return res.status(404).json({ error: '任务不存在或无权限' });
+
+  const listIds = getTaskWordListIds(task);
+  const placeholders = listIds.map(() => '?').join(',');
+  const totalWordsCount = listIds.length > 0
+    ? (await db.prepare(`SELECT COUNT(*) as cnt FROM words WHERE word_list_id IN (${placeholders})`).all(...listIds))[0].cnt
+    : 0;
+
   const rows = await db.prepare(
-    `SELECT ts.*, u.username,
-      (SELECT COUNT(*) FROM words w WHERE w.word_list_id = t.word_list_id) as total_words
+    `SELECT ts.*, u.username, ${totalWordsCount} as total_words
      FROM task_students ts
      INNER JOIN users u ON u.id = ts.student_id
-     INNER JOIN tasks t ON t.id = ts.task_id
      WHERE ts.task_id = ?
      ORDER BY u.username`
   ).all(req.params.id);
-  const words = await db.prepare(
-    `SELECT w.* FROM words w
-     INNER JOIN tasks t ON t.word_list_id = w.word_list_id
-     WHERE t.id = ? ORDER BY w.id`
-  ).all(req.params.id);
+
+  const words = listIds.length > 0
+    ? await db.prepare(
+        `SELECT * FROM words WHERE word_list_id IN (${placeholders}) ORDER BY word_list_id, sort_order, id`
+      ).all(...listIds)
+    : [];
+
   res.json({ progress: rows, words });
 });
 
@@ -784,11 +844,18 @@ app.get('/api/tasks/:id/study', authMiddleware, async (req, res) => {
     'SELECT * FROM task_students WHERE task_id = ? AND student_id = ?'
   ).get(req.params.id, req.user.id);
   if (!ts) return res.status(404).json({ error: '未分配此任务' });
-  const words = await db.prepare(
-    `SELECT w.* FROM words w
-     INNER JOIN tasks t ON t.word_list_id = w.word_list_id
-     WHERE t.id = ? ORDER BY w.id`
-  ).all(req.params.id);
+
+  const task = await db.prepare('SELECT * FROM tasks WHERE id = ?').get(req.params.id);
+  if (!task) return res.status(404).json({ error: '任务不存在' });
+
+  const listIds = getTaskWordListIds(task);
+  const placeholders = listIds.map(() => '?').join(',');
+  const words = listIds.length > 0
+    ? await db.prepare(
+        `SELECT * FROM words WHERE word_list_id IN (${placeholders}) ORDER BY word_list_id, sort_order, id`
+      ).all(...listIds)
+    : [];
+
   const studied = await db.prepare(
     'SELECT word_id, is_known FROM study_records WHERE task_student_id = ?'
   ).all(ts.id);
@@ -812,15 +879,24 @@ app.post('/api/study-records', authMiddleware, async (req, res) => {
     `INSERT INTO study_records (task_student_id, word_id, is_known) VALUES (?, ?, ?)
      ON CONFLICT(task_student_id, word_id) DO UPDATE SET is_known = excluded.is_known, studied_at = CURRENT_TIMESTAMP`
   ).run(task_student_id, word_id, is_known ? 1 : 0);
-  const progress = await db.prepare(
-    `SELECT
-      (SELECT COUNT(*) FROM study_records sr WHERE sr.task_student_id = ts.id) as studied,
-      (SELECT COUNT(*) FROM words w
-        INNER JOIN tasks t ON t.word_list_id = w.word_list_id
-        WHERE t.id = ts.task_id) as total
-     FROM task_students ts WHERE ts.id = ?`
-  ).get(task_student_id);
-  const pct = progress.total > 0 ? Math.min(100, (progress.studied / progress.total) * 100) : 0;
+
+  const task = await db.prepare('SELECT * FROM tasks WHERE id = ?').get(ts.task_id);
+  const listIds = task ? getTaskWordListIds(task) : [];
+  const studiedRow = await db.prepare(
+    'SELECT COUNT(*) as cnt FROM study_records sr WHERE sr.task_student_id = ?'
+  ).get(ts.id);
+  const studied = Number(studiedRow.cnt) || 0;
+
+  let total = 0;
+  if (listIds.length > 0) {
+    const placeholders = listIds.map(() => '?').join(',');
+    const totalRow = await db.prepare(
+      `SELECT COUNT(*) as cnt FROM words WHERE word_list_id IN (${placeholders})`
+    ).all(...listIds);
+    total = Number(totalRow[0].cnt) || 0;
+  }
+
+  const pct = total > 0 ? Math.min(100, (studied / total) * 100) : 0;
   await db.prepare('UPDATE task_students SET study_progress = ?, last_studied_at = CURRENT_TIMESTAMP WHERE id = ?')
     .run(pct, task_student_id);
   res.json({ ok: true, progress: pct });
@@ -833,9 +909,29 @@ app.get('/api/tasks/:id/test-words', authMiddleware, async (req, res) => {
     'SELECT * FROM task_students WHERE task_id = ? AND student_id = ?'
   ).get(req.params.id, req.user.id);
   if (!ts) return res.status(404).json({ error: '未分配此任务' });
-  const allWords = await db.prepare(
-    `SELECT * FROM words WHERE word_list_id = ? ORDER BY RANDOM() LIMIT ?`
-  ).all(task.word_list_id, task.test_words_count || 10);
+
+  const listIds = getTaskWordListIds(task);
+  const limit = task.test_words_count || 10;
+  let allWords = [];
+
+  if (listIds.length > 0) {
+    const placeholders = listIds.map(() => '?').join(',');
+    const totalCountRow = await db.prepare(
+      `SELECT COUNT(*) as cnt FROM words WHERE word_list_id IN (${placeholders})`
+    ).all(...listIds);
+    const totalCount = Number(totalCountRow[0].cnt) || 0;
+
+    if (totalCount <= limit) {
+      allWords = await db.prepare(
+        `SELECT * FROM words WHERE word_list_id IN (${placeholders}) ORDER BY RANDOM()`
+      ).all(...listIds);
+    } else {
+      allWords = await db.prepare(
+        `SELECT * FROM words WHERE word_list_id IN (${placeholders}) ORDER BY RANDOM() LIMIT ?`
+      ).all(...listIds, limit);
+    }
+  }
+
   const mode = task.test_mode || 'en_to_zh';
   const words = allWords.map((w, i) => {
     let qType = 'en_to_zh';

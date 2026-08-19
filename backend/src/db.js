@@ -122,6 +122,7 @@ const buildDDL = () => {
         id SERIAL PRIMARY KEY,
         name TEXT NOT NULL,
         word_list_id INTEGER NOT NULL REFERENCES word_lists(id) ON DELETE CASCADE,
+        word_list_ids TEXT,
         teacher_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         deadline TIMESTAMP,
         test_words_count INTEGER DEFAULT 10,
@@ -320,6 +321,7 @@ const buildDDL = () => {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
       word_list_id INTEGER NOT NULL,
+      word_list_ids TEXT,
       teacher_id INTEGER NOT NULL,
       deadline DATETIME,
       test_words_count INTEGER DEFAULT 10,
@@ -524,6 +526,7 @@ const buildDDL = () => {
       await db.query(`ALTER TABLE sentences ADD COLUMN IF NOT EXISTS structure TEXT`);
       await db.query(`ALTER TABLE sentences ADD COLUMN IF NOT EXISTS correction TEXT`);
       await db.query(`ALTER TABLE sentences ADD COLUMN IF NOT EXISTS summary TEXT`);
+      await db.query(`ALTER TABLE tasks ADD COLUMN IF NOT EXISTS word_list_ids TEXT`);
     } else {
       try { db.prepare('ALTER TABLE tasks ADD COLUMN test_mode TEXT DEFAULT "en_to_zh"').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE tasks ADD COLUMN sentence_list_id INTEGER').run(); } catch (e) {}
@@ -544,6 +547,7 @@ const buildDDL = () => {
       try { db.prepare('ALTER TABLE sentences ADD COLUMN structure TEXT').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE sentences ADD COLUMN correction TEXT').run(); } catch (e) {}
       try { db.prepare('ALTER TABLE sentences ADD COLUMN summary TEXT').run(); } catch (e) {}
+      try { db.prepare('ALTER TABLE tasks ADD COLUMN word_list_ids TEXT').run(); } catch (e) {}
     }
   } catch (e) {}
 
