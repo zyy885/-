@@ -103,15 +103,13 @@ export default function TaskManage() {
 
   const toggleWordList = (id) => {
     const numId = Number(id);
-    console.log('[词表选择] toggleWordList 被调用, id:', numId, '当前已选:', form.word_list_ids);
     setForm(f => {
-      const exists = f.word_list_ids.includes(numId);
-      const newIds = exists ? f.word_list_ids.filter(s => s !== numId) : [...f.word_list_ids, numId];
+      const exists = f.word_list_ids.some(x => Number(x) === numId);
+      const newIds = exists ? f.word_list_ids.filter(s => Number(s) !== numId) : [...f.word_list_ids, numId];
       const totalWords = newIds.reduce((sum, lid) => {
-        const list = lists.find(l => l.id === Number(lid));
-        return sum + (list?.word_count || 0);
+        const list = lists.find(l => Number(l.id) === Number(lid));
+        return sum + Number(list?.word_count || 0);
       }, 0);
-      console.log('[词表选择] 更新后 word_list_ids:', newIds, '总词数:', totalWords);
       return { ...f, word_list_ids: newIds, test_words_count: totalWords || 10 };
     });
   };
@@ -121,15 +119,15 @@ export default function TaskManage() {
       setForm(f => ({ ...f, word_list_ids: [], test_words_count: 10 }));
     } else {
       const allIds = lists.map(l => Number(l.id));
-      const totalWords = lists.reduce((sum, l) => sum + (l.word_count || 0), 0);
+      const totalWords = lists.reduce((sum, l) => sum + Number(l.word_count || 0), 0);
       setForm(f => ({ ...f, word_list_ids: allIds, test_words_count: totalWords || 10 }));
     }
   };
 
   const getTotalWordsCount = () => {
     return form.word_list_ids.reduce((sum, id) => {
-      const list = lists.find(l => l.id === Number(id));
-      return sum + (list?.word_count || 0);
+      const list = lists.find(l => Number(l.id) === Number(id));
+      return sum + Number(list?.word_count || 0);
     }, 0);
   };
 
@@ -257,7 +255,7 @@ export default function TaskManage() {
                     {form.word_list_ids.length > 0 && (
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
                         {form.word_list_ids.map(id => {
-                          const list = lists.find(l => l.id === Number(id));
+                          const list = lists.find(l => Number(l.id) === Number(id));
                           if (!list) return null;
                           return (
                             <span key={id} style={{
@@ -282,7 +280,7 @@ export default function TaskManage() {
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         {lists.map(l => {
                           const numId = Number(l.id);
-                          const checked = form.word_list_ids.some(id => Number(id) === numId);
+                          const checked = form.word_list_ids.some(x => Number(x) === numId);
                           return (
                             <label
                               key={numId}

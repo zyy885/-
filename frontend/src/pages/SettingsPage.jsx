@@ -12,7 +12,7 @@ export default function SettingsPage() {
   const [voice, setVoice] = useState('default');
   const [voices, setVoices] = useState([]);
   const [versionInfo, setVersionInfo] = useState(null);
-  const [engine, setEngine] = useState('baidu');
+  const [engine, setEngine] = useState('browser');
   const [accent, setAccent] = useState('en-US');
   const [rate, setRate] = useState(0.9);
   const [voiceId, setVoiceId] = useState('default');
@@ -24,7 +24,7 @@ export default function SettingsPage() {
   useEffect(() => {
     const savedTheme = localStorage.getItem('vocab_theme') || 'light';
     const savedVoice = localStorage.getItem('vocab_voice') || 'default';
-    const savedEngine = localStorage.getItem('vocab_tts_engine') || 'baidu';
+    const savedEngine = localStorage.getItem('vocab_tts_engine') || 'browser';
     const savedAccent = localStorage.getItem('vocab_tts_accent') || 'en-US';
     const savedRate = parseFloat(localStorage.getItem('vocab_tts_rate')) || 0.9;
     const savedVoiceId = localStorage.getItem('vocab_tts_voice') || 'default';
@@ -130,11 +130,11 @@ export default function SettingsPage() {
 
   const getEngineDesc = () => {
     switch (engine) {
-      case TTS_ENGINES.BAIDU: return '百度神经引擎，高德地图同款语音，国内最流行';
+      case TTS_ENGINES.BAIDU: return '百度神经引擎，高德地图同款语音';
       case TTS_ENGINES.YOUDAO: return '有道智云高品质发音，国内访问稳定';
-      case TTS_ENGINES.GOOGLE: return 'Google 神经引擎，国际主流，音质最佳';
+      case TTS_ENGINES.GOOGLE: return 'Google 神经引擎，国际主流';
       case TTS_ENGINES.DICTIONARY: return 'DictionaryAPI 真人录音发音';
-      case TTS_ENGINES.BROWSER: return '浏览器内置 TTS，无需联网但音质一般';
+      case TTS_ENGINES.BROWSER: return '浏览器内置语音，适合英语学习，离线可用';
       default: return '';
     }
   };
@@ -255,7 +255,7 @@ export default function SettingsPage() {
           <button className="btn btn-outline" onClick={testVoice}>🔊 试听当前设置</button>
         </div>
         <div className="muted small" style={{ marginTop: 12 }}>
-          提示：修改设置后即时保存。推荐使用「百度语音」获得最佳体验，与高德地图同款引擎。
+          提示：修改设置后即时保存。推荐使用「浏览器内置语音」，更适合英语学习。
         </div>
       </div>
 

@@ -62,7 +62,7 @@ function stopAll() {
 }
 
 function getEngine() {
-  return localStorage.getItem('vocab_tts_engine') || TTS_ENGINES.BAIDU;
+  return localStorage.getItem('vocab_tts_engine') || TTS_ENGINES.BROWSER;
 }
 
 function getAccent() {
@@ -221,6 +221,11 @@ export async function speak(text, lang) {
   const voiceId = getVoiceId();
   lang = lang || accent;
 
+  if (engine === TTS_ENGINES.BROWSER) {
+    speakWithTTS(text, lang, rate);
+    return;
+  }
+
   try {
     const word = text.trim().toLowerCase();
     if (!word) return;
@@ -277,6 +282,11 @@ export async function speakSentence(text, lang) {
   const rate = Math.min(getRate(), 0.85);
   const voiceId = getVoiceId();
 
+  if (engine === TTS_ENGINES.BROWSER) {
+    speakWithTTS(text, lang, rate);
+    return;
+  }
+
   try {
     const cacheKey = 'sentence|' + text.trim().toLowerCase() + '|' + accent + '|' + engine + '|' + voiceId;
     const cachedUrl = audioCache[cacheKey];
@@ -329,11 +339,11 @@ export function getEngineVoices(engine) {
 
 export function getEngines() {
   return [
-    { id: TTS_ENGINES.BAIDU, name: '百度语音 · 神经引擎 (推荐)', tag: '高德地图同款' },
+    { id: TTS_ENGINES.BROWSER, name: '浏览器内置语音 (推荐)', tag: '适合英语' },
+    { id: TTS_ENGINES.BAIDU, name: '百度语音 · 神经引擎', tag: '高德地图同款' },
     { id: TTS_ENGINES.YOUDAO, name: '有道智云 · 高品质发音', tag: '国内稳定' },
     { id: TTS_ENGINES.GOOGLE, name: 'Google 神经发音', tag: '国际主流' },
-    { id: TTS_ENGINES.DICTIONARY, name: 'DictionaryAPI 真人发音', tag: '真人录音' },
-    { id: TTS_ENGINES.BROWSER, name: '浏览器内置发音', tag: '离线可用' }
+    { id: TTS_ENGINES.DICTIONARY, name: 'DictionaryAPI 真人发音', tag: '真人录音' }
   ];
 }
 
