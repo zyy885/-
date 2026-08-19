@@ -165,4 +165,5 @@ export const api = {
   getStudyStats: () => request('GET', '/study-stats'),
   trackStudySession: (data) => request('POST', '/study-sessions/track', data),
   updateAvatar: (avatar) => request('PUT', '/me/avatar', { avatar }),
+  getVersion: () => request('GET', '/version'),
 };

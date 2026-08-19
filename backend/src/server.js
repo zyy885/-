@@ -2005,6 +2005,28 @@ app.get('/api/self-tests', authMiddleware, requireRole('student'), async (req, r
   res.json({ self_tests: rows });
 });
 
+function loadVersionInfo() {
+  try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
+    let buildTime = '开发模式';
+    try {
+      const info = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'build-info.json'), 'utf8'));
+      buildTime = info.buildTime || buildTime;
+    } catch (e) {}
+    return {
+      version: pkg.version || '1.0.0',
+      buildTime,
+      environment: isPG ? '生产环境' : '开发环境',
+    };
+  } catch (e) {
+    return { version: '1.0.0', buildTime: '未知', environment: '开发环境' };
+  }
+}
+
+app.get('/api/version', (req, res) => {
+  res.json(loadVersionInfo());
+});
+
 if (fs.existsSync(FRONTEND_DIST)) {
   app.use(express.static(FRONTEND_DIST, {
     maxAge: '1h',

@@ -10,6 +10,7 @@ export default function SettingsPage() {
   const [theme, setTheme] = useState('light');
   const [voice, setVoice] = useState('default');
   const [voices, setVoices] = useState([]);
+  const [versionInfo, setVersionInfo] = useState(null);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('vocab_theme') || 'light';
@@ -34,6 +35,7 @@ export default function SettingsPage() {
         localStorage.setItem('vocab_voice', data.settings.voice);
       }
     }).catch(() => {});
+    api.getVersion().then(setVersionInfo).catch(() => {});
   }, []);
 
   const changeTheme = async (newTheme) => {
@@ -153,6 +155,32 @@ export default function SettingsPage() {
         </div>
         <div className="muted small" style={{ marginTop: 12 }}>
           提示：可用音色取决于您的浏览器和操作系统。英语学习建议选择 en-US 或 en-GB 音色。
+        </div>
+      </div>
+
+      <div className="card" style={{ maxWidth: 480, margin: '24px auto' }}>
+        <h3>ℹ️ 关于本系统</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr', gap: '8px 16px', marginTop: 12 }}>
+          <div className="muted">系统名称</div>
+          <div>📖 研途单词 · 单词测试平台</div>
+          <div className="muted">当前版本</div>
+          <div><b>v{versionInfo?.version || '—'}</b></div>
+          <div className="muted">构建时间</div>
+          <div>{versionInfo?.buildTime || '—'}</div>
+          <div className="muted">运行环境</div>
+          <div>
+            <span style={{
+              display: 'inline-block',
+              padding: '2px 10px',
+              borderRadius: 999,
+              fontSize: 12,
+              background: versionInfo?.environment === '生产环境' ? '#dcfce7' : '#fef3c7',
+              color: versionInfo?.environment === '生产环境' ? '#166534' : '#92400e',
+            }}>{versionInfo?.environment || '—'}</span>
+          </div>
+        </div>
+        <div className="muted small" style={{ marginTop: 16, textAlign: 'center' }}>
+          © {new Date().getFullYear()} 研途教育 · 保留所有权利
         </div>
       </div>
     </div>
