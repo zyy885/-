@@ -55,6 +55,90 @@ async function runMigrations() {
 }
 runMigrations();
 
+async function runSeedData() {
+  const BOOK_NAME = '「研师」解词';
+  try {
+    const existing = await db.prepare(
+      'SELECT id FROM word_books WHERE name = ? LIMIT 1'
+    ).get(BOOK_NAME);
+    if (existing) {
+      console.log(`种子数据: 单词书「${BOOK_NAME}」已存在，跳过导入`);
+      return;
+    }
+
+    const teacher = await db.prepare(
+      "SELECT id FROM users WHERE role = 'teacher' LIMIT 1"
+    ).get();
+    if (!teacher) {
+      console.log('种子数据: 未找到教师用户，跳过');
+      return;
+    }
+
+    const bookInfo = await db.prepare(
+      'INSERT INTO word_books (name, description, cover_color, is_public, teacher_id) VALUES (?, ?, ?, ?, ?)'
+    ).run(BOOK_NAME, '考研英语词汇学习', '#8B5CF6', isPG ? true : 1, teacher.id);
+    const bookId = bookInfo.lastInsertRowid;
+    console.log(`种子数据: 创建单词书「${BOOK_NAME}」(ID: ${bookId})`);
+
+    const parts = [
+      {
+        name: 'PART 01 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'matter', meaning: 'n. 物质；问题\nv. 要紧', example: 'a matter of...\nIt doesn\'t matter to me.' },
+          { word: 'pride', meaning: 'v. 为 … 而骄傲\nn. 骄傲；自尊', example: 'pride oneself on\nYou must put aside your...' },
+          { word: 'award', meaning: 'n. 奖品\nv. 授予，奖励给', example: 'annual award\nan award for...\naward sb sth = award st...' },
+          { word: 'send', meaning: 'v. 邮寄，发送', example: 'She sent the letter by...' },
+          { word: 'prove', meaning: 'v. 证明，证实', example: 'It could prove to be...\nthe future.' },
+          { word: 'act', meaning: 'n. 行动；表演\nv. 行动；表演', example: 'act as...' },
+          { word: 'law', meaning: 'n. 法律；法规', example: '' },
+          { word: 'normal', meaning: 'adj. 正常的；一般的', example: '' },
+          { word: 'environment', meaning: 'n. 环境', example: '' },
+          { word: 'cure', meaning: 'v. 治愈，治疗\nn. 药物', example: '' }
+        ]
+      },
+      {
+        name: 'PART 02 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'safe', meaning: 'adj. 安全的；无危险的', example: 'safe and sound\nIt is dangerous...' },
+          { word: 'cause', meaning: 'n. 原因\nv. 导致，引起', example: 'cause sth\ncause sb to do...' },
+          { word: 'appear', meaning: 'v. 出现；显现，好像', example: 'It appears that...\nappear to be...' },
+          { word: 'amazing', meaning: 'adj. 惊人的；了不起的', example: 'amazing...' },
+          { word: 'force', meaning: 'n. 力；力量\nv. 强迫', example: 'force sb to do sth\nby force' },
+          { word: 'control', meaning: 'v./n. 控制；管理', example: '' },
+          { word: 'alike', meaning: 'adj./adv. 相似的；同样的', example: 'look alike\nalike in...' },
+          { word: 'island', meaning: 'n. 岛，岛屿', example: '' },
+          { word: 'enjoy', meaning: 'v. 享受；喜爱，欣赏', example: 'enjoy doing sth\nenjoy oneself' },
+          { word: 'loyal', meaning: 'adj. 忠诚的；忠实的', example: 'be loyal to\na loyal friend' }
+        ]
+      }
+    ];
+
+    const insertWordStmt = db.prepare(
+      'INSERT INTO words (word_list_id, word, meaning, example, sort_order) VALUES (?, ?, ?, ?, ?)'
+    );
+
+    for (const part of parts) {
+      const listInfo = await db.prepare(
+        'INSERT INTO word_lists (name, description, word_book_id, teacher_id, sort_order) VALUES (?, ?, ?, ?, ?)'
+      ).run(part.name, part.description, bookId, teacher.id, 0);
+      const listId = listInfo.lastInsertRowid;
+      console.log(`种子数据: 创建词表 "${part.name}"`);
+
+      for (let i = 0; i < part.words.length; i++) {
+        const w = part.words[i];
+        await insertWordStmt.run(listId, w.word, w.meaning, w.example || '', i + 1);
+      }
+      console.log(`  插入 ${part.words.length} 个单词`);
+    }
+    console.log(`种子数据: 「${BOOK_NAME}」导入完成`);
+  } catch (e) {
+    console.error('种子数据导入出错:', e.message);
+  }
+}
+runSeedData();
+
 const loginAttempts = new Map();
 const RATE_LIMIT_WINDOW = 60000;
 const MAX_LOGIN_ATTEMPTS = 5;
