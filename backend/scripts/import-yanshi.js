@@ -197,10 +197,98 @@ function main() {
           meaning: 'v. 享受；喜爱，欣赏',
           example: 'enjoy doing sth\nenjoy oneself'
         },
+        { word: 'loyal', meaning: 'adj. 忠诚的；忠实的', example: 'be loyal to\na loyal friend' }
+      ]
+    },
+    {
+      name: 'PART 03 · 基础唤醒词汇',
+      description: '基础唤醒词汇 10 词',
+      words: [
         {
-          word: 'loyal',
-          meaning: 'adj. 忠诚的；忠实的',
-          example: 'be loyal to\na loyal friend'
+          word: 'hunger',
+          meaning: 'n. 饥饿；v. 渴望',
+          example: 'hunger marketing\ndie of hunger\nhunger for sth/sb\nStudents in remote areas hunger for knowledge.'
+        },
+        {
+          word: 'explain',
+          meaning: 'v. 说明，解释',
+          example: 'It was difficult to explain the problem to her.'
+        },
+        {
+          word: 'rich',
+          meaning: 'adj. 富有的，富裕的',
+          example: 'a rich man\nrich culture\nbe rich in...'
+        },
+        {
+          word: 'nature',
+          meaning: 'n. 自然，天性',
+          example: 'human nature\nin nature\nby nature'
+        },
+        {
+          word: 'climate',
+          meaning: 'n. 气候，风气',
+          example: 'global climate\nsocial climate\nclimate change'
+        },
+        {
+          word: 'tiny',
+          meaning: 'adj. 极小的',
+          example: 'a tiny baby'
+        },
+        {
+          word: 'excite',
+          meaning: 'v. 使…激动',
+          example: 'The news excites me.'
+        },
+        {
+          word: 'ease',
+          meaning: 'v. 减轻，缓和\nn. 安逸；容易',
+          example: 'We eased our relationship\na life of ease'
+        },
+        {
+          word: 'desire',
+          meaning: 'v. 渴望\nn. 欲望',
+          example: 'the desired effect\na strong desire for power'
+        },
+        {
+          word: 'birth',
+          meaning: 'n. 诞生，出生，起源',
+          example: 'She gave birth to a baby.'
+        }
+      ]
+    },
+    {
+      name: 'PART 04 · 基础唤醒词汇',
+      description: '基础唤醒词汇 6 词',
+      words: [
+        {
+          word: 'tour',
+          meaning: 'n. 旅游',
+          example: 'a tour and travel\na tour of the city'
+        },
+        {
+          word: 'cash',
+          meaning: 'n. 现金',
+          example: 'cash in hand\nI\'m short of cash right now.'
+        },
+        {
+          word: 'wide',
+          meaning: 'adj. 宽的；广泛的\nadv. 广阔地；充分地',
+          example: 'a wide mouth\nThe door was wide open.'
+        },
+        {
+          word: 'sad',
+          meaning: 'adj. 悲哀的，难过的',
+          example: 'She looked sad and tired.'
+        },
+        {
+          word: 'spirit',
+          meaning: 'n. 精神，情绪',
+          example: 'in high/low spirits\nThe news lifted our spirits.'
+        },
+        {
+          word: 'speed',
+          meaning: 'n. 速度\nv. 加速',
+          example: 'speed limit\nHe drives at high speed.'
         }
       ]
     }

@@ -88,14 +88,10 @@ export default function TaskManage() {
   const loadLists = async () => {
     try {
       const data = await api.getWordLists(selectedBookId || undefined);
-      const sorted = sortListsBySeq(data.wordLists || []);
+      const sorted = sortListsBySeq((data.wordLists || []).map(l => ({ ...l, id: Number(l.id) })));
       setLists(sorted);
-      if (sorted.length > 0) {
-        setForm(f => ({ ...f, word_list_ids: [], test_words_count: 10 }));
-      } else {
-        setForm(f => ({ ...f, word_list_ids: [], test_words_count: 10 }));
-      }
-    } catch (e) {}
+      setForm(f => ({ ...f, word_list_ids: [], test_words_count: 10 }));
+    } catch (e) { console.error('加载词表失败:', e); }
   };
 
   const toggleStudent = (id) => {
@@ -106,13 +102,16 @@ export default function TaskManage() {
   };
 
   const toggleWordList = (id) => {
+    const numId = Number(id);
+    console.log('[词表选择] toggleWordList 被调用, id:', numId, '当前已选:', form.word_list_ids);
     setForm(f => {
-      const exists = f.word_list_ids.includes(id);
-      const newIds = exists ? f.word_list_ids.filter(s => s !== id) : [...f.word_list_ids, id];
+      const exists = f.word_list_ids.includes(numId);
+      const newIds = exists ? f.word_list_ids.filter(s => s !== numId) : [...f.word_list_ids, numId];
       const totalWords = newIds.reduce((sum, lid) => {
-        const list = lists.find(l => l.id === lid);
+        const list = lists.find(l => l.id === Number(lid));
         return sum + (list?.word_count || 0);
       }, 0);
+      console.log('[词表选择] 更新后 word_list_ids:', newIds, '总词数:', totalWords);
       return { ...f, word_list_ids: newIds, test_words_count: totalWords || 10 };
     });
   };
@@ -121,7 +120,7 @@ export default function TaskManage() {
     if (form.word_list_ids.length === lists.length) {
       setForm(f => ({ ...f, word_list_ids: [], test_words_count: 10 }));
     } else {
-      const allIds = lists.map(l => l.id);
+      const allIds = lists.map(l => Number(l.id));
       const totalWords = lists.reduce((sum, l) => sum + (l.word_count || 0), 0);
       setForm(f => ({ ...f, word_list_ids: allIds, test_words_count: totalWords || 10 }));
     }
@@ -129,7 +128,7 @@ export default function TaskManage() {
 
   const getTotalWordsCount = () => {
     return form.word_list_ids.reduce((sum, id) => {
-      const list = lists.find(l => l.id === id);
+      const list = lists.find(l => l.id === Number(id));
       return sum + (list?.word_count || 0);
     }, 0);
   };
@@ -258,7 +257,7 @@ export default function TaskManage() {
                     {form.word_list_ids.length > 0 && (
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
                         {form.word_list_ids.map(id => {
-                          const list = lists.find(l => l.id === id);
+                          const list = lists.find(l => l.id === Number(id));
                           if (!list) return null;
                           return (
                             <span key={id} style={{
@@ -282,25 +281,35 @@ export default function TaskManage() {
                     ) : (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                         {lists.map(l => {
-                          const checked = form.word_list_ids.includes(l.id);
+                          const numId = Number(l.id);
+                          const checked = form.word_list_ids.some(id => Number(id) === numId);
                           return (
-                            <label key={l.id} style={{
-                              display: 'flex', alignItems: 'center', padding: '8px 10px',
-                              borderRadius: 6, cursor: 'pointer',
-                              background: checked ? '#eff6ff' : 'transparent',
-                              border: checked ? '1px solid #dbeafe' : '1px solid transparent',
-                              transition: 'all 0.15s',
-                              fontSize: 14
-                            }}
-                            onMouseEnter={e => { if (!checked) e.currentTarget.style.background = '#f9fafb'; }}
-                            onMouseLeave={e => { if (!checked) e.currentTarget.style.background = 'transparent'; }}
+                            <label
+                              key={numId}
+                              style={{
+                                display: 'flex', alignItems: 'center', padding: '8px 10px',
+                                borderRadius: 6, cursor: 'pointer',
+                                background: checked ? '#eff6ff' : 'transparent',
+                                border: checked ? '1px solid #dbeafe' : '1px solid transparent',
+                                transition: 'all 0.15s',
+                                fontSize: 14
+                              }}
+                              onMouseEnter={e => { if (!checked) e.currentTarget.style.background = '#f9fafb'; }}
+                              onMouseLeave={e => { if (!checked) e.currentTarget.style.background = 'transparent'; }}
                             >
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={() => toggleWordList(numId)}
+                                style={{ width: 'auto', margin: 0, accentColor: '#667eea' }}
+                              />
                               <span style={{
                                 width: 18, height: 18, borderRadius: 4,
                                 border: checked ? 'none' : '1.5px solid #d1d5db',
                                 background: checked ? '#667eea' : 'white',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                transition: 'all 0.15s', flexShrink: 0
+                                transition: 'all 0.15s', flexShrink: 0,
+                                marginLeft: 8
                               }}>
                                 {checked && <span style={{ color: 'white', fontSize: 12, lineHeight: 1 }}>✓</span>}
                               </span>
