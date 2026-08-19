@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
+import { speak, getEngines, getAccents, getVoices } from '../utils/speech.js';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
@@ -11,23 +12,39 @@ export default function SettingsPage() {
   const [voice, setVoice] = useState('default');
   const [voices, setVoices] = useState([]);
   const [versionInfo, setVersionInfo] = useState(null);
+  const [engine, setEngine] = useState('google');
+  const [accent, setAccent] = useState('en-US');
+  const [rate, setRate] = useState(0.9);
+
+  const engines = getEngines();
+  const accentOptions = getAccents();
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('vocab_theme') || 'light';
     const savedVoice = localStorage.getItem('vocab_voice') || 'default';
+    const savedEngine = localStorage.getItem('vocab_tts_engine') || 'google';
+    const savedAccent = localStorage.getItem('vocab_tts_accent') || 'en-US';
+    const savedRate = parseFloat(localStorage.getItem('vocab_tts_rate')) || 0.9;
+
     setTheme(savedTheme);
     setVoice(savedVoice);
+    setEngine(savedEngine);
+    setAccent(savedAccent);
+    setRate(savedRate);
+
     document.body.classList.remove('theme-light', 'theme-dark', 'theme-eye', 'dark-theme');
     if (savedTheme !== 'light') {
       document.body.classList.add('theme-' + savedTheme);
     }
 
     const loadVoices = () => {
-      const v = speechSynthesis.getVoices().filter(v => v.lang.startsWith('en'));
+      const v = getVoices().filter(v => v.lang.startsWith('en'));
       setVoices(v);
     };
     loadVoices();
-    speechSynthesis.onvoiceschanged = loadVoices;
+    if (typeof speechSynthesis !== 'undefined') {
+      speechSynthesis.onvoiceschanged = loadVoices;
+    }
 
     api.getSettings().then(data => {
       if (data?.settings?.voice) {
@@ -63,16 +80,23 @@ export default function SettingsPage() {
     }
   };
 
+  const changeEngine = (newEngine) => {
+    setEngine(newEngine);
+    localStorage.setItem('vocab_tts_engine', newEngine);
+  };
+
+  const changeAccent = (newAccent) => {
+    setAccent(newAccent);
+    localStorage.setItem('vocab_tts_accent', newAccent);
+  };
+
+  const changeRate = (newRate) => {
+    setRate(newRate);
+    localStorage.setItem('vocab_tts_rate', newRate);
+  };
+
   const testVoice = () => {
-    try {
-      const u = new SpeechSynthesisUtterance('Hello! This is a test of the word pronunciation voice.');
-      u.lang = 'en-US';
-      if (voice !== 'default') {
-        const v = voices.find(v => v.name === voice);
-        if (v) u.voice = v;
-      }
-      speechSynthesis.speak(u);
-    } catch (e) {}
+    speak('Hello, this is a test of the word pronunciation voice.', accent);
   };
 
   const changePassword = async () => {
@@ -141,20 +165,64 @@ export default function SettingsPage() {
 
       <div className="card" style={{ maxWidth: 480, margin: '24px auto' }}>
         <h3>🔊 读单词语音</h3>
+
         <div className="form-group">
-          <label>选择发音音色</label>
-          <select value={voice} onChange={e => changeVoice(e.target.value)}>
-            <option value="default">系统默认</option>
-            {voices.map((v, i) => (
-              <option key={i} value={v.name}>{v.name} ({v.lang})</option>
+          <label>语音引擎</label>
+          <select value={engine} onChange={e => changeEngine(e.target.value)}>
+            {engines.map(e => (
+              <option key={e.id} value={e.id}>{e.name}</option>
+            ))}
+          </select>
+          <div className="muted small" style={{ marginTop: 4 }}>
+            {engine === 'google' && 'Google 神经引擎音质最佳，推荐使用'}
+            {engine === 'youdao' && '有道词典发音，国内访问稳定'}
+            {engine === 'dictionary' && '词典 API 真人发音，依赖网络'}
+            {engine === 'browser' && '浏览器内置 TTS，无需联网但音质一般'}
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label>英语口音</label>
+          <select value={accent} onChange={e => changeAccent(e.target.value)}>
+            {accentOptions.map(a => (
+              <option key={a.id} value={a.id}>{a.name}</option>
             ))}
           </select>
         </div>
+
+        <div className="form-group">
+          <label>语速: {rate.toFixed(1)}x</label>
+          <input
+            type="range"
+            min="0.5"
+            max="1.5"
+            step="0.1"
+            value={rate}
+            onChange={e => changeRate(parseFloat(e.target.value))}
+            style={{ width: '100%' }}
+          />
+          <div className="muted small" style={{ marginTop: 4 }}>
+            0.5x 慢速 ~ 1.0x 正常 ~ 1.5x 快速
+          </div>
+        </div>
+
+        {engine === 'browser' && (
+          <div className="form-group">
+            <label>浏览器音色</label>
+            <select value={voice} onChange={e => changeVoice(e.target.value)}>
+              <option value="default">系统默认</option>
+              {voices.map((v, i) => (
+                <option key={i} value={v.name}>{v.name} ({v.lang})</option>
+              ))}
+            </select>
+          </div>
+        )}
+
         <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn btn-outline" onClick={testVoice}>🔊 试听当前音色</button>
+          <button className="btn btn-outline" onClick={testVoice}>🔊 试听当前设置</button>
         </div>
         <div className="muted small" style={{ marginTop: 12 }}>
-          提示：可用音色取决于您的浏览器和操作系统。英语学习建议选择 en-US 或 en-GB 音色。
+          提示：修改设置后即时保存。建议使用 Google 神经发音获得最佳体验。
         </div>
       </div>
 

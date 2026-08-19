@@ -1,20 +1,37 @@
 let cachedVoices = [];
 const audioCache = {};
-const audioFailedCache = {}; // 记录失败的音频URL
+const audioFailedCache = {};
 const dictCache = {};
 const translationCache = {};
 let currentAudio = null;
 
+const TTS_ENGINES = {
+  GOOGLE: 'google',
+  YOUDAO: 'youdao',
+  DICTIONARY: 'dictionary',
+  BROWSER: 'browser'
+};
+
+const ACCENTS = {
+  US: 'en-US',
+  GB: 'en-GB'
+};
+
 function loadVoices() {
   if (typeof speechSynthesis !== 'undefined') {
     cachedVoices = speechSynthesis.getVoices();
-    speechSynthesis.onvoiceschanged = () => {
-      cachedVoices = speechSynthesis.getVoices();
-    };
+    if (cachedVoices.length === 0) {
+      speechSynthesis.onvoiceschanged = () => {
+        cachedVoices = speechSynthesis.getVoices();
+      };
+    }
   }
 }
 
 loadVoices();
+if (typeof speechSynthesis !== 'undefined') {
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
 
 function stopAll() {
   try {
@@ -29,6 +46,28 @@ function stopAll() {
     } catch (e) {}
     currentAudio = null;
   }
+}
+
+function getEngine() {
+  return localStorage.getItem('vocab_tts_engine') || TTS_ENGINES.GOOGLE;
+}
+
+function getAccent() {
+  return localStorage.getItem('vocab_tts_accent') || ACCENTS.US;
+}
+
+function getRate() {
+  return parseFloat(localStorage.getItem('vocab_tts_rate')) || 0.9;
+}
+
+function buildGoogleTtsUrl(text, accent) {
+  const tl = accent === ACCENTS.GB ? 'en-GB' : 'en';
+  return `https://translate.google.com/translate_tts?ie=UTF-8&tl=${tl}&client=tw-ob&q=${encodeURIComponent(text)}`;
+}
+
+function buildYoudaoTtsUrl(text, accent) {
+  const type = accent === ACCENTS.GB ? 1 : 2;
+  return `https://dict.youdao.com/dictvoice?type=${type}&audio=${encodeURIComponent(text)}`;
 }
 
 async function fetchDictionaryData(word) {
@@ -82,25 +121,24 @@ async function playAudioUrl(url) {
     const audio = new Audio(url);
     currentAudio = audio;
     let resolved = false;
-    
+
     const cleanup = () => {
       if (!resolved) {
         resolved = true;
         currentAudio = null;
       }
     };
-    
+
     audio.onended = () => { cleanup(); resolve(); };
     audio.onerror = (e) => { cleanup(); reject(new Error('Audio load/play failed: ' + url)); };
-    
-    // 设置超时，防止音频加载卡住
+
     const timeout = setTimeout(() => {
       if (!resolved) {
         cleanup();
         reject(new Error('Audio load timeout'));
       }
     }, 5000);
-    
+
     const p = audio.play();
     if (p && p.then) {
       p.then(() => {
@@ -116,17 +154,23 @@ async function playAudioUrl(url) {
 
 function speakWithTTS(text, lang, rate) {
   lang = lang || 'en-US';
-  rate = rate || 0.9;
+  rate = rate || getRate();
   try {
     if (typeof speechSynthesis === 'undefined') return false;
     stopAll();
     const u = new SpeechSynthesisUtterance(text);
     u.lang = lang;
     u.rate = rate;
+    u.pitch = 1;
     const savedVoice = localStorage.getItem('vocab_voice') || 'default';
     if (savedVoice !== 'default') {
       const v = cachedVoices.find(function(v) { return v.name === savedVoice; });
       if (v) u.voice = v;
+    } else {
+      const preferred = cachedVoices.find(v =>
+        (getAccent() === ACCENTS.GB ? v.lang.startsWith('en-GB') : v.lang.startsWith('en-US'))
+      );
+      if (preferred) u.voice = preferred;
     }
     speechSynthesis.speak(u);
     return true;
@@ -135,60 +179,133 @@ function speakWithTTS(text, lang, rate) {
   }
 }
 
+async function tryPlaySource(url) {
+  if (!url || audioFailedCache[url]) return false;
+  try {
+    await playAudioUrl(url);
+    return true;
+  } catch (e) {
+    audioFailedCache[url] = true;
+    return false;
+  }
+}
+
 export async function speak(text, lang) {
   stopAll();
-  lang = lang || 'en-US';
+  const accent = getAccent();
+  const engine = getEngine();
+  const rate = getRate();
+  lang = lang || accent;
+
   try {
     const word = text.trim().toLowerCase();
     if (!word) return;
 
-    // 检查是否有缓存且未失败的音频
-    const cachedUrl = audioCache[word];
+    const cacheKey = word + '|' + accent + '|' + engine;
+    const cachedUrl = audioCache[cacheKey];
     if (cachedUrl && !audioFailedCache[cachedUrl]) {
       try {
         await playAudioUrl(cachedUrl);
-        return; // 成功播放
+        return;
       } catch (e) {
-        // 播放失败，记录并清除缓存
         audioFailedCache[cachedUrl] = true;
-        delete audioCache[word];
-        // 继续fallback到TTS
+        delete audioCache[cacheKey];
       }
     }
 
-    // 检查字典缓存中是否有音频
-    const cached = dictCache[word];
-    if (cached && cached.audio && !audioFailedCache[cached.audio]) {
-      audioCache[word] = cached.audio;
-      try {
-        await playAudioUrl(cached.audio);
-        return; // 成功播放
-      } catch (e) {
-        // 播放失败，记录并清除缓存
-        audioFailedCache[cached.audio] = true;
-        delete audioCache[word];
-        // 继续fallback到TTS
+    const sources = [];
+
+    if (engine === TTS_ENGINES.GOOGLE) {
+      sources.push({
+        url: buildGoogleTtsUrl(text, accent),
+        cacheKey: cacheKey
+      });
+    } else if (engine === TTS_ENGINES.YOUDAO) {
+      sources.push({
+        url: buildYoudaoTtsUrl(text, accent),
+        cacheKey: cacheKey
+      });
+    } else if (engine === TTS_ENGINES.DICTIONARY) {
+      const dictData = await fetchDictionaryData(word);
+      if (dictData.audio) {
+        sources.push({ url: dictData.audio, cacheKey: cacheKey });
       }
     }
 
-    // 使用TTS播放（立即响应）
-    speakWithTTS(text, lang);
-
-    // 后台异步获取真人发音（下次可用）
-    fetchDictionaryData(word).then(data => {
-      if (data.audio && !audioFailedCache[data.audio]) {
-        audioCache[word] = data.audio;
-      }
+    sources.push({
+      url: buildGoogleTtsUrl(text, accent),
+      cacheKey: cacheKey + '|google'
     });
+    sources.push({
+      url: buildYoudaoTtsUrl(text, accent),
+      cacheKey: cacheKey + '|youdao'
+    });
+
+    const dictData = await fetchDictionaryData(word);
+    if (dictData.audio) {
+      sources.push({ url: dictData.audio, cacheKey: cacheKey + '|dict' });
+    }
+
+    for (const source of sources) {
+      if (!audioFailedCache[source.url]) {
+        try {
+          await playAudioUrl(source.url);
+          audioCache[cacheKey] = source.url;
+          return;
+        } catch (e) {
+          audioFailedCache[source.url] = true;
+        }
+      }
+    }
+
+    speakWithTTS(text, lang, rate);
+
   } catch (e) {
-    // 最后的fallback
-    speakWithTTS(text, lang);
+    speakWithTTS(text, lang, rate);
   }
 }
 
 export async function speakSentence(text, lang) {
   stopAll();
-  speakWithTTS(text, lang, 0.75);
+  const accent = getAccent();
+  const engine = getEngine();
+  const rate = Math.min(getRate(), 0.8);
+
+  try {
+    const cacheKey = 'sentence|' + text.trim().toLowerCase() + '|' + accent + '|' + engine;
+    const cachedUrl = audioCache[cacheKey];
+    if (cachedUrl && !audioFailedCache[cachedUrl]) {
+      try {
+        await playAudioUrl(cachedUrl);
+        return;
+      } catch (e) {
+        audioFailedCache[cachedUrl] = true;
+        delete audioCache[cacheKey];
+      }
+    }
+
+    const sources = [];
+    if (engine === TTS_ENGINES.GOOGLE || engine === TTS_ENGINES.DICTIONARY) {
+      sources.push({ url: buildGoogleTtsUrl(text, accent), cacheKey });
+    }
+    sources.push({ url: buildYoudaoTtsUrl(text, accent), cacheKey });
+
+    for (const source of sources) {
+      if (!audioFailedCache[source.url]) {
+        try {
+          await playAudioUrl(source.url);
+          audioCache[cacheKey] = source.url;
+          return;
+        } catch (e) {
+          audioFailedCache[source.url] = true;
+        }
+      }
+    }
+
+    speakWithTTS(text, lang, rate);
+  } catch (e) {
+    speakWithTTS(text, lang, rate);
+  }
 }
 
 export async function getExampleFromDictionary(word) {
@@ -198,6 +315,22 @@ export async function getExampleFromDictionary(word) {
 
 export function getVoices() {
   return cachedVoices;
+}
+
+export function getEngines() {
+  return [
+    { id: TTS_ENGINES.GOOGLE, name: 'Google 神经发音 (推荐)' },
+    { id: TTS_ENGINES.YOUDAO, name: '有道词典发音' },
+    { id: TTS_ENGINES.DICTIONARY, name: 'DictionaryAPI 真人发音' },
+    { id: TTS_ENGINES.BROWSER, name: '浏览器内置发音' }
+  ];
+}
+
+export function getAccents() {
+  return [
+    { id: ACCENTS.US, name: '美式英语 (en-US)' },
+    { id: ACCENTS.GB, name: '英式英语 (en-GB)' }
+  ];
 }
 
 export async function translateText(text, from, to) {
@@ -219,4 +352,4 @@ export async function translateText(text, from, to) {
   }
 }
 
-export { stopAll };
+export { stopAll, TTS_ENGINES, ACCENTS };
