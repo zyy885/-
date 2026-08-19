@@ -90,9 +90,9 @@ export default function TaskManage() {
       const sorted = sortListsBySeq(data.wordLists || []);
       setLists(sorted);
       if (sorted.length > 0) {
-        setForm(f => ({ ...f, word_list_ids: [sorted[0].id] }));
+        setForm(f => ({ ...f, word_list_ids: [], test_words_count: 10 }));
       } else {
-        setForm(f => ({ ...f, word_list_ids: [] }));
+        setForm(f => ({ ...f, word_list_ids: [], test_words_count: 10 }));
       }
     } catch (e) {}
   };
@@ -107,15 +107,22 @@ export default function TaskManage() {
   const toggleWordList = (id) => {
     setForm(f => {
       const exists = f.word_list_ids.includes(id);
-      return { ...f, word_list_ids: exists ? f.word_list_ids.filter(s => s !== id) : [...f.word_list_ids, id] };
+      const newIds = exists ? f.word_list_ids.filter(s => s !== id) : [...f.word_list_ids, id];
+      const totalWords = newIds.reduce((sum, lid) => {
+        const list = lists.find(l => l.id === lid);
+        return sum + (list?.word_count || 0);
+      }, 0);
+      return { ...f, word_list_ids: newIds, test_words_count: totalWords || 10 };
     });
   };
 
   const toggleAllWordLists = () => {
     if (form.word_list_ids.length === lists.length) {
-      setForm(f => ({ ...f, word_list_ids: [] }));
+      setForm(f => ({ ...f, word_list_ids: [], test_words_count: 10 }));
     } else {
-      setForm(f => ({ ...f, word_list_ids: lists.map(l => l.id) }));
+      const allIds = lists.map(l => l.id);
+      const totalWords = lists.reduce((sum, l) => sum + (l.word_count || 0), 0);
+      setForm(f => ({ ...f, word_list_ids: allIds, test_words_count: totalWords || 10 }));
     }
   };
 
@@ -159,7 +166,7 @@ export default function TaskManage() {
         test_mode: form.test_mode,
         student_ids: form.student_ids,
       });
-      setForm({ name: '', word_list_ids: lists[0] ? [lists[0].id] : [], deadline: '', test_words_count: 10, test_mode: 'mixed', student_ids: [] });
+      setForm({ name: '', word_list_ids: [], deadline: '', test_words_count: 10, test_mode: 'mixed', student_ids: [] });
       setShowCreate(false);
       load();
     } catch (e) { alert(e.message); }
