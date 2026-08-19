@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api.js';
 
@@ -68,24 +68,11 @@ export default function TaskManage() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
   const [form, setForm] = useState({
     name: '', word_list_ids: [], deadline: '', test_words_count: 10, test_mode: 'mixed', student_ids: [] });
 
   useEffect(() => { load(); }, []);
   useEffect(() => { loadLists(); }, [selectedBookId]);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setDropdownOpen(false);
-      }
-    };
-    if (dropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [dropdownOpen]);
 
   const load = async () => {
     Promise.all([api.getTasks(), api.getWordBooks(), api.getStudents(), api.getTags().catch(() => ({ tags: [] }))])
@@ -215,49 +202,118 @@ export default function TaskManage() {
                 {wordBooks.map(b => <option key={b.id} value={b.id}>{b.name} ({b.list_count || 0}个词表)</option>)}
               </select>
             </div>
-            <div className="form-group" ref={dropdownRef}><label>选择词表（可多选）</label>
-              <div style={{ position: 'relative' }}>
+            <div className="form-group"><label>选择词表（可多选）</label>
+              <div style={{
+                border: '1.5px solid #e5e7eb', borderRadius: 10,
+                background: '#fff', transition: 'all 0.2s',
+                borderColor: dropdownOpen ? '#667eea' : '#e5e7eb',
+                boxShadow: dropdownOpen ? '0 0 0 3px rgba(102,126,234,0.1)' : 'none'
+              }}>
                 <button
                   type="button"
                   className="btn btn-outline"
-                  style={{ width: '100%', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                  style={{
+                    width: '100%', textAlign: 'left',
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    border: 'none', background: 'transparent', padding: '10px 14px',
+                    color: form.word_list_ids.length === 0 ? '#9ca3af' : '#1f2937'
+                  }}
                   onClick={() => setDropdownOpen(o => !o)}
                 >
-                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {form.word_list_ids.length === 0
-                      ? '请选择词表'
-                      : `已选 ${form.word_list_ids.length} 个词表 · 共 ${getTotalWordsCount()} 词`
-                    }
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 8, overflow: 'hidden' }}>
+                    {form.word_list_ids.length === 0 ? (
+                      <span>请选择词表...</span>
+                    ) : (
+                      <>
+                        <span style={{
+                          background: '#667eea', color: 'white', fontSize: 12,
+                          padding: '2px 8px', borderRadius: 10, fontWeight: 600
+                        }}>{form.word_list_ids.length}</span>
+                        <span>个词表 · 共 <b>{getTotalWordsCount()}</b> 词</span>
+                      </>
+                    )}
                   </span>
-                  <span style={{ marginLeft: 8, flexShrink: 0 }}>{dropdownOpen ? '▲' : '▼'}</span>
+                  <span style={{
+                    transition: 'transform 0.2s',
+                    transform: dropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                    fontSize: 12, color: '#667eea'
+                  }}>▼</span>
                 </button>
                 {dropdownOpen && (
                   <div style={{
-                    position: 'absolute', zIndex: 100, top: '100%', left: 0, right: 0,
-                    marginTop: 4, background: 'white', border: '1px solid #e5e7eb',
-                    borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                    maxHeight: 260, overflowY: 'auto', padding: 8
+                    borderTop: '1px solid #f3f4f6', padding: '10px 12px',
+                    maxHeight: 280, overflowY: 'auto'
                   }}>
-                    <div style={{ display: 'flex', gap: 8, marginBottom: 8, paddingBottom: 8, borderBottom: '1px solid #f3f4f6' }}>
-                      <button type="button" className="btn btn-outline btn-sm" onClick={toggleAllWordLists}>
-                        {form.word_list_ids.length === lists.length && lists.length > 0 ? '清空' : '全选'}
+                    <div style={{
+                      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                      marginBottom: 8, paddingBottom: 8, borderBottom: '1px solid #f3f4f6'
+                    }}>
+                      <button type="button" className="btn btn-outline btn-sm" style={{ padding: '4px 10px', fontSize: 12 }} onClick={toggleAllWordLists}>
+                        {form.word_list_ids.length === lists.length && lists.length > 0 ? '清空全部' : '全选'}
                       </button>
-                      <span className="muted small" style={{ alignSelf: 'center' }}>已选 {form.word_list_ids.length} 个 · 共 {getTotalWordsCount()} 词</span>
+                      <span style={{ fontSize: 12, color: '#9ca3af' }}>
+                        已选 <b style={{ color: '#667eea' }}>{form.word_list_ids.length}</b> 个 · 共 <b style={{ color: '#667eea' }}>{getTotalWordsCount()}</b> 词
+                      </span>
                     </div>
+                    {form.word_list_ids.length > 0 && (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 10 }}>
+                        {form.word_list_ids.map(id => {
+                          const list = lists.find(l => l.id === id);
+                          if (!list) return null;
+                          return (
+                            <span key={id} style={{
+                              display: 'inline-flex', alignItems: 'center', gap: 4,
+                              background: '#eef2ff', color: '#4f46e5',
+                              padding: '3px 8px', borderRadius: 6, fontSize: 12,
+                              border: '1px solid #e0e7ff'
+                            }}>
+                              {list.name}
+                              <span
+                                onClick={(e) => { e.stopPropagation(); toggleWordList(id); }}
+                                style={{ cursor: 'pointer', opacity: 0.6, fontSize: 14, lineHeight: 1 }}
+                              >✕</span>
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
                     {lists.length === 0 ? (
-                      <span className="muted" style={{ padding: 8 }}>该单词书下暂无词表</span>
+                      <span className="muted" style={{ padding: '12px 0', display: 'block', textAlign: 'center' }}>该单词书下暂无词表</span>
                     ) : (
-                      lists.map(l => (
-                        <label key={l.id} style={{
-                          display: 'flex', alignItems: 'center', padding: '6px 8px',
-                          borderRadius: 4, cursor: 'pointer',
-                          background: form.word_list_ids.includes(l.id) ? '#eff6ff' : 'transparent'
-                        }}>
-                          <input type="checkbox" checked={form.word_list_ids.includes(l.id)} onChange={() => toggleWordList(l.id)} />
-                          <span style={{ marginLeft: 8, flex: 1 }}>{l.name}</span>
-                          <span className="muted small">({l.word_count}词)</span>
-                        </label>
-                      ))
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        {lists.map(l => {
+                          const checked = form.word_list_ids.includes(l.id);
+                          return (
+                            <label key={l.id} style={{
+                              display: 'flex', alignItems: 'center', padding: '8px 10px',
+                              borderRadius: 6, cursor: 'pointer',
+                              background: checked ? '#eff6ff' : 'transparent',
+                              border: checked ? '1px solid #dbeafe' : '1px solid transparent',
+                              transition: 'all 0.15s',
+                              fontSize: 14
+                            }}
+                            onMouseEnter={e => { if (!checked) e.currentTarget.style.background = '#f9fafb'; }}
+                            onMouseLeave={e => { if (!checked) e.currentTarget.style.background = 'transparent'; }}
+                            >
+                              <span style={{
+                                width: 18, height: 18, borderRadius: 4,
+                                border: checked ? 'none' : '1.5px solid #d1d5db',
+                                background: checked ? '#667eea' : 'white',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                transition: 'all 0.15s', flexShrink: 0
+                              }}>
+                                {checked && <span style={{ color: 'white', fontSize: 12, lineHeight: 1 }}>✓</span>}
+                              </span>
+                              <span style={{ marginLeft: 10, flex: 1, color: '#1f2937', fontWeight: checked ? 500 : 400 }}>{l.name}</span>
+                              <span style={{
+                                fontSize: 11, padding: '1px 6px', borderRadius: 8,
+                                background: checked ? '#dbeafe' : '#f3f4f6',
+                                color: checked ? '#1e40af' : '#6b7280', fontWeight: 500
+                              }}>{l.word_count}词</span>
+                            </label>
+                          );
+                        })}
+                      </div>
                     )}
                   </div>
                 )}
