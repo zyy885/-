@@ -6,12 +6,12 @@ const translationCache = {};
 let currentAudio = null;
 
 const TTS_ENGINES = {
-  BROWSER: 'browser',
   YOUDAO: 'youdao',
   BAIDU_STANDARD: 'baidu_standard',
+  XFYUN: 'xfyun',
   DICTIONARY: 'dictionary',
-  GOOGLE: 'google',
-  BING: 'bing'
+  BROWSER: 'browser',
+  GOOGLE: 'google'
 };
 
 const ACCENTS = {
@@ -20,20 +20,22 @@ const ACCENTS = {
 };
 
 const YOUDAO_VOICES = [
-  { id: 'female', name: 'Lily · 女声 (美音)', tag: '美式女声' },
-  { id: 'male', name: 'Daniel · 男声 (美音)', tag: '美式男声' }
+  { id: 'female', name: 'Lily · 美式女声', tag: '美式' },
+  { id: 'male', name: 'Daniel · 美式男声', tag: '美式' },
+  { id: 'female_GB', name: 'Ava · 英式女声', tag: '英式' },
+  { id: 'male_GB', name: 'Oliver · 英式男声', tag: '英式' }
 ];
 
 const BAIDU_STANDARD_VOICES = [
-  { id: 0, name: '度小美 · 新国标女声', tag: '国标女声' },
-  { id: 1, name: '度小宇 · 新国标男声', tag: '国标男声' }
+  { id: 0, name: '度小美 · 新国标女声', tag: '国标' },
+  { id: 1, name: '度小宇 · 新国标男声', tag: '国标' }
 ];
 
-const BING_VOICES = [
-  { id: 'en-US-AriaNeural', name: 'Aria · 美式女声', tag: '美式女声' },
-  { id: 'en-US-GuyNeural', name: 'Guy · 美式男声', tag: '美式男声' },
-  { id: 'en-GB-SoniaNeural', name: 'Sonia · 英式女声', tag: '英式女声' },
-  { id: 'en-GB-OliverNeural', name: 'Oliver · 英式男声', tag: '英式男声' }
+const XFYUN_VOICES = [
+  { id: 0, name: '讯飞 · 美式女声', tag: '美式' },
+  { id: 1, name: '讯飞 · 美式男声', tag: '美式' },
+  { id: 2, name: '讯飞 · 英式女声', tag: '英式' },
+  { id: 3, name: '讯飞 · 英式男声', tag: '英式' }
 ];
 
 function loadVoices() {
@@ -68,7 +70,7 @@ function stopAll() {
 }
 
 function getEngine() {
-  return localStorage.getItem('vocab_tts_engine') || TTS_ENGINES.BROWSER;
+  return localStorage.getItem('vocab_tts_engine') || TTS_ENGINES.YOUDAO;
 }
 
 function getAccent() {
@@ -83,9 +85,25 @@ function getVoiceId() {
   return localStorage.getItem('vocab_tts_voice') || 'default';
 }
 
-function buildYoudaoTtsUrl(text, accent) {
+function buildYoudaoTtsUrl(text, accent, voiceId) {
+  let type;
+  if (voiceId === 'female_GB') type = 1;
+  else if (voiceId === 'male_GB') type = 1;
+  else type = accent === ACCENTS.GB ? 1 : 2;
+  
+  let voice;
+  if (voiceId === 'female_GB' || voiceId === 'male_GB') {
+    voice = voiceId;
+  } else {
+    voice = voiceId || (accent === ACCENTS.GB ? 'male' : 'female');
+  }
+  
+  return `https://tts.youdao.com/tts?lang=en&img=false&audio=true&text=${encodeURIComponent(text)}&type=${type}&voice=${voice}`;
+}
+
+function buildYoudaoDictUrl(text, accent) {
   const type = accent === ACCENTS.GB ? 1 : 2;
-  return `https://tts.youdao.com/tts?lang=en&img=false&audio=true&text=${encodeURIComponent(text)}&type=${type}`;
+  return `https://dict.youdao.com/dictvoice?type=${type}&audio=${encodeURIComponent(text)}`;
 }
 
 function buildBaiduStandardTtsUrl(text, accent, voiceId) {
@@ -94,9 +112,9 @@ function buildBaiduStandardTtsUrl(text, accent, voiceId) {
   return `https://tts.baidu.com/text2audio?lan=${lan}&per=${per}&text=${encodeURIComponent(text)}&spd=${Math.round((getRate() - 0.5) * 10)}&pit=5&vol=9&form=mp3`;
 }
 
-function buildBingTtsUrl(text, accent, voiceId) {
-  const voice = voiceId && voiceId !== 'default' ? voiceId : (accent === ACCENTS.GB ? 'en-GB-SoniaNeural' : 'en-US-AriaNeural');
-  return `https://speech.microsoft.com/media/common/translation?text=${encodeURIComponent(text)}&from=${accent}&to=zh-CN&voice=${voice}`;
+function buildXfyunTtsUrl(text, accent, voiceId) {
+  const type = voiceId && voiceId !== 'default' ? parseInt(voiceId) : (accent === ACCENTS.GB ? 2 : 0);
+  return `https://tts-api.xfyun.cn/v2/tts?text=${encodeURIComponent(text)}&voice_type=${type}&speed=${getRate()}`;
 }
 
 function buildGoogleTtsUrl(text, accent) {
@@ -256,25 +274,26 @@ export async function speak(text, lang) {
     const sources = [];
 
     if (engine === TTS_ENGINES.YOUDAO) {
-      sources.push({ url: buildYoudaoTtsUrl(text, accent) });
-      sources.push({ url: buildGoogleTtsUrl(text, accent) });
+      sources.push({ url: buildYoudaoTtsUrl(text, accent, voiceId) });
+      sources.push({ url: buildYoudaoDictUrl(text, accent) });
       sources.push({ url: buildBaiduStandardTtsUrl(text, accent, voiceId) });
     } else if (engine === TTS_ENGINES.BAIDU_STANDARD) {
       sources.push({ url: buildBaiduStandardTtsUrl(text, accent, voiceId) });
-      sources.push({ url: buildYoudaoTtsUrl(text, accent) });
+      sources.push({ url: buildYoudaoDictUrl(text, accent) });
       sources.push({ url: buildGoogleTtsUrl(text, accent) });
+    } else if (engine === TTS_ENGINES.XFYUN) {
+      sources.push({ url: buildXfyunTtsUrl(text, accent, voiceId) });
+      sources.push({ url: buildYoudaoDictUrl(text, accent) });
+      sources.push({ url: buildBaiduStandardTtsUrl(text, accent, voiceId) });
     } else if (engine === TTS_ENGINES.GOOGLE) {
       sources.push({ url: buildGoogleTtsUrl(text, accent) });
-      sources.push({ url: buildYoudaoTtsUrl(text, accent) });
-    } else if (engine === TTS_ENGINES.BING) {
-      sources.push({ url: buildBingTtsUrl(text, accent, voiceId) });
-      sources.push({ url: buildGoogleTtsUrl(text, accent) });
+      sources.push({ url: buildYoudaoDictUrl(text, accent) });
     } else if (engine === TTS_ENGINES.DICTIONARY) {
       const dictData = await fetchDictionaryData(word);
       if (dictData.audio) {
         sources.push({ url: dictData.audio });
       }
-      sources.push({ url: buildYoudaoTtsUrl(text, accent) });
+      sources.push({ url: buildYoudaoDictUrl(text, accent) });
       sources.push({ url: buildBaiduStandardTtsUrl(text, accent, voiceId) });
     }
 
@@ -315,16 +334,19 @@ export async function speakSentence(text, lang) {
 
     const sources = [];
     if (engine === TTS_ENGINES.YOUDAO) {
-      sources.push({ url: buildYoudaoTtsUrl(text, accent) });
+      sources.push({ url: buildYoudaoDictUrl(text, accent) });
       sources.push({ url: buildBaiduStandardTtsUrl(text, accent, voiceId) });
-    } else if (engine === TTS_ENGINES.BAIDU_STANDARD || engine === TTS_ENGINES.DICTIONARY) {
+    } else if (engine === TTS_ENGINES.BAIDU_STANDARD) {
       sources.push({ url: buildBaiduStandardTtsUrl(text, accent, voiceId) });
-      sources.push({ url: buildYoudaoTtsUrl(text, accent) });
-    } else if (engine === TTS_ENGINES.BING) {
-      sources.push({ url: buildBingTtsUrl(text, accent, voiceId) });
-      sources.push({ url: buildGoogleTtsUrl(text, accent) });
+      sources.push({ url: buildYoudaoDictUrl(text, accent) });
+    } else if (engine === TTS_ENGINES.XFYUN) {
+      sources.push({ url: buildXfyunTtsUrl(text, accent, voiceId) });
+      sources.push({ url: buildYoudaoDictUrl(text, accent) });
+    } else if (engine === TTS_ENGINES.DICTIONARY) {
+      sources.push({ url: buildYoudaoDictUrl(text, accent) });
+      sources.push({ url: buildBaiduStandardTtsUrl(text, accent, voiceId) });
     } else {
-      sources.push({ url: buildYoudaoTtsUrl(text, accent) });
+      sources.push({ url: buildYoudaoDictUrl(text, accent) });
       sources.push({ url: buildGoogleTtsUrl(text, accent) });
     }
 
@@ -349,17 +371,17 @@ export function getVoices() {
 export function getEngineVoices(engine) {
   if (engine === TTS_ENGINES.YOUDAO) return YOUDAO_VOICES;
   if (engine === TTS_ENGINES.BAIDU_STANDARD) return BAIDU_STANDARD_VOICES;
-  if (engine === TTS_ENGINES.BING) return BING_VOICES;
+  if (engine === TTS_ENGINES.XFYUN) return XFYUN_VOICES;
   return [];
 }
 
 export function getEngines() {
   return [
-    { id: TTS_ENGINES.BROWSER, name: '浏览器内置语音', tag: '原生英语' },
-    { id: TTS_ENGINES.YOUDAO, name: '有道词典发音', tag: '学习推荐' },
+    { id: TTS_ENGINES.YOUDAO, name: '有道词典发音', tag: '最适合学习' },
     { id: TTS_ENGINES.BAIDU_STANDARD, name: '百度 · 新国标英语', tag: '国家标准' },
-    { id: TTS_ENGINES.BING, name: '微软 · 必应神经发音', tag: '高品质' },
+    { id: TTS_ENGINES.XFYUN, name: '讯飞语音', tag: '清晰自然' },
     { id: TTS_ENGINES.DICTIONARY, name: 'DictionaryAPI 真人发音', tag: '真人录音' },
+    { id: TTS_ENGINES.BROWSER, name: '浏览器内置语音', tag: '原生离线' },
     { id: TTS_ENGINES.GOOGLE, name: 'Google 神经发音', tag: '国际主流' }
   ];
 }

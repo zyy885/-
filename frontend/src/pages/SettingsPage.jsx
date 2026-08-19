@@ -12,7 +12,7 @@ export default function SettingsPage() {
   const [voice, setVoice] = useState('default');
   const [voices, setVoices] = useState([]);
   const [versionInfo, setVersionInfo] = useState(null);
-  const [engine, setEngine] = useState('browser');
+  const [engine, setEngine] = useState('youdao');
   const [accent, setAccent] = useState('en-US');
   const [rate, setRate] = useState(0.9);
   const [voiceId, setVoiceId] = useState('default');
@@ -24,7 +24,7 @@ export default function SettingsPage() {
   useEffect(() => {
     const savedTheme = localStorage.getItem('vocab_theme') || 'light';
     const savedVoice = localStorage.getItem('vocab_voice') || 'default';
-    const savedEngine = localStorage.getItem('vocab_tts_engine') || 'browser';
+    const savedEngine = localStorage.getItem('vocab_tts_engine') || 'youdao';
     const savedAccent = localStorage.getItem('vocab_tts_accent') || 'en-US';
     const savedRate = parseFloat(localStorage.getItem('vocab_tts_rate')) || 0.9;
     const savedVoiceId = localStorage.getItem('vocab_tts_voice') || 'default';
@@ -130,11 +130,11 @@ export default function SettingsPage() {
 
   const getEngineDesc = () => {
     switch (engine) {
+      case TTS_ENGINES.YOUDAO: return '有道词典发音，国内最流行的英语学习工具，发音清晰标准';
+      case TTS_ENGINES.BAIDU_STANDARD: return '符合国家《英语语音合成标准》，权威标准，适合考试学习';
+      case TTS_ENGINES.XFYUN: return '讯飞语音，国内知名TTS引擎，发音清晰自然';
+      case TTS_ENGINES.DICTIONARY: return 'DictionaryAPI 真人录音，真实自然';
       case TTS_ENGINES.BROWSER: return '浏览器原生英语发音，无需联网，适合日常学习';
-      case TTS_ENGINES.YOUDAO: return '有道词典发音，国内最流行的英语学习工具';
-      case TTS_ENGINES.BAIDU_STANDARD: return '符合国家标准的英语发音，权威标准';
-      case TTS_ENGINES.BING: return '微软必应神经发音，高品质自然流畅';
-      case TTS_ENGINES.DICTIONARY: return 'DictionaryAPI 真人录音发音';
       case TTS_ENGINES.GOOGLE: return 'Google 神经发音，国际主流';
       default: return '';
     }
@@ -226,10 +226,10 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {(engine === TTS_ENGINES.YOUDAO || engine === TTS_ENGINES.BAIDU_STANDARD || engine === TTS_ENGINES.BING) && engineVoices.length > 0 && (
+        {(engine === TTS_ENGINES.YOUDAO || engine === TTS_ENGINES.BAIDU_STANDARD || engine === TTS_ENGINES.XFYUN) && engineVoices.length > 0 && (
           <div className="form-group">
             <label>
-              {engine === TTS_ENGINES.YOUDAO ? '有道词典音色' : engine === TTS_ENGINES.BAIDU_STANDARD ? '新国标语音音色' : '必应神经音色'}
+              {engine === TTS_ENGINES.YOUDAO ? '有道词典音色' : engine === TTS_ENGINES.BAIDU_STANDARD ? '新国标语音音色' : '讯飞语音音色'}
             </label>
             <select value={voiceId} onChange={e => changeVoiceId(e.target.value)}>
               <option value="default">默认音色</option>
@@ -256,7 +256,7 @@ export default function SettingsPage() {
           <button className="btn btn-outline" onClick={testVoice}>🔊 试听当前设置</button>
         </div>
         <div className="muted small" style={{ marginTop: 12 }}>
-          提示：修改设置后即时保存。推荐使用「有道词典发音」或「新国标英语」获得标准英语发音。
+          提示：修改设置后即时保存。推荐使用「有道词典发音」获得最适合英语学习的发音，或「百度新国标英语」获得权威标准发音。
         </div>
       </div>
 
