@@ -88,7 +88,7 @@ export default function TaskManage() {
   const loadLists = async () => {
     try {
       const data = await api.getWordLists(selectedBookId || undefined);
-      const sorted = sortListsBySeq((data.wordLists || []).map(l => ({ ...l, id: Number(l.id) })));
+      const sorted = sortListsBySeq((data.wordLists || []).map(l => ({ ...l, id: Number(l.id), word_count: Number(l.word_count) || 0 })));
       setLists(sorted);
       setForm(f => ({ ...f, word_list_ids: [], test_words_count: 10 }));
     } catch (e) { console.error('加载词表失败:', e); }
