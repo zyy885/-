@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
-import { speak, getEngines, getAccents, getVoices } from '../utils/speech.js';
+import { speak, getEngines, getAccents, getVoices, getEngineVoices, TTS_ENGINES } from '../utils/speech.js';
 
 export default function SettingsPage() {
   const navigate = useNavigate();
@@ -12,25 +12,29 @@ export default function SettingsPage() {
   const [voice, setVoice] = useState('default');
   const [voices, setVoices] = useState([]);
   const [versionInfo, setVersionInfo] = useState(null);
-  const [engine, setEngine] = useState('google');
+  const [engine, setEngine] = useState('baidu');
   const [accent, setAccent] = useState('en-US');
   const [rate, setRate] = useState(0.9);
+  const [voiceId, setVoiceId] = useState('default');
 
   const engines = getEngines();
   const accentOptions = getAccents();
+  const engineVoices = getEngineVoices(engine);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('vocab_theme') || 'light';
     const savedVoice = localStorage.getItem('vocab_voice') || 'default';
-    const savedEngine = localStorage.getItem('vocab_tts_engine') || 'google';
+    const savedEngine = localStorage.getItem('vocab_tts_engine') || 'baidu';
     const savedAccent = localStorage.getItem('vocab_tts_accent') || 'en-US';
     const savedRate = parseFloat(localStorage.getItem('vocab_tts_rate')) || 0.9;
+    const savedVoiceId = localStorage.getItem('vocab_tts_voice') || 'default';
 
     setTheme(savedTheme);
     setVoice(savedVoice);
     setEngine(savedEngine);
     setAccent(savedAccent);
     setRate(savedRate);
+    setVoiceId(savedVoiceId);
 
     document.body.classList.remove('theme-light', 'theme-dark', 'theme-eye', 'dark-theme');
     if (savedTheme !== 'light') {
@@ -83,6 +87,8 @@ export default function SettingsPage() {
   const changeEngine = (newEngine) => {
     setEngine(newEngine);
     localStorage.setItem('vocab_tts_engine', newEngine);
+    setVoiceId('default');
+    localStorage.setItem('vocab_tts_voice', 'default');
   };
 
   const changeAccent = (newAccent) => {
@@ -93,6 +99,11 @@ export default function SettingsPage() {
   const changeRate = (newRate) => {
     setRate(newRate);
     localStorage.setItem('vocab_tts_rate', newRate);
+  };
+
+  const changeVoiceId = (newVoiceId) => {
+    setVoiceId(newVoiceId);
+    localStorage.setItem('vocab_tts_voice', newVoiceId);
   };
 
   const testVoice = () => {
@@ -114,6 +125,17 @@ export default function SettingsPage() {
       setConfirmPw('');
     } catch (e) {
       alert(e.message);
+    }
+  };
+
+  const getEngineDesc = () => {
+    switch (engine) {
+      case TTS_ENGINES.BAIDU: return '百度神经引擎，高德地图同款语音，国内最流行';
+      case TTS_ENGINES.YOUDAO: return '有道智云高品质发音，国内访问稳定';
+      case TTS_ENGINES.GOOGLE: return 'Google 神经引擎，国际主流，音质最佳';
+      case TTS_ENGINES.DICTIONARY: return 'DictionaryAPI 真人录音发音';
+      case TTS_ENGINES.BROWSER: return '浏览器内置 TTS，无需联网但音质一般';
+      default: return '';
     }
   };
 
@@ -174,10 +196,7 @@ export default function SettingsPage() {
             ))}
           </select>
           <div className="muted small" style={{ marginTop: 4 }}>
-            {engine === 'google' && 'Google 神经引擎音质最佳，推荐使用'}
-            {engine === 'youdao' && '有道词典发音，国内访问稳定'}
-            {engine === 'dictionary' && '词典 API 真人发音，依赖网络'}
-            {engine === 'browser' && '浏览器内置 TTS，无需联网但音质一般'}
+            {getEngineDesc()}
           </div>
         </div>
 
@@ -206,7 +225,21 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {engine === 'browser' && (
+        {(engine === TTS_ENGINES.BAIDU || engine === TTS_ENGINES.YOUDAO) && engineVoices.length > 0 && (
+          <div className="form-group">
+            <label>
+              {engine === TTS_ENGINES.BAIDU ? '百度语音音色' : '有道语音音色'}
+            </label>
+            <select value={voiceId} onChange={e => changeVoiceId(e.target.value)}>
+              <option value="default">默认音色</option>
+              {engineVoices.map(v => (
+                <option key={v.id} value={String(v.id)}>{v.name} ({v.tag})</option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {engine === TTS_ENGINES.BROWSER && (
           <div className="form-group">
             <label>浏览器音色</label>
             <select value={voice} onChange={e => changeVoice(e.target.value)}>
@@ -222,7 +255,7 @@ export default function SettingsPage() {
           <button className="btn btn-outline" onClick={testVoice}>🔊 试听当前设置</button>
         </div>
         <div className="muted small" style={{ marginTop: 12 }}>
-          提示：修改设置后即时保存。建议使用 Google 神经发音获得最佳体验。
+          提示：修改设置后即时保存。推荐使用「百度语音」获得最佳体验，与高德地图同款引擎。
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-let cachedVoices = [];
+﻿let cachedVoices = [];
 const audioCache = {};
 const audioFailedCache = {};
 const dictCache = {};
@@ -6,8 +6,9 @@ const translationCache = {};
 let currentAudio = null;
 
 const TTS_ENGINES = {
-  GOOGLE: 'google',
+  BAIDU: 'baidu',
   YOUDAO: 'youdao',
+  GOOGLE: 'google',
   DICTIONARY: 'dictionary',
   BROWSER: 'browser'
 };
@@ -16,6 +17,18 @@ const ACCENTS = {
   US: 'en-US',
   GB: 'en-GB'
 };
+
+const BAIDU_VOICES = [
+  { id: 0, name: '度小美 · 女声 (推荐)', tag: '女声' },
+  { id: 1, name: '度小宇 · 男声', tag: '男声' },
+  { id: 3, name: '度逍遥 · 磁性男声', tag: '磁性' },
+  { id: 4, name: '度小娇 · 情感女声', tag: '情感' }
+];
+
+const YOUDAO_VOICES = [
+  { id: 'female', name: '女声 (Lily)', tag: '女声' },
+  { id: 'male', name: '男声 (Daniel)', tag: '男声' }
+];
 
 function loadVoices() {
   if (typeof speechSynthesis !== 'undefined') {
@@ -49,7 +62,7 @@ function stopAll() {
 }
 
 function getEngine() {
-  return localStorage.getItem('vocab_tts_engine') || TTS_ENGINES.GOOGLE;
+  return localStorage.getItem('vocab_tts_engine') || TTS_ENGINES.BAIDU;
 }
 
 function getAccent() {
@@ -60,14 +73,24 @@ function getRate() {
   return parseFloat(localStorage.getItem('vocab_tts_rate')) || 0.9;
 }
 
+function getVoiceId() {
+  return localStorage.getItem('vocab_tts_voice') || 'default';
+}
+
+function buildBaiduTtsUrl(text, accent, voiceId) {
+  const per = voiceId && voiceId !== 'default' ? parseInt(voiceId) : 0;
+  const lan = accent === ACCENTS.GB ? 'en-GB' : 'en-US';
+  return `https://tts.baidu.com/text2audio?lan=${lan}&per=${per}&text=${encodeURIComponent(text)}&spd=${Math.round((getRate() - 0.5) * 10)}&pit=5&vol=9&form=mp3`;
+}
+
+function buildYoudaoTtsUrl(text, accent, voiceId) {
+  const type = accent === ACCENTS.GB ? 1 : 2;
+  return `https://tts.youdao.com/tts?lang=en&img=false&audio=true&text=${encodeURIComponent(text)}&type=${type}`;
+}
+
 function buildGoogleTtsUrl(text, accent) {
   const tl = accent === ACCENTS.GB ? 'en-GB' : 'en';
   return `https://translate.google.com/translate_tts?ie=UTF-8&tl=${tl}&client=tw-ob&q=${encodeURIComponent(text)}`;
-}
-
-function buildYoudaoTtsUrl(text, accent) {
-  const type = accent === ACCENTS.GB ? 1 : 2;
-  return `https://dict.youdao.com/dictvoice?type=${type}&audio=${encodeURIComponent(text)}`;
 }
 
 async function fetchDictionaryData(word) {
@@ -130,23 +153,19 @@ async function playAudioUrl(url) {
     };
 
     audio.onended = () => { cleanup(); resolve(); };
-    audio.onerror = (e) => { cleanup(); reject(new Error('Audio load/play failed: ' + url)); };
+    audio.onerror = () => { cleanup(); reject(new Error('Audio load/play failed')); };
 
     const timeout = setTimeout(() => {
       if (!resolved) {
         cleanup();
         reject(new Error('Audio load timeout'));
       }
-    }, 5000);
+    }, 8000);
 
     const p = audio.play();
     if (p && p.then) {
-      p.then(() => {
-        clearTimeout(timeout);
-      }).catch((e) => {
-        clearTimeout(timeout);
-        cleanup();
-        reject(e);
+      p.then(() => { clearTimeout(timeout); }).catch((e) => {
+        clearTimeout(timeout); cleanup(); reject(e);
       });
     }
   });
@@ -164,7 +183,7 @@ function speakWithTTS(text, lang, rate) {
     u.pitch = 1;
     const savedVoice = localStorage.getItem('vocab_voice') || 'default';
     if (savedVoice !== 'default') {
-      const v = cachedVoices.find(function(v) { return v.name === savedVoice; });
+      const v = cachedVoices.find(v => v.name === savedVoice);
       if (v) u.voice = v;
     } else {
       const preferred = cachedVoices.find(v =>
@@ -179,15 +198,19 @@ function speakWithTTS(text, lang, rate) {
   }
 }
 
-async function tryPlaySource(url) {
-  if (!url || audioFailedCache[url]) return false;
-  try {
-    await playAudioUrl(url);
-    return true;
-  } catch (e) {
-    audioFailedCache[url] = true;
-    return false;
+async function tryPlaySources(sources, cacheKey) {
+  for (const source of sources) {
+    if (!audioFailedCache[source.url]) {
+      try {
+        await playAudioUrl(source.url);
+        if (cacheKey) audioCache[cacheKey] = source.url;
+        return true;
+      } catch (e) {
+        audioFailedCache[source.url] = true;
+      }
+    }
   }
+  return false;
 }
 
 export async function speak(text, lang) {
@@ -195,13 +218,14 @@ export async function speak(text, lang) {
   const accent = getAccent();
   const engine = getEngine();
   const rate = getRate();
+  const voiceId = getVoiceId();
   lang = lang || accent;
 
   try {
     const word = text.trim().toLowerCase();
     if (!word) return;
 
-    const cacheKey = word + '|' + accent + '|' + engine;
+    const cacheKey = word + '|' + accent + '|' + engine + '|' + voiceId;
     const cachedUrl = audioCache[cacheKey];
     if (cachedUrl && !audioFailedCache[cachedUrl]) {
       try {
@@ -215,48 +239,29 @@ export async function speak(text, lang) {
 
     const sources = [];
 
-    if (engine === TTS_ENGINES.GOOGLE) {
-      sources.push({
-        url: buildGoogleTtsUrl(text, accent),
-        cacheKey: cacheKey
-      });
+    if (engine === TTS_ENGINES.BAIDU) {
+      sources.push({ url: buildBaiduTtsUrl(text, accent, voiceId) });
+      sources.push({ url: buildYoudaoTtsUrl(text, accent, voiceId) });
+      sources.push({ url: buildGoogleTtsUrl(text, accent) });
     } else if (engine === TTS_ENGINES.YOUDAO) {
-      sources.push({
-        url: buildYoudaoTtsUrl(text, accent),
-        cacheKey: cacheKey
-      });
+      sources.push({ url: buildYoudaoTtsUrl(text, accent, voiceId) });
+      sources.push({ url: buildBaiduTtsUrl(text, accent, voiceId) });
+      sources.push({ url: buildGoogleTtsUrl(text, accent) });
+    } else if (engine === TTS_ENGINES.GOOGLE) {
+      sources.push({ url: buildGoogleTtsUrl(text, accent) });
+      sources.push({ url: buildBaiduTtsUrl(text, accent, voiceId) });
+      sources.push({ url: buildYoudaoTtsUrl(text, accent, voiceId) });
     } else if (engine === TTS_ENGINES.DICTIONARY) {
       const dictData = await fetchDictionaryData(word);
       if (dictData.audio) {
-        sources.push({ url: dictData.audio, cacheKey: cacheKey });
+        sources.push({ url: dictData.audio });
       }
+      sources.push({ url: buildBaiduTtsUrl(text, accent, voiceId) });
+      sources.push({ url: buildYoudaoTtsUrl(text, accent, voiceId) });
     }
 
-    sources.push({
-      url: buildGoogleTtsUrl(text, accent),
-      cacheKey: cacheKey + '|google'
-    });
-    sources.push({
-      url: buildYoudaoTtsUrl(text, accent),
-      cacheKey: cacheKey + '|youdao'
-    });
-
-    const dictData = await fetchDictionaryData(word);
-    if (dictData.audio) {
-      sources.push({ url: dictData.audio, cacheKey: cacheKey + '|dict' });
-    }
-
-    for (const source of sources) {
-      if (!audioFailedCache[source.url]) {
-        try {
-          await playAudioUrl(source.url);
-          audioCache[cacheKey] = source.url;
-          return;
-        } catch (e) {
-          audioFailedCache[source.url] = true;
-        }
-      }
-    }
+    const success = await tryPlaySources(sources, cacheKey);
+    if (success) return;
 
     speakWithTTS(text, lang, rate);
 
@@ -269,10 +274,11 @@ export async function speakSentence(text, lang) {
   stopAll();
   const accent = getAccent();
   const engine = getEngine();
-  const rate = Math.min(getRate(), 0.8);
+  const rate = Math.min(getRate(), 0.85);
+  const voiceId = getVoiceId();
 
   try {
-    const cacheKey = 'sentence|' + text.trim().toLowerCase() + '|' + accent + '|' + engine;
+    const cacheKey = 'sentence|' + text.trim().toLowerCase() + '|' + accent + '|' + engine + '|' + voiceId;
     const cachedUrl = audioCache[cacheKey];
     if (cachedUrl && !audioFailedCache[cachedUrl]) {
       try {
@@ -285,22 +291,20 @@ export async function speakSentence(text, lang) {
     }
 
     const sources = [];
-    if (engine === TTS_ENGINES.GOOGLE || engine === TTS_ENGINES.DICTIONARY) {
-      sources.push({ url: buildGoogleTtsUrl(text, accent), cacheKey });
+    if (engine === TTS_ENGINES.BAIDU || engine === TTS_ENGINES.DICTIONARY) {
+      sources.push({ url: buildBaiduTtsUrl(text, accent, voiceId) });
+      sources.push({ url: buildYoudaoTtsUrl(text, accent, voiceId) });
+    } else if (engine === TTS_ENGINES.YOUDAO) {
+      sources.push({ url: buildYoudaoTtsUrl(text, accent, voiceId) });
+      sources.push({ url: buildBaiduTtsUrl(text, accent, voiceId) });
+    } else {
+      sources.push({ url: buildBaiduTtsUrl(text, accent, voiceId) });
+      sources.push({ url: buildGoogleTtsUrl(text, accent) });
+      sources.push({ url: buildYoudaoTtsUrl(text, accent, voiceId) });
     }
-    sources.push({ url: buildYoudaoTtsUrl(text, accent), cacheKey });
 
-    for (const source of sources) {
-      if (!audioFailedCache[source.url]) {
-        try {
-          await playAudioUrl(source.url);
-          audioCache[cacheKey] = source.url;
-          return;
-        } catch (e) {
-          audioFailedCache[source.url] = true;
-        }
-      }
-    }
+    const success = await tryPlaySources(sources, cacheKey);
+    if (success) return;
 
     speakWithTTS(text, lang, rate);
   } catch (e) {
@@ -317,12 +321,19 @@ export function getVoices() {
   return cachedVoices;
 }
 
+export function getEngineVoices(engine) {
+  if (engine === TTS_ENGINES.BAIDU) return BAIDU_VOICES;
+  if (engine === TTS_ENGINES.YOUDAO) return YOUDAO_VOICES;
+  return [];
+}
+
 export function getEngines() {
   return [
-    { id: TTS_ENGINES.GOOGLE, name: 'Google 神经发音 (推荐)' },
-    { id: TTS_ENGINES.YOUDAO, name: '有道词典发音' },
-    { id: TTS_ENGINES.DICTIONARY, name: 'DictionaryAPI 真人发音' },
-    { id: TTS_ENGINES.BROWSER, name: '浏览器内置发音' }
+    { id: TTS_ENGINES.BAIDU, name: '百度语音 · 神经引擎 (推荐)', tag: '高德地图同款' },
+    { id: TTS_ENGINES.YOUDAO, name: '有道智云 · 高品质发音', tag: '国内稳定' },
+    { id: TTS_ENGINES.GOOGLE, name: 'Google 神经发音', tag: '国际主流' },
+    { id: TTS_ENGINES.DICTIONARY, name: 'DictionaryAPI 真人发音', tag: '真人录音' },
+    { id: TTS_ENGINES.BROWSER, name: '浏览器内置发音', tag: '离线可用' }
   ];
 }
 
