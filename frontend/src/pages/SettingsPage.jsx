@@ -130,11 +130,12 @@ export default function SettingsPage() {
 
   const getEngineDesc = () => {
     switch (engine) {
-      case TTS_ENGINES.BAIDU: return '百度神经引擎，高德地图同款语音';
-      case TTS_ENGINES.YOUDAO: return '有道智云高品质发音，国内访问稳定';
-      case TTS_ENGINES.GOOGLE: return 'Google 神经引擎，国际主流';
+      case TTS_ENGINES.BROWSER: return '浏览器原生英语发音，无需联网，适合日常学习';
+      case TTS_ENGINES.YOUDAO: return '有道词典发音，国内最流行的英语学习工具';
+      case TTS_ENGINES.BAIDU_STANDARD: return '符合国家标准的英语发音，权威标准';
+      case TTS_ENGINES.BING: return '微软必应神经发音，高品质自然流畅';
       case TTS_ENGINES.DICTIONARY: return 'DictionaryAPI 真人录音发音';
-      case TTS_ENGINES.BROWSER: return '浏览器内置语音，适合英语学习，离线可用';
+      case TTS_ENGINES.GOOGLE: return 'Google 神经发音，国际主流';
       default: return '';
     }
   };
@@ -225,10 +226,10 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {(engine === TTS_ENGINES.BAIDU || engine === TTS_ENGINES.YOUDAO) && engineVoices.length > 0 && (
+        {(engine === TTS_ENGINES.YOUDAO || engine === TTS_ENGINES.BAIDU_STANDARD || engine === TTS_ENGINES.BING) && engineVoices.length > 0 && (
           <div className="form-group">
             <label>
-              {engine === TTS_ENGINES.BAIDU ? '百度语音音色' : '有道语音音色'}
+              {engine === TTS_ENGINES.YOUDAO ? '有道词典音色' : engine === TTS_ENGINES.BAIDU_STANDARD ? '新国标语音音色' : '必应神经音色'}
             </label>
             <select value={voiceId} onChange={e => changeVoiceId(e.target.value)}>
               <option value="default">默认音色</option>
@@ -255,7 +256,7 @@ export default function SettingsPage() {
           <button className="btn btn-outline" onClick={testVoice}>🔊 试听当前设置</button>
         </div>
         <div className="muted small" style={{ marginTop: 12 }}>
-          提示：修改设置后即时保存。推荐使用「浏览器内置语音」，更适合英语学习。
+          提示：修改设置后即时保存。推荐使用「有道词典发音」或「新国标英语」获得标准英语发音。
         </div>
       </div>
 
