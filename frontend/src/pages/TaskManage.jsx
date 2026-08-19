@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api.js';
 
@@ -67,11 +67,25 @@ export default function TaskManage() {
   const [tags, setTags] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
   const [form, setForm] = useState({
     name: '', word_list_ids: [], deadline: '', test_words_count: 10, test_mode: 'mixed', student_ids: [] });
 
   useEffect(() => { load(); }, []);
   useEffect(() => { loadLists(); }, [selectedBookId]);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    if (dropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [dropdownOpen]);
 
   const load = async () => {
     Promise.all([api.getTasks(), api.getWordBooks(), api.getStudents(), api.getTags().catch(() => ({ tags: [] }))])
@@ -168,6 +182,7 @@ export default function TaskManage() {
       });
       setForm({ name: '', word_list_ids: [], deadline: '', test_words_count: 10, test_mode: 'mixed', student_ids: [] });
       setShowCreate(false);
+      setDropdownOpen(false);
       load();
     } catch (e) { alert(e.message); }
   };
@@ -188,35 +203,63 @@ export default function TaskManage() {
       </div>
 
       {showCreate && (
-        <div className="modal" onClick={() => setShowCreate(false)}>
+        <div className="modal" onClick={() => { setShowCreate(false); setDropdownOpen(false); }}>
           <div className="modal-content modal-lg" onClick={e => e.stopPropagation()}>
             <h3>发布测试任务</h3>
             <div className="form-group"><label>任务名称</label>
               <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="如：Unit 1 测试" />
             </div>
             <div className="form-group"><label>选择单词书</label>
-              <select value={selectedBookId || ''} onChange={e => { const newBookId = e.target.value || null; setSelectedBookId(newBookId); setForm(f => ({ ...f, word_list_ids: [] })); }}>
+              <select value={selectedBookId || ''} onChange={e => { const newBookId = e.target.value || null; setSelectedBookId(newBookId); setForm(f => ({ ...f, word_list_ids: [] })); setDropdownOpen(false); }}>
                 <option value="">全部词表</option>
                 {wordBooks.map(b => <option key={b.id} value={b.id}>{b.name} ({b.list_count || 0}个词表)</option>)}
               </select>
             </div>
-            <div className="form-group"><label>选择词表（可多选）</label>
-              <div style={{ marginBottom: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
-                <button type="button" className="btn btn-outline btn-sm" onClick={toggleAllWordLists}>
-                  {form.word_list_ids.length === lists.length && lists.length > 0 ? '清空' : '全选'}
+            <div className="form-group" ref={dropdownRef}><label>选择词表（可多选）</label>
+              <div style={{ position: 'relative' }}>
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  style={{ width: '100%', textAlign: 'left', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                  onClick={() => setDropdownOpen(o => !o)}
+                >
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {form.word_list_ids.length === 0
+                      ? '请选择词表'
+                      : `已选 ${form.word_list_ids.length} 个词表 · 共 ${getTotalWordsCount()} 词`
+                    }
+                  </span>
+                  <span style={{ marginLeft: 8, flexShrink: 0 }}>{dropdownOpen ? '▲' : '▼'}</span>
                 </button>
-                <span className="muted small">已选 {form.word_list_ids.length} 个词表 · 共 {getTotalWordsCount()} 词</span>
-              </div>
-              <div className="wordlist-checkboxes" style={{ maxHeight: 200, overflowY: 'auto', border: '1px solid #e5e7eb', borderRadius: 8, padding: 8 }}>
-                {lists.length === 0 ? (
-                  <span className="muted">该单词书下暂无词表</span>
-                ) : (
-                  lists.map(l => (
-                    <label key={l.id} className="checkbox-item" style={{ display: 'flex', alignItems: 'center', padding: '4px 0' }}>
-                      <input type="checkbox" checked={form.word_list_ids.includes(l.id)} onChange={() => toggleWordList(l.id)} />
-                      <span style={{ marginLeft: 8 }}>{l.name} <span className="muted">({l.word_count}词)</span></span>
-                    </label>
-                  ))
+                {dropdownOpen && (
+                  <div style={{
+                    position: 'absolute', zIndex: 100, top: '100%', left: 0, right: 0,
+                    marginTop: 4, background: 'white', border: '1px solid #e5e7eb',
+                    borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                    maxHeight: 260, overflowY: 'auto', padding: 8
+                  }}>
+                    <div style={{ display: 'flex', gap: 8, marginBottom: 8, paddingBottom: 8, borderBottom: '1px solid #f3f4f6' }}>
+                      <button type="button" className="btn btn-outline btn-sm" onClick={toggleAllWordLists}>
+                        {form.word_list_ids.length === lists.length && lists.length > 0 ? '清空' : '全选'}
+                      </button>
+                      <span className="muted small" style={{ alignSelf: 'center' }}>已选 {form.word_list_ids.length} 个 · 共 {getTotalWordsCount()} 词</span>
+                    </div>
+                    {lists.length === 0 ? (
+                      <span className="muted" style={{ padding: 8 }}>该单词书下暂无词表</span>
+                    ) : (
+                      lists.map(l => (
+                        <label key={l.id} style={{
+                          display: 'flex', alignItems: 'center', padding: '6px 8px',
+                          borderRadius: 4, cursor: 'pointer',
+                          background: form.word_list_ids.includes(l.id) ? '#eff6ff' : 'transparent'
+                        }}>
+                          <input type="checkbox" checked={form.word_list_ids.includes(l.id)} onChange={() => toggleWordList(l.id)} />
+                          <span style={{ marginLeft: 8, flex: 1 }}>{l.name}</span>
+                          <span className="muted small">({l.word_count}词)</span>
+                        </label>
+                      ))
+                    )}
+                  </div>
                 )}
               </div>
             </div>
@@ -264,7 +307,7 @@ export default function TaskManage() {
               </div>
             </div>
             <div className="modal-actions">
-              <button className="btn btn-outline" onClick={() => setShowCreate(false)}>取消</button>
+              <button className="btn btn-outline" onClick={() => { setShowCreate(false); setDropdownOpen(false); }}>取消</button>
               <button className="btn btn-primary" onClick={create}>发布</button>
             </div>
           </div>
