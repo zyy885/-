@@ -253,8 +253,9 @@ export default function UserManage() {
   };
 
   const toggleStudentTag = (tagId) => {
+    const numId = Number(tagId);
     setStudentTagIds(prev =>
-      prev.includes(tagId) ? prev.filter(id => id !== tagId) : [...prev, tagId]
+      prev.some(id => Number(id) === numId) ? prev.filter(id => Number(id) !== numId) : [...prev, numId]
     );
   };
 
@@ -494,11 +495,11 @@ export default function UserManage() {
                 {tags.map(tag => (
                   <label key={tag.id} className="checkbox-item" style={{
                     padding: '8px 14px', borderRadius: 20, border: `2px solid ${tag.color}`,
-                    background: studentTagIds.includes(tag.id) ? tag.color : 'transparent',
-                    color: studentTagIds.includes(tag.id) ? 'white' : tag.color,
+                    background: studentTagIds.some(id => Number(id) === Number(tag.id)) ? tag.color : 'transparent',
+                    color: studentTagIds.some(id => Number(id) === Number(tag.id)) ? 'white' : tag.color,
                     cursor: 'pointer', userSelect: 'none'
                   }}>
-                    <input type="checkbox" checked={studentTagIds.includes(tag.id)}
+                    <input type="checkbox" checked={studentTagIds.some(id => Number(id) === Number(tag.id))}
                       onChange={() => toggleStudentTag(tag.id)} style={{ marginRight: 6 }} />
                     {tag.name}
                   </label>

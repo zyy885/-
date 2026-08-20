@@ -190,7 +190,7 @@ export default function WordListManage() {
   const deleteBook = async (id) => {
     if (!confirm('确定删除该单词书及其所有词表？')) return;
     await api.deleteWordBook(id);
-    if (selectedBookId === id) setSelectedBookId(null);
+    if (Number(selectedBookId) === Number(id)) setSelectedBookId(null);
     loadWordBooks();
   };
 
@@ -201,7 +201,7 @@ export default function WordListManage() {
 
   const saveRenameBook = async () => {
     if (!renamingBookValue.trim()) return alert('单词书名称不能为空');
-    const book = wordBooks.find(b => b.id === renamingBookId);
+    const book = wordBooks.find(b => Number(b.id) === Number(renamingBookId));
     if (!book) return;
     try {
       await api.updateWordBook(renamingBookId, { name: renamingBookValue.trim(), description: book.description || '' });
@@ -225,7 +225,7 @@ export default function WordListManage() {
   const deleteList = async (id) => {
     if (!confirm('确定删除该词表及其所有单词？')) return;
     await api.deleteWordList(id);
-    if (selectedId === id) setSelectedId(null);
+    if (Number(selectedId) === Number(id)) setSelectedId(null);
     loadLists(selectedBookId);
   };
 
@@ -237,7 +237,7 @@ export default function WordListManage() {
 
   const saveRename = async () => {
     if (!renamingValue.trim()) return alert('词表名称不能为空');
-    const list = lists.find(l => l.id === renamingId);
+    const list = lists.find(l => Number(l.id) === Number(renamingId));
     if (!list) return;
     try {
       await api.updateWordList(renamingId, { name: renamingValue.trim(), description: list.description || '', word_book_id: editingListBookId });
@@ -274,7 +274,7 @@ export default function WordListManage() {
     e.preventDefault();
     const listId = Number(e.dataTransfer.getData('text/plain'));
     if (!listId) return;
-    const list = lists.find(l => l.id === listId);
+    const list = lists.find(l => Number(l.id) === listId);
     if (!list) return;
     if (String(list.word_book_id || '') === String(bookId || '')) {
       setDragOverBookId(null);
@@ -973,7 +973,7 @@ export default function WordListManage() {
           {selectedId ? (
             <>
               <div className="panel-header">
-                <h3>{lists.find(l => l.id === selectedId)?.name} · 单词 ({words.length})</h3>
+                <h3>{lists.find(l => Number(l.id) === Number(selectedId))?.name} · 单词 ({words.length})</h3>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                   <button className="btn btn-outline btn-sm" onClick={() => setShowImport(true)}>📥 导入词表</button>
                   <button className="btn btn-outline btn-sm" onClick={handleExport}>📤 导出</button>
@@ -1029,7 +1029,7 @@ export default function WordListManage() {
                                 onChange={() => setImportMode('append')}
                                 style={{ width: 16, height: 16 }}
                               />
-                              <span>➕ 追加到当前词表「{lists.find(l => l.id === selectedId)?.name}」</span>
+                              <span>➕ 追加到当前词表「{lists.find(l => Number(l.id) === Number(selectedId))?.name}」</span>
                             </label>
                           </div>
                         )}
@@ -1203,7 +1203,7 @@ export default function WordListManage() {
                     </h3>
                     {insertConfig && (
                       <div className="muted small" style={{ marginBottom: 12 }}>
-                        将插入到「{words.find(w => w.id === insertConfig.reference_word_id)?.word}」的{insertConfig.position === 'before' ? '上方' : '下方'}
+                        将插入到「{words.find(w => Number(w.id) === Number(insertConfig.reference_word_id))?.word}」的{insertConfig.position === 'before' ? '上方' : '下方'}
                       </div>
                     )}
                     <div className="form-group"><label>单词</label>

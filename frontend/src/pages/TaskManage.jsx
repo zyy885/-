@@ -97,9 +97,10 @@ export default function TaskManage() {
   };
 
   const toggleStudent = (id) => {
+    const numId = Number(id);
     setForm(f => {
-      const exists = f.student_ids.includes(id);
-      return { ...f, student_ids: exists ? f.student_ids.filter(s => s !== id) : [...f.student_ids, id] };
+      const exists = f.student_ids.some(s => Number(s) === numId);
+      return { ...f, student_ids: exists ? f.student_ids.filter(s => Number(s) !== numId) : [...f.student_ids, numId] };
     });
   };
 
@@ -134,17 +135,17 @@ export default function TaskManage() {
   };
 
   const toggleAllStudents = () => {
-    if (form.student_ids.length === students.length) {
+    if (form.student_ids.length === students.length && students.length > 0) {
       setForm(f => ({ ...f, student_ids: [] }));
     } else {
-      setForm(f => ({ ...f, student_ids: students.map(s => s.id) }));
+      setForm(f => ({ ...f, student_ids: students.map(s => Number(s.id)) }));
     }
   };
 
   const selectByTag = async (tagId) => {
     try {
       const data = await api.getTagStudents(tagId);
-      const tagStudentIds = (data.students || []).map(s => s.id);
+      const tagStudentIds = (data.students || []).map(s => Number(s.id));
       setForm(f => {
         const merged = [...new Set([...f.student_ids, ...tagStudentIds])];
         return { ...f, student_ids: merged };
@@ -424,7 +425,7 @@ export default function TaskManage() {
               <div className="student-checkboxes">
                 {students.map(s => (
                   <label key={s.id} className="checkbox-item">
-                    <input type="checkbox" checked={form.student_ids.includes(s.id)} onChange={() => toggleStudent(s.id)} />
+                    <input type="checkbox" checked={form.student_ids.some(x => Number(x) === Number(s.id))} onChange={() => toggleStudent(s.id)} />
                     {s.username}
                   </label>
                 ))}

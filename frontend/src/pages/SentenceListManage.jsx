@@ -100,7 +100,7 @@ export default function SentenceListManage() {
   const deleteList = async (id) => {
     if (!confirm('确定删除此句集吗？')) return;
     await api.deleteSentenceList(id);
-    if (selectedId === id) setSelectedId(null);
+    if (Number(selectedId) === Number(id)) setSelectedId(null);
     load();
   };
 
@@ -191,7 +191,7 @@ export default function SentenceListManage() {
           {selectedId ? (
             <>
               <div className="panel-header">
-                <h3>{lists.find(l => l.id === selectedId)?.name} · 句子 ({sentences.length})</h3>
+                <h3>{lists.find(l => Number(l.id) === Number(selectedId))?.name} · 句子 ({sentences.length})</h3>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                   <button className="btn btn-outline btn-sm" onClick={() => setShowImport(true)}>📥 导入</button>
                   <button className="btn btn-outline btn-sm" onClick={handleExport}>📤 导出</button>
@@ -204,7 +204,7 @@ export default function SentenceListManage() {
                   <tbody>
                     {sentences.map((s, i) => (
                       <tr key={s.id}>
-                        {editing?.id === s.id ? (
+                        {Number(editing?.id) === Number(s.id) ? (
                           <>
                             <td>{i + 1}</td>
                             <td><textarea rows={2} value={editing.sentence_en} onChange={e => setEditing({ ...editing, sentence_en: e.target.value })} style={{ width: '100%' }} /></td>
