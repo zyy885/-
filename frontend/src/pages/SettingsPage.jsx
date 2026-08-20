@@ -87,6 +87,7 @@ export default function SettingsPage() {
   const changeEngine = (newEngine) => {
     setEngine(newEngine);
     localStorage.setItem('vocab_tts_engine', newEngine);
+    localStorage.setItem('vocab_tts_engine_manual', '1'); // 用户手动选过，下次自动迁移不覆盖
     setVoiceId('default');
     localStorage.setItem('vocab_tts_voice', 'default');
   };
@@ -130,12 +131,12 @@ export default function SettingsPage() {
 
   const getEngineDesc = () => {
     switch (engine) {
-      case TTS_ENGINES.YOUDAO: return '有道词典发音，国内最流行的英语学习工具，发音清晰标准';
-      case TTS_ENGINES.BAIDU_STANDARD: return '符合国家《英语语音合成标准》，权威标准，适合考试学习';
-      case TTS_ENGINES.XFYUN: return '讯飞语音，国内知名TTS引擎，发音清晰自然';
-      case TTS_ENGINES.DICTIONARY: return 'DictionaryAPI 真人录音，真实自然';
-      case TTS_ENGINES.BROWSER: return '浏览器原生英语发音，无需联网，适合日常学习';
-      case TTS_ENGINES.GOOGLE: return 'Google 神经发音，国际主流';
+      case TTS_ENGINES.YOUDAO: return '✅ 推荐首选｜有道词典真人发音，清晰清脆不机械，最适合背单词';
+      case TTS_ENGINES.BAIDU_STANDARD: return '✅ 强烈推荐｜百度·新国标英语，符合国家考试标准，咬字清楚权威';
+      case TTS_ENGINES.XFYUN: return '讯飞语音，国内知名TTS，清晰自然';
+      case TTS_ENGINES.DICTIONARY: return 'DictionaryAPI 真人录音，真实自然（部分词可能没有）';
+      case TTS_ENGINES.BROWSER: return '⚠️ 兜底使用｜浏览器内置，无需联网，但可能是系统机械音，音质一般';
+      case TTS_ENGINES.GOOGLE: return 'Google 神经发音，国际主流，自然流畅';
       default: return '';
     }
   };
