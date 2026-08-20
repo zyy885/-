@@ -867,7 +867,7 @@ app.get('/api/tasks', authMiddleware, async (req, res) => {
       const progressStats = await db.prepare(
         `SELECT 
           COUNT(*) as total_students,
-          SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed_count,
+          SUM(CASE WHEN status = 'tested' THEN 1 ELSE 0 END) as completed_count,
           SUM(CASE WHEN status = 'studying' THEN 1 ELSE 0 END) as studying_count,
           SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending_count,
           AVG(COALESCE(study_progress, 0)) as avg_progress,
@@ -880,7 +880,7 @@ app.get('/api/tasks', authMiddleware, async (req, res) => {
       t.studying_count = progressStats.studying_count || 0;
       t.pending_count = progressStats.pending_count || 0;
       t.avg_progress = Math.round(Number(progressStats.avg_progress) || 0);
-      t.avg_score = progressStats.avg_score ? Math.round(Number(progressStats.avg_score)) : null;
+      t.avg_score = progressStats.avg_score !== null && progressStats.avg_score !== undefined ? Math.round(Number(progressStats.avg_score)) : null;
       
       const now = new Date();
       if (t.deadline) {
@@ -1131,7 +1131,7 @@ app.post('/api/tests/submit', authMiddleware, async (req, res) => {
   }
   const score = (correct / answers.length) * 100;
   await db.prepare(
-    "UPDATE task_students SET status = 'tested', test_score = ?, last_studied_at = CURRENT_TIMESTAMP WHERE id = ?"
+    "UPDATE task_students SET status = 'tested', test_score = ?, study_progress = 100, last_studied_at = CURRENT_TIMESTAMP WHERE id = ?"
   ).run(score, task_student_id);
   res.json({ score, correct, total: answers.length });
 });
@@ -2300,6 +2300,20 @@ process.on('uncaughtException', (err) => {
 });
 
 const PORT = process.env.PORT || 3001;
+
+(async () => {
+  try {
+    const result = await db.prepare(
+      "UPDATE task_students SET study_progress = 100 WHERE status = 'tested' AND study_progress < 100"
+    ).run();
+    if (result.changes > 0) {
+      console.log(`[数据修复] 更新了 ${result.changes} 条已测试但进度未更新的记录`);
+    }
+  } catch (e) {
+    console.error('[数据修复] 进度修复失败:', e.message);
+  }
+})();
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`服务运行在 http://0.0.0.0:${PORT}`);
 });
