@@ -466,8 +466,23 @@ export default function TaskManage() {
                   }}>{status.text}</span>
                 </div>
                 <div className="card-body">
-                  <div style={{ display: 'flex', gap: 12, fontSize: 13, color: '#6b7280', marginBottom: 10, flexWrap: 'wrap' }}>
-                    <span>👥 {totalStudents}人</span>
+                  <div style={{ display: 'flex', gap: 12, fontSize: 13, color: '#6b7280', marginBottom: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+                    {task.show_student_names && task.student_names && task.student_names.length > 0 ? (
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
+                        👥 
+                        {task.student_names.map((name, idx) => (
+                          <span key={idx} style={{
+                            background: '#f3f4f6',
+                            padding: '2px 8px',
+                            borderRadius: 10,
+                            fontSize: 12,
+                            color: '#4b5563'
+                          }}>{name}</span>
+                        ))}
+                      </span>
+                    ) : (
+                      <span>👥 {totalStudents}人</span>
+                    )}
                     <span>📝 {task.test_words_count || 10}题</span>
                     {task.deadline && (
                       <span style={{ color: new Date(task.deadline) < new Date() ? '#ef4444' : '#6b7280' }}>

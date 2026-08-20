@@ -881,6 +881,15 @@ app.get('/api/tasks', authMiddleware, async (req, res) => {
       t.pending_count = progressStats.pending_count || 0;
       t.avg_progress = Math.round(Number(progressStats.avg_progress) || 0);
       t.avg_score = progressStats.avg_score !== null && progressStats.avg_score !== undefined ? Math.round(Number(progressStats.avg_score)) : null;
+
+      const studentNames = await db.prepare(
+        `SELECT u.username FROM task_students ts 
+         INNER JOIN users u ON u.id = ts.student_id 
+         WHERE ts.task_id = ? 
+         ORDER BY u.username LIMIT 8`
+      ).all(t.id);
+      t.student_names = studentNames.map(s => s.username);
+      t.show_student_names = t.total_students <= 8;
       
       const now = new Date();
       if (t.deadline) {
