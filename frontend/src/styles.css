@@ -163,6 +163,8 @@ body {
   width: 100%;
   max-width: 420px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
 }
 
 .auth-title {
@@ -4181,6 +4183,8 @@ body.theme-dark .bg-blob {
     transparent 40%
   );
   animation: authBgSpin 30s linear infinite;
+  pointer-events: none;
+  z-index: 0;
 }
 
 @keyframes authBgSpin {
