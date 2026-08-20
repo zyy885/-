@@ -133,14 +133,18 @@ async function runSeedData() {
       },
       {
         name: 'PART 04 · 基础唤醒词汇',
-        description: '基础唤醒词汇 6 词',
+        description: '基础唤醒词汇 10 词',
         words: [
           { word: 'tour', meaning: 'n. 旅游', example: 'a tour and travel\na tour of the city' },
           { word: 'cash', meaning: 'n. 现金', example: 'cash in hand\nI\'m short of cash right now.' },
           { word: 'wide', meaning: 'adj. 宽的；广泛的\nadv. 广阔地；充分地', example: 'a wide mouth\nThe door was wide open.' },
           { word: 'sad', meaning: 'adj. 悲哀的，难过的', example: 'She looked sad and tired.' },
           { word: 'spirit', meaning: 'n. 精神，情绪', example: 'in high/low spirits\nThe news lifted our spirits.' },
-          { word: 'speed', meaning: 'n. 速度\nv. 加速', example: 'speed limit\nHe drives at high speed.' }
+          { word: 'speed', meaning: 'n. 速度\nv. 加速', example: 'speed limit\nHe drives at high speed.' },
+          { word: 'reality', meaning: 'n. 现实', example: 'in reality\nWill time travel become a reality?' },
+          { word: 'favorite', meaning: 'n. 最喜欢的人或物\nadj. 最爱的', example: 'Which one is your favorite?\nShe is my favorite singer.' },
+          { word: 'power', meaning: 'n. 实力，电能，权力', example: 'economic power\npower plant\nin power' },
+          { word: 'prepare', meaning: 'v. 准备', example: 'prepare for' }
         ]
       }
     ];
@@ -149,31 +153,61 @@ async function runSeedData() {
       'INSERT INTO words (word_list_id, word, meaning, example, sort_order) VALUES (?, ?, ?, ?, ?)'
     );
 
-    let addedCount = 0;
+    let addedLists = 0;
+    let addedWords = 0;
     for (const part of parts) {
       const existingList = await db.prepare(
         'SELECT id FROM word_lists WHERE name = ? AND word_book_id = ? LIMIT 1'
       ).get(part.name, bookId);
       
+      let listId;
       if (existingList) {
-        console.log(`种子数据: 词表 "${part.name}" 已存在，跳过`);
-        continue;
-      }
+        listId = existingList.id;
+        console.log(`种子数据: 词表 "${part.name}" 已存在(ID:${listId})，检查缺失单词...`);
 
-      const listInfo = await db.prepare(
-        'INSERT INTO word_lists (name, description, word_book_id, teacher_id, sort_order) VALUES (?, ?, ?, ?, ?)'
-      ).run(part.name, part.description, bookId, teacher.id, 0);
-      const listId = listInfo.lastInsertRowid;
-      console.log(`种子数据: 创建词表 "${part.name}"`);
+        const existingWords = await db.prepare(
+          'SELECT word FROM words WHERE word_list_id = ?'
+        ).all(listId);
+        const existingWordSet = new Set(existingWords.map(r => r.word));
 
-      for (let i = 0; i < part.words.length; i++) {
-        const w = part.words[i];
-        await insertWordStmt.run(listId, w.word, w.meaning, w.example || '', i + 1);
+        const missing = part.words.filter(w => !existingWordSet.has(w.word));
+        if (missing.length === 0) {
+          console.log(`  单词完整，无需补充`);
+          continue;
+        }
+
+        // 计算当前最大 sort_order
+        const maxOrderRow = await db.prepare(
+          'SELECT COALESCE(MAX(sort_order), 0) as mo FROM words WHERE word_list_id = ?'
+        ).get(listId);
+        let nextOrder = Number(maxOrderRow.mo || 0);
+
+        for (const w of missing) {
+          nextOrder++;
+          await insertWordStmt.run(listId, w.word, w.meaning, w.example || '', nextOrder);
+          console.log(`  + 补充单词: ${w.word}`);
+          addedWords++;
+        }
+
+        // 更新词表描述
+        await db.prepare('UPDATE word_lists SET description = ? WHERE id = ?').run(part.description, listId);
+      } else {
+        const listInfo = await db.prepare(
+          'INSERT INTO word_lists (name, description, word_book_id, teacher_id, sort_order) VALUES (?, ?, ?, ?, ?)'
+        ).run(part.name, part.description, bookId, teacher.id, 0);
+        listId = listInfo.lastInsertRowid;
+        console.log(`种子数据: 创建词表 "${part.name}"`);
+
+        for (let i = 0; i < part.words.length; i++) {
+          const w = part.words[i];
+          await insertWordStmt.run(listId, w.word, w.meaning, w.example || '', i + 1);
+        }
+        console.log(`  插入 ${part.words.length} 个单词`);
+        addedLists++;
+        addedWords += part.words.length;
       }
-      console.log(`  插入 ${part.words.length} 个单词`);
-      addedCount++;
     }
-    console.log(`种子数据: 「${BOOK_NAME}」导入完成，新增 ${addedCount} 个词表`);
+    console.log(`种子数据: 「${BOOK_NAME}」导入完成，新增 ${addedLists} 词表，补充 ${addedWords} 单词`);
   } catch (e) {
     console.error('种子数据导入出错:', e.message);
   }
