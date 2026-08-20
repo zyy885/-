@@ -4295,3 +4295,125 @@ body.theme-dark .bg-blob {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
 }
+
+/* ========== 可翻转单词卡片 ========== */
+.flip-card {
+  perspective: 1200px;
+  min-height: 180px;
+  cursor: pointer;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+  transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.flip-card-front {
+  z-index: 2;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+
+/* 翻卡悬浮效果 */
+.flip-card:hover .flip-card-inner {
+  transform: translateZ(5px);
+}
+
+.flip-card.flipped:hover .flip-card-inner {
+  transform: rotateY(180deg) translateZ(5px);
+}
+
+/* 背面样式（渐变区分） */
+.word-card-back {
+  background: linear-gradient(135deg, #f8faff 0%, #f0f4ff 100%);
+  border-color: #c7d2fe;
+}
+
+.word-card-word-small {
+  font-size: 16px;
+  font-weight: 600;
+  color: #6366f1;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+/* 翻转提示 */
+.flip-hint {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-top: 10px;
+  text-align: center;
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* 入场动画：卡片翻转进入 */
+.flip-card {
+  animation: flipCardIn 0.5s ease-out backwards;
+}
+
+@keyframes flipCardIn {
+  from {
+    opacity: 0;
+    transform: rotateY(-15deg) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: rotateY(0) scale(1);
+  }
+}
+
+.word-cards .flip-card:nth-child(1) { animation-delay: 0.02s; }
+.word-cards .flip-card:nth-child(2) { animation-delay: 0.05s; }
+.word-cards .flip-card:nth-child(3) { animation-delay: 0.08s; }
+.word-cards .flip-card:nth-child(4) { animation-delay: 0.11s; }
+.word-cards .flip-card:nth-child(5) { animation-delay: 0.14s; }
+.word-cards .flip-card:nth-child(6) { animation-delay: 0.17s; }
+.word-cards .flip-card:nth-child(7) { animation-delay: 0.20s; }
+.word-cards .flip-card:nth-child(8) { animation-delay: 0.23s; }
+
+/* 翻卡后的光效 */
+.flip-card.flipped .flip-card-back::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 10px 10px 0 0;
+  pointer-events: none;
+}
+
+/* 确保翻转卡片的 word-card 不使用原来的 overflow:hidden 导致 3D 异常 */
+.flip-card .word-card {
+  overflow: hidden;
+}
+
+/* 发音按钮按下反馈 */
+.icon-btn:active {
+  transform: scale(0.9);
+}

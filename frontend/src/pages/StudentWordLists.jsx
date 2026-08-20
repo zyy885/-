@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
-import { speak } from '../utils/speech.js';
+import { speak, preloadWordAudio } from '../utils/speech.js';
 
 const chineseNumMap = { '零':0, '一':1, '二':2, '两':2, '三':3, '四':4, '五':5, '六':6, '七':7, '八':8, '九':9, '十':10, '百':100, '千':1000, '万':10000 };
 const chineseToNum = (s) => {
@@ -68,6 +68,8 @@ export default function StudentWordLists() {
   const [selectedList, setSelectedList] = useState(null);
   const [words, setWords] = useState([]);
   const [favMap, setFavMap] = useState({});
+  const [flippedMap, setFlippedMap] = useState({});
+  const [preloadedAudios, setPreloadedAudios] = useState({});
 
   useEffect(() => {
     loadAll();
@@ -126,8 +128,22 @@ export default function StudentWordLists() {
 
   const selectList = async (list) => {
     setSelectedList(list);
+    setFlippedMap({});
     const data = await api.getWords(list.id);
     setWords(data.words);
+    // 批量后台预加载单词音频（不阻塞）
+    if (data.words && data.words.length) {
+      setTimeout(() => {
+        data.words.forEach((w, idx) => {
+          // 分批预加载，避免一次性网络请求过多
+          setTimeout(() => preloadWordAudio(w.word), idx * 150);
+        });
+      }, 200);
+    }
+  };
+
+  const toggleFlip = (wordId) => {
+    setFlippedMap(prev => ({ ...prev, [wordId]: !prev[wordId] }));
   };
 
   const goBack = () => {
@@ -292,24 +308,53 @@ export default function StudentWordLists() {
             >📝 开始自测</button>
           </div>
           <div className="word-cards">
-            {words.map((w, i) => (
-              <div key={w.id} className="word-card">
-                <div className="word-card-top">
-                  <span className="word-index">{i + 1}</span>
-                  <div className="word-card-actions">
-                    <button className="icon-btn" onClick={() => speak(w.word)} title="发音">🔊</button>
-                    <button
-                      className="icon-btn"
-                      onClick={() => toggleFav(w)}
-                      title={favMap[w.id] ? '取消收藏' : '收藏'}
-                    >{favMap[w.id] ? '⭐' : '☆'}</button>
+            {words.map((w, i) => {
+              const isFlipped = !!flippedMap[w.id];
+              return (
+                <div
+                  key={w.id}
+                  className={`flip-card ${isFlipped ? 'flipped' : ''}`}
+                  onClick={() => toggleFlip(w.id)}
+                >
+                  <div className="flip-card-inner">
+                    {/* 正面：单词 */}
+                    <div className="flip-card-front word-card">
+                      <div className="word-card-top">
+                        <span className="word-index">{i + 1}</span>
+                        <div className="word-card-actions" onClick={(e) => e.stopPropagation()}>
+                          <button className="icon-btn" onClick={() => speak(w.word)} title="发音">🔊</button>
+                          <button
+                            className="icon-btn"
+                            onClick={() => toggleFav(w)}
+                            title={favMap[w.id] ? '取消收藏' : '收藏'}
+                          >{favMap[w.id] ? '⭐' : '☆'}</button>
+                        </div>
+                      </div>
+                      <div className="word-card-word">{w.word}</div>
+                      <div className="flip-hint">👆 点击卡片查看释义</div>
+                    </div>
+                    {/* 背面：释义+例句 */}
+                    <div className="flip-card-back word-card word-card-back">
+                      <div className="word-card-top">
+                        <span className="word-index">{i + 1}</span>
+                        <div className="word-card-actions" onClick={(e) => e.stopPropagation()}>
+                          <button className="icon-btn" onClick={() => speak(w.word)} title="发音">🔊</button>
+                          <button
+                            className="icon-btn"
+                            onClick={() => toggleFav(w)}
+                            title={favMap[w.id] ? '取消收藏' : '收藏'}
+                          >{favMap[w.id] ? '⭐' : '☆'}</button>
+                        </div>
+                      </div>
+                      <div className="word-card-word-small">{w.word}</div>
+                      <div className="word-card-meaning">{w.meaning}</div>
+                      {w.example && <div className="word-card-example">📝 {w.example}</div>}
+                      <div className="flip-hint">👆 点击返回单词</div>
+                    </div>
                   </div>
                 </div>
-                <div className="word-card-word">{w.word}</div>
-                <div className="word-card-meaning">{w.meaning}</div>
-                {w.example && <div className="word-card-example">📝 {w.example}</div>}
-              </div>
-            ))}
+              );
+            })}
             {words.length === 0 && <div className="empty-state-small">该词表暂无单词</div>}
           </div>
         </div>
