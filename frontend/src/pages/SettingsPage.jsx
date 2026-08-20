@@ -131,12 +131,13 @@ export default function SettingsPage() {
 
   const getEngineDesc = () => {
     switch (engine) {
-      case TTS_ENGINES.YOUDAO: return '✅ 推荐首选｜有道词典真人发音，清晰清脆不机械，最适合背单词';
-      case TTS_ENGINES.BAIDU_STANDARD: return '✅ 强烈推荐｜百度·新国标英语，符合国家考试标准，咬字清楚权威';
+      case TTS_ENGINES.YOUDAO: return '✅ 单词首选｜有道词典真人发音，清晰清脆不机械，最适合背单词';
+      case TTS_ENGINES.BING: return '🌟 朗诵首选｜微软必应神经发音（Azure Neural），真人级抑扬顿挫，英文课文跟读最佳';
+      case TTS_ENGINES.BAIDU_STANDARD: return '✅ 应试首选｜百度·新国标英语，符合国家考试标准，咬字清楚权威';
+      case TTS_ENGINES.GOOGLE: return 'Google 神经发音，国际主流，自然流畅';
       case TTS_ENGINES.XFYUN: return '讯飞语音，国内知名TTS，清晰自然';
       case TTS_ENGINES.DICTIONARY: return 'DictionaryAPI 真人录音，真实自然（部分词可能没有）';
       case TTS_ENGINES.BROWSER: return '⚠️ 兜底使用｜浏览器内置，无需联网，但可能是系统机械音，音质一般';
-      case TTS_ENGINES.GOOGLE: return 'Google 神经发音，国际主流，自然流畅';
       default: return '';
     }
   };
@@ -227,13 +228,19 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        {(engine === TTS_ENGINES.YOUDAO || engine === TTS_ENGINES.BAIDU_STANDARD || engine === TTS_ENGINES.XFYUN) && engineVoices.length > 0 && (
+        {(engine === TTS_ENGINES.YOUDAO || engine === TTS_ENGINES.BAIDU_STANDARD || engine === TTS_ENGINES.BING || engine === TTS_ENGINES.XFYUN) && engineVoices.length > 0 && (
           <div className="form-group">
             <label>
-              {engine === TTS_ENGINES.YOUDAO ? '有道词典音色' : engine === TTS_ENGINES.BAIDU_STANDARD ? '新国标语音音色' : '讯飞语音音色'}
+              {engine === TTS_ENGINES.YOUDAO
+                ? '有道词典音色'
+                : engine === TTS_ENGINES.BAIDU_STANDARD
+                  ? '新国标语音音色'
+                  : engine === TTS_ENGINES.BING
+                    ? '必应神经发音音色（朗诵效果）'
+                    : '讯飞语音音色'}
             </label>
             <select value={voiceId} onChange={e => changeVoiceId(e.target.value)}>
-              <option value="default">默认音色</option>
+              <option value="default">默认音色（推荐）</option>
               {engineVoices.map(v => (
                 <option key={v.id} value={String(v.id)}>{v.name} ({v.tag})</option>
               ))}
