@@ -867,10 +867,10 @@ app.get('/api/tasks', authMiddleware, async (req, res) => {
       const progressStats = await db.prepare(
         `SELECT 
           COUNT(*) as total_students,
-          SUM(CASE WHEN status = 'tested' THEN 1 ELSE 0 END) as completed_count,
-          SUM(CASE WHEN status = 'studying' THEN 1 ELSE 0 END) as studying_count,
-          SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending_count,
-          AVG(COALESCE(study_progress, 0)) as avg_progress,
+          SUM(CASE WHEN test_score IS NOT NULL OR status = 'tested' THEN 1 ELSE 0 END) as completed_count,
+          SUM(CASE WHEN status = 'studying' AND test_score IS NULL THEN 1 ELSE 0 END) as studying_count,
+          SUM(CASE WHEN status = 'pending' AND test_score IS NULL THEN 1 ELSE 0 END) as pending_count,
+          AVG(CASE WHEN test_score IS NOT NULL OR status = 'tested' THEN 100 ELSE COALESCE(study_progress, 0) END) as avg_progress,
           AVG(CASE WHEN test_score IS NOT NULL THEN test_score END) as avg_score
          FROM task_students WHERE task_id = ?`
       ).get(t.id);
@@ -2303,11 +2303,29 @@ const PORT = process.env.PORT || 3001;
 
 (async () => {
   try {
-    const result = await db.prepare(
+    const r1 = await db.prepare(
+      "UPDATE task_students SET status = 'tested', study_progress = 100 WHERE test_score IS NOT NULL AND status != 'tested'"
+    ).run();
+    if (r1.changes > 0) {
+      console.log(`[数据修复] 修复了 ${r1.changes} 条有分数但状态不正确的记录`);
+    }
+
+    const r2 = await db.prepare(
       "UPDATE task_students SET study_progress = 100 WHERE status = 'tested' AND study_progress < 100"
     ).run();
-    if (result.changes > 0) {
-      console.log(`[数据修复] 更新了 ${result.changes} 条已测试但进度未更新的记录`);
+    if (r2.changes > 0) {
+      console.log(`[数据修复] 更新了 ${r2.changes} 条已测试但进度未更新的记录`);
+    }
+
+    const r3 = await db.prepare(
+      "UPDATE task_students SET status = 'tested', study_progress = 100 WHERE test_score IS NOT NULL"
+    ).run();
+    if (r3.changes > 0) {
+      console.log(`[数据修复] 共修复 ${r3.changes} 条有分数的记录状态`);
+    }
+
+    if (r1.changes === 0 && r2.changes === 0 && r3.changes === 0) {
+      console.log('[数据修复] 数据状态正常，无需修复');
     }
   } catch (e) {
     console.error('[数据修复] 进度修复失败:', e.message);
