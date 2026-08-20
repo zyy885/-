@@ -88,6 +88,12 @@ export default function StudentDashboard() {
 
   return (
     <div className="dashboard">
+      <div className="page-bg-animation">
+        <div className="bg-blob bg-blob-1"></div>
+        <div className="bg-blob bg-blob-2"></div>
+        <div className="bg-blob bg-blob-3"></div>
+      </div>
+
       <div className="top-row">
         <div className="checkin-section" style={{ flex: 1, minWidth: 0 }}>
           <div className="checkin-card" style={{ background: rank ? `linear-gradient(135deg, ${rank.color} 0%, #764ba2 100%)` : undefined }}>

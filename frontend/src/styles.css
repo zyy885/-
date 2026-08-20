@@ -3675,3 +3675,619 @@ html {
     font-size: 24px;
   }
 }
+
+/* ========== 全局动态效果增强 ========== */
+
+/* 页面进入淡入动画 */
+.dashboard,
+.task-manage,
+.word-browse-page,
+.study-page,
+.test-page,
+.progress-view,
+.word-manage,
+.settings-page,
+.self-select-page,
+.student-profile,
+.comments-page {
+  animation: pageFadeIn 0.4s ease-out;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 卡片交错入场 */
+.card-grid .card {
+  animation: cardSlideUp 0.4s ease-out backwards;
+}
+
+.card-grid .card:nth-child(1) { animation-delay: 0.05s; }
+.card-grid .card:nth-child(2) { animation-delay: 0.1s; }
+.card-grid .card:nth-child(3) { animation-delay: 0.15s; }
+.card-grid .card:nth-child(4) { animation-delay: 0.2s; }
+.card-grid .card:nth-child(5) { animation-delay: 0.25s; }
+.card-grid .card:nth-child(6) { animation-delay: 0.3s; }
+
+@keyframes cardSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 顶部卡片交错入场 */
+.top-row > div {
+  animation: cardSlideUp 0.5s ease-out backwards;
+}
+
+.top-row > div:nth-child(1) { animation-delay: 0.1s; }
+.top-row > div:nth-child(2) { animation-delay: 0.2s; }
+
+/* 打卡按钮脉冲动画 */
+.checkin-btn.btn-primary:not(:disabled) {
+  animation: checkinPulse 2s ease-in-out infinite;
+}
+
+@keyframes checkinPulse {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.5);
+  }
+}
+
+/* 等级图标悬浮 */
+.rank-icon-wrap {
+  transition: transform 0.3s ease;
+  animation: floatIcon 3s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.rank-icon-wrap:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* 等级徽章闪烁 */
+.rank-badge-sm {
+  animation: badgeGlow 2s ease-in-out infinite;
+}
+
+@keyframes badgeGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 12px 4px rgba(255, 255, 255, 0.6);
+  }
+}
+
+/* 进度条平滑动画 */
+.progress-bar {
+  transition: height 0.3s ease;
+}
+
+.progress-fill {
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* 标题渐入 */
+.dashboard h2,
+.dashboard h3,
+.page-header h2,
+.section-title {
+  animation: titleFadeIn 0.5s ease-out;
+}
+
+@keyframes titleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 列表项动画 */
+.word-table tr,
+.progress-table tr,
+.rank-item {
+  animation: rowFadeIn 0.3s ease-out backwards;
+}
+
+.word-table tr:nth-child(1),
+.progress-table tr:nth-child(1),
+.rank-item:nth-child(1) { animation-delay: 0.05s; }
+.word-table tr:nth-child(2),
+.progress-table tr:nth-child(2),
+.rank-item:nth-child(2) { animation-delay: 0.1s; }
+.word-table tr:nth-child(3),
+.progress-table tr:nth-child(3),
+.rank-item:nth-child(3) { animation-delay: 0.15s; }
+.word-table tr:nth-child(4),
+.progress-table tr:nth-child(4),
+.rank-item:nth-child(4) { animation-delay: 0.2s; }
+.word-table tr:nth-child(5),
+.progress-table tr:nth-child(5),
+.rank-item:nth-child(5) { animation-delay: 0.25s; }
+.word-table tr:nth-child(6),
+.progress-table tr:nth-child(6),
+.rank-item:nth-child(6) { animation-delay: 0.3s; }
+.word-table tr:nth-child(7),
+.progress-table tr:nth-child(7),
+.rank-item:nth-child(7) { animation-delay: 0.35s; }
+.word-table tr:nth-child(8),
+.progress-table tr:nth-child(8),
+.rank-item:nth-child(8) { animation-delay: 0.4s; }
+
+@keyframes rowFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 导航栏顶部渐变动画 */
+.navbar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* 深色模式导航栏 */
+body.theme-dark .navbar {
+  animation: gradientShiftDark 8s ease infinite;
+}
+
+@keyframes gradientShiftDark {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* 考研倒计时数字动画 */
+.kaoyan-num {
+  animation: countPulse 1s ease-in-out infinite;
+}
+
+@keyframes countPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* 按钮涟漪效果 */
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+  opacity: 0;
+}
+
+.btn-primary:active::after {
+  width: 200px;
+  height: 200px;
+  opacity: 0;
+}
+
+/* 单词卡片悬浮光泽 */
+.word-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+  transition: left 0.5s ease;
+  pointer-events: none;
+}
+
+.word-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.word-card:hover::before {
+  left: 100%;
+}
+
+/* 标签云/标签条动画 */
+.welcome-emoji {
+  display: inline-block;
+}
+
+/* 统计数字滚动 */
+.stat-num,
+.mini-stat-num {
+  animation: numberBounce 0.6s ease-out;
+}
+
+@keyframes numberBounce {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 评分圆环发光 */
+.score-circle {
+  animation: scoreGlow 2s ease-in-out infinite;
+}
+
+@keyframes scoreGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(102, 126, 234, 0.5);
+  }
+}
+
+/* 复选框选中动画 */
+.checkbox-item input[type="checkbox"] {
+  transition: transform 0.2s ease;
+}
+
+.checkbox-item input[type="checkbox"]:checked {
+  animation: checkPop 0.3s ease;
+}
+
+@keyframes checkPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* 选项按钮悬浮 */
+.choice-btn {
+  transition: all 0.25s ease;
+}
+
+.choice-btn:hover {
+  transform: translateX(4px);
+  border-color: #667eea;
+  background: linear-gradient(90deg, rgba(102, 126, 234, 0.05), transparent);
+}
+
+.choice-btn.correct {
+  animation: correctFlash 0.5s ease;
+}
+
+.choice-btn.wrong {
+  animation: wrongShake 0.5s ease;
+}
+
+@keyframes correctFlash {
+  0%, 100% { background: #dcfce7; }
+  50% { background: #bbf7d0; }
+}
+
+@keyframes wrongShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* 页面加载骨架屏闪烁 */
+.loading {
+  animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #667eea, #764ba2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #5a67d8, #6b46a1);
+}
+
+/* 页面切换过渡 */
+.page-transition-enter {
+  animation: pageEnter 0.3s ease-out;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== 首页动态背景 ========== */
+.dashboard {
+  position: relative;
+  min-height: calc(100vh - 140px);
+}
+
+.page-bg-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bg-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.3;
+  animation: blobFloat 20s ease-in-out infinite;
+}
+
+.bg-blob-1 {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.bg-blob-2 {
+  width: 250px;
+  height: 250px;
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  top: 50%;
+  right: 5%;
+  animation-delay: 5s;
+}
+
+.bg-blob-3 {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  bottom: 10%;
+  left: 30%;
+  animation-delay: 10s;
+}
+
+@keyframes blobFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  50% {
+    transform: translate(-20px, 20px) scale(0.95);
+  }
+  75% {
+    transform: translate(-30px, -10px) scale(1.05);
+  }
+}
+
+.dashboard > *:not(.page-bg-animation) {
+  position: relative;
+  z-index: 1;
+}
+
+body.theme-dark .bg-blob {
+  opacity: 0.15;
+}
+
+/* ========== 页面背景粒子效果 ========== */
+.app::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(240, 147, 251, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.main-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* ========== 登录页动态效果 ========== */
+.auth-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at 30% 70%,
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 40%
+  );
+  animation: authBgSpin 30s linear infinite;
+}
+
+@keyframes authBgSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.auth-card {
+  animation: authCardEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes authCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.auth-title {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 登录表单输入框聚焦动画 */
+.auth-form .form-group input:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+}
+
+.auth-form .btn-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-form .btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: btnShimmer 2s infinite;
+}
+
+@keyframes btnShimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* ========== 单词页面增强 ========== */
+.flashcard {
+  position: relative;
+  overflow: hidden;
+}
+
+.flashcard::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 50%
+  );
+  animation: flashcardShine 6s ease-in-out infinite;
+}
+
+@keyframes flashcardShine {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-10%, 10%); }
+}
+
+/* ========== 任务卡片增强 ========== */
+.task-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: cardSlideUp 0.4s ease-out backwards;
+}
+
+.task-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2);
+}
+
+.task-card:nth-child(1) { animation-delay: 0.05s; }
+.task-card:nth-child(2) { animation-delay: 0.1s; }
+.task-card:nth-child(3) { animation-delay: 0.15s; }
+.task-card:nth-child(4) { animation-delay: 0.2s; }
+.task-card:nth-child(5) { animation-delay: 0.25s; }
+
+/* ========== 设置页增强 ========== */
+.settings-page .form-group input,
+.settings-page .form-group select {
+  transition: all 0.25s ease;
+}
+
+.settings-page .form-group input:focus,
+.settings-page .form-group select:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
