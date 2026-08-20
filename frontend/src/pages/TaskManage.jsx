@@ -68,6 +68,8 @@ export default function TaskManage() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [filter, setFilter] = useState('all');
+  const [searchText, setSearchText] = useState('');
   const [form, setForm] = useState({
     name: '', word_list_ids: [], deadline: '', test_words_count: 10, test_mode: 'mixed', student_ids: [] });
 
@@ -179,11 +181,70 @@ export default function TaskManage() {
 
   if (loading) return <div className="loading">加载中...</div>;
 
+  const filteredTasks = tasks.filter(task => {
+    const matchFilter = filter === 'all' || task.task_status === filter;
+    const matchSearch = !searchText || task.name.toLowerCase().includes(searchText.toLowerCase());
+    return matchFilter && matchSearch;
+  });
+
+  const statusLabels = {
+    active: { text: '进行中', color: '#3b82f6', bg: '#eff6ff' },
+    completed: { text: '已完成', color: '#10b981', bg: '#ecfdf5' },
+    expired: { text: '已截止', color: '#f59e0b', bg: '#fffbeb' }
+  };
+
   return (
     <div className="task-manage">
       <div className="page-header">
         <h2>任务管理</h2>
         <button className="btn btn-primary" onClick={() => setShowCreate(true)}>+ 发布任务</button>
+      </div>
+
+      <div style={{ display: 'flex', gap: 12, marginBottom: 20, flexWrap: 'wrap', alignItems: 'center' }}>
+        <input
+          type="text"
+          placeholder="🔍 搜索任务名称..."
+          value={searchText}
+          onChange={e => setSearchText(e.target.value)}
+          style={{
+            flex: '1 1 200px',
+            maxWidth: 300,
+            padding: '8px 14px',
+            border: '1.5px solid #e5e7eb',
+            borderRadius: 8,
+            fontSize: 14,
+            outline: 'none',
+            transition: 'all 0.2s'
+          }}
+          onFocus={e => e.target.style.borderColor = '#667eea'}
+          onBlur={e => e.target.style.borderColor = '#e5e7eb'}
+        />
+        <div style={{ display: 'flex', gap: 4, background: '#f3f4f6', borderRadius: 8, padding: 4 }}>
+          {[
+            { key: 'all', label: '全部', count: tasks.length },
+            { key: 'active', label: '进行中', count: tasks.filter(t => t.task_status === 'active').length },
+            { key: 'completed', label: '已完成', count: tasks.filter(t => t.task_status === 'completed').length },
+            { key: 'expired', label: '已截止', count: tasks.filter(t => t.task_status === 'expired').length }
+          ].map(item => (
+            <button
+              key={item.key}
+              onClick={() => setFilter(item.key)}
+              style={{
+                padding: '6px 14px',
+                border: 'none',
+                borderRadius: 6,
+                cursor: 'pointer',
+                fontSize: 13,
+                fontWeight: filter === item.key ? 600 : 400,
+                background: filter === item.key ? '#667eea' : 'transparent',
+                color: filter === item.key ? 'white' : '#6b7280',
+                transition: 'all 0.2s'
+              }}
+            >
+              {item.label} ({item.count})
+            </button>
+          ))}
+        </div>
       </div>
 
       {showCreate && (
@@ -377,27 +438,78 @@ export default function TaskManage() {
         </div>
       )}
 
-      {tasks.length === 0 ? (
-        <div className="empty-state">暂无任务</div>
+      {filteredTasks.length === 0 ? (
+        <div className="empty-state">
+          {tasks.length === 0 ? '暂无任务' : '没有符合条件的任务'}
+        </div>
       ) : (
         <div className="card-grid">
-          {tasks.map(task => (
-            <div key={task.id} className="card">
-              <div className="card-header">
-                <h3>{task.name}</h3>
-                <span className="badge badge-blue">{task.student_count}人</span>
+          {filteredTasks.map(task => {
+            const status = statusLabels[task.task_status] || statusLabels.active;
+            const progress = task.avg_progress || 0;
+            const totalStudents = task.total_students || task.student_count || 0;
+            const completedCount = task.completed_count || 0;
+            const completionRate = totalStudents > 0 ? Math.round((completedCount / totalStudents) * 100) : 0;
+
+            return (
+              <div key={task.id} className="card" style={{ borderTop: `3px solid ${status.color}` }}>
+                <div className="card-header">
+                  <h3 style={{ margin: 0, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{task.name}</h3>
+                  <span style={{
+                    padding: '3px 10px',
+                    borderRadius: 12,
+                    fontSize: 12,
+                    fontWeight: 500,
+                    background: status.bg,
+                    color: status.color,
+                    flexShrink: 0
+                  }}>{status.text}</span>
+                </div>
+                <div className="card-body">
+                  <div style={{ display: 'flex', gap: 12, fontSize: 13, color: '#6b7280', marginBottom: 10, flexWrap: 'wrap' }}>
+                    <span>👥 {totalStudents}人</span>
+                    <span>📝 {task.test_words_count || 10}题</span>
+                    {task.deadline && (
+                      <span style={{ color: new Date(task.deadline) < new Date() ? '#ef4444' : '#6b7280' }}>
+                        🕐 {new Date(task.deadline).toLocaleDateString()}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div style={{ marginBottom: 8 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 4 }}>
+                      <span style={{ color: '#6b7280' }}>完成进度</span>
+                      <span style={{ fontWeight: 600, color: progress >= 80 ? '#10b981' : progress >= 50 ? '#3b82f6' : '#6b7280' }}>
+                        {completedCount}/{totalStudents} 完成 · {completionRate}%
+                      </span>
+                    </div>
+                    <div style={{ height: 8, background: '#e5e7eb', borderRadius: 4, overflow: 'hidden' }}>
+                      <div style={{
+                        height: '100%',
+                        width: `${completionRate}%`,
+                        background: completionRate >= 80 ? 'linear-gradient(90deg, #10b981, #34d399)' : completionRate >= 50 ? 'linear-gradient(90deg, #3b82f6, #60a5fa)' : 'linear-gradient(90deg, #9ca3af, #d1d5db)',
+                        borderRadius: 4,
+                        transition: 'width 0.3s ease'
+                      }} />
+                    </div>
+                  </div>
+                  
+                  {task.avg_score !== null && task.avg_score !== undefined && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#6b7280' }}>
+                      <span>📊 平均分</span>
+                      <span style={{ fontWeight: 600, color: task.avg_score >= 80 ? '#10b981' : task.avg_score >= 60 ? '#f59e0b' : '#ef4444' }}>
+                        {task.avg_score} 分
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="card-footer">
+                  <Link to={`/teacher/tasks/${task.id}/progress`} className="btn btn-outline" style={{ flex: 1 }}>📈 查看详情</Link>
+                  <button className="btn btn-danger btn-sm" onClick={() => remove(task.id)}>删除</button>
+                </div>
               </div>
-              <div className="card-body">
-                <p className="muted">词表：{task.word_list_count > 1 ? `${task.word_list_count} 个词表` : task.word_list_name}</p>
-                <p className="muted">测试题数：{task.test_words_count || 10}</p>
-                {task.deadline && <p className="muted">截止：{new Date(task.deadline).toLocaleString()}</p>}
-              </div>
-              <div className="card-footer">
-                <Link to={`/teacher/tasks/${task.id}/progress`} className="btn btn-outline">查看进度</Link>
-                <button className="btn btn-danger btn-sm" onClick={() => remove(task.id)}>删除</button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

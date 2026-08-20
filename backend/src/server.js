@@ -862,6 +862,41 @@ app.get('/api/tasks', authMiddleware, async (req, res) => {
       totalWords += Number(wc.cnt) || 0;
     }
     const wordListName = names.length > 1 ? `${names.join('、')}` : (names[0] || '未知词表');
+
+    if (req.user.role === 'teacher') {
+      const progressStats = await db.prepare(
+        `SELECT 
+          COUNT(*) as total_students,
+          SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed_count,
+          SUM(CASE WHEN status = 'studying' THEN 1 ELSE 0 END) as studying_count,
+          SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending_count,
+          AVG(COALESCE(study_progress, 0)) as avg_progress,
+          AVG(CASE WHEN test_score IS NOT NULL THEN test_score END) as avg_score
+         FROM task_students WHERE task_id = ?`
+      ).get(t.id);
+      
+      t.total_students = progressStats.total_students || 0;
+      t.completed_count = progressStats.completed_count || 0;
+      t.studying_count = progressStats.studying_count || 0;
+      t.pending_count = progressStats.pending_count || 0;
+      t.avg_progress = Math.round(Number(progressStats.avg_progress) || 0);
+      t.avg_score = progressStats.avg_score ? Math.round(Number(progressStats.avg_score)) : null;
+      
+      const now = new Date();
+      if (t.deadline) {
+        const deadline = new Date(t.deadline);
+        if (t.completed_count >= t.total_students && t.total_students > 0) {
+          t.task_status = 'completed';
+        } else if (deadline < now) {
+          t.task_status = 'expired';
+        } else {
+          t.task_status = 'active';
+        }
+      } else {
+        t.task_status = t.completed_count >= t.total_students && t.total_students > 0 ? 'completed' : 'active';
+      }
+    }
+
     tasksWithNames.push({
       ...t,
       word_list_name: wordListName,
