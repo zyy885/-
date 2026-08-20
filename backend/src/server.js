@@ -58,14 +58,6 @@ runMigrations();
 async function runSeedData() {
   const BOOK_NAME = '「研师」解词';
   try {
-    const existing = await db.prepare(
-      'SELECT id FROM word_books WHERE name = ? LIMIT 1'
-    ).get(BOOK_NAME);
-    if (existing) {
-      console.log(`种子数据: 单词书「${BOOK_NAME}」已存在，跳过导入`);
-      return;
-    }
-
     const teacher = await db.prepare(
       "SELECT id FROM users WHERE role = 'teacher' LIMIT 1"
     ).get();
@@ -74,11 +66,21 @@ async function runSeedData() {
       return;
     }
 
-    const bookInfo = await db.prepare(
-      'INSERT INTO word_books (name, description, cover_color, is_public, teacher_id) VALUES (?, ?, ?, ?, ?)'
-    ).run(BOOK_NAME, '考研英语词汇学习', '#8B5CF6', isPG ? true : 1, teacher.id);
-    const bookId = bookInfo.lastInsertRowid;
-    console.log(`种子数据: 创建单词书「${BOOK_NAME}」(ID: ${bookId})`);
+    const existing = await db.prepare(
+      'SELECT id FROM word_books WHERE name = ? LIMIT 1'
+    ).get(BOOK_NAME);
+    
+    let bookId;
+    if (existing) {
+      bookId = existing.id;
+      console.log(`种子数据: 单词书「${BOOK_NAME}」已存在(ID: ${bookId})，检查缺失的词表...`);
+    } else {
+      const bookInfo = await db.prepare(
+        'INSERT INTO word_books (name, description, cover_color, is_public, teacher_id) VALUES (?, ?, ?, ?, ?)'
+      ).run(BOOK_NAME, '考研英语词汇学习', '#8B5CF6', isPG ? true : 1, teacher.id);
+      bookId = bookInfo.lastInsertRowid;
+      console.log(`种子数据: 创建单词书「${BOOK_NAME}」(ID: ${bookId})`);
+    }
 
     const parts = [
       {
@@ -117,11 +119,11 @@ async function runSeedData() {
         name: 'PART 03 · 基础唤醒词汇',
         description: '基础唤醒词汇 10 词',
         words: [
-          { word: 'hunger', meaning: 'n. 饥饿；v. 渴望', example: 'hunger marketing\ndie of hunger\nhunger for sth/sb\nStudents in remote areas hunger for knowledge.' },
+          { word: 'hunger', meaning: 'n. 饥饿；v. 渴望', example: 'hunger marketing\ndie of hunger for food\nStudents in remote areas hunger for education.' },
           { word: 'explain', meaning: 'v. 说明，解释', example: 'It was difficult to explain the problem to her.' },
-          { word: 'rich', meaning: 'adj. 富有的，富裕的', example: 'a rich man\nrich culture\nbe rich in...' },
-          { word: 'nature', meaning: 'n. 自然，天性', example: 'human nature\nin nature\nby nature' },
-          { word: 'climate', meaning: 'n. 气候，风气', example: 'global climate\nsocial climate\nclimate change' },
+          { word: 'rich', meaning: 'adj. 富有的，富裕的', example: 'a rich man\nbe rich in...' },
+          { word: 'nature', meaning: 'n. 自然，天性', example: 'human nature\nby nature' },
+          { word: 'climate', meaning: 'n. 气候，风气', example: 'global climate\nclimate change' },
           { word: 'tiny', meaning: 'adj. 极小的', example: 'a tiny baby' },
           { word: 'excite', meaning: 'v. 使…激动', example: 'The news excites me.' },
           { word: 'ease', meaning: 'v. 减轻，缓和\nn. 安逸；容易', example: 'We eased our relationship\na life of ease' },
@@ -147,7 +149,17 @@ async function runSeedData() {
       'INSERT INTO words (word_list_id, word, meaning, example, sort_order) VALUES (?, ?, ?, ?, ?)'
     );
 
+    let addedCount = 0;
     for (const part of parts) {
+      const existingList = await db.prepare(
+        'SELECT id FROM word_lists WHERE name = ? AND word_book_id = ? LIMIT 1'
+      ).get(part.name, bookId);
+      
+      if (existingList) {
+        console.log(`种子数据: 词表 "${part.name}" 已存在，跳过`);
+        continue;
+      }
+
       const listInfo = await db.prepare(
         'INSERT INTO word_lists (name, description, word_book_id, teacher_id, sort_order) VALUES (?, ?, ?, ?, ?)'
       ).run(part.name, part.description, bookId, teacher.id, 0);
@@ -159,8 +171,9 @@ async function runSeedData() {
         await insertWordStmt.run(listId, w.word, w.meaning, w.example || '', i + 1);
       }
       console.log(`  插入 ${part.words.length} 个单词`);
+      addedCount++;
     }
-    console.log(`种子数据: 「${BOOK_NAME}」导入完成`);
+    console.log(`种子数据: 「${BOOK_NAME}」导入完成，新增 ${addedCount} 个词表`);
   } catch (e) {
     console.error('种子数据导入出错:', e.message);
   }
