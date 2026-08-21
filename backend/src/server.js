@@ -146,6 +146,22 @@ async function runSeedData() {
           { word: 'power', meaning: 'n. 实力，电能，权力', example: 'economic power\npower plant\nin power' },
           { word: 'prepare', meaning: 'v. 准备', example: 'prepare for' }
         ]
+      },
+      {
+        name: 'PART 05 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'product', meaning: 'n. 产品；产物', example: 'create/develop a new product' },
+          { word: 'data', meaning: 'n. 数据，资料', example: 'historical/personal data\nThis data was collected from 69 countries.' },
+          { word: 'damage', meaning: 'n. 伤害；损毁\nv. 伤害；损毁', example: 'brain/storm/fire damage\nSmoking seriously damages your health.' },
+          { word: 'course', meaning: 'n. 进程；课程', example: 'the course of history\na French course' },
+          { word: 'consider', meaning: 'v. 考虑，认为', example: 'We\'re considering buying a new car.' },
+          { word: 'commodity', meaning: 'n. 商品，货物', example: 'commodity price' },
+          { word: 'new', meaning: 'adj. 新的', example: 'brand new\nnew concept' },
+          { word: 'novel', meaning: 'n. 小说\nadj. 新颖的', example: 'He is working on a new novel.\na novel feature' },
+          { word: 'revise', meaning: 'v. 修改；修订', example: 'revise the policy' },
+          { word: 'government', meaning: 'n. 政府', example: 'local government\ncentral government' }
+        ]
       }
     ];
 
