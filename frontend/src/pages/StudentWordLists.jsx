@@ -3,6 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
 import { speak, preloadWordAudio } from '../utils/speech.js';
 
+const formatExample = (ex) => {
+  if (!ex) return '';
+  return ex.split(/\n+/).map(s => s.trim()).filter(Boolean).join(' / ');
+};
+
 const chineseNumMap = { '零':0, '一':1, '二':2, '两':2, '三':3, '四':4, '五':5, '六':6, '七':7, '八':8, '九':9, '十':10, '百':100, '千':1000, '万':10000 };
 const chineseToNum = (s) => {
   s = s.trim();
@@ -348,7 +353,7 @@ export default function StudentWordLists() {
                       </div>
                       <div className="word-card-word-small">{w.word}</div>
                       <div className="word-card-meaning">{w.meaning}</div>
-                      {w.example && <div className="word-card-example">📝 {w.example}</div>}
+                      {w.example && <div className="word-card-example">📝 {formatExample(w.example)}</div>}
                       <div className="flip-hint">👆 点击返回单词</div>
                     </div>
                   </div>

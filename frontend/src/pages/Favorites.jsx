@@ -3,6 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
 import { speak } from '../utils/speech.js';
 
+const formatExample = (ex) => {
+  if (!ex) return '';
+  return ex.split(/\n+/).map(s => s.trim()).filter(Boolean).join(' / ');
+};
+
 export default function Favorites() {
   const navigate = useNavigate();
   const [words, setWords] = useState([]);
@@ -55,7 +60,7 @@ export default function Favorites() {
                   <td>{i + 1}</td>
                   <td><strong>{w.word}</strong></td>
                   <td>{w.meaning}</td>
-                  <td className="muted small">{w.example || '-'}</td>
+                  <td className="muted small">{w.example ? formatExample(w.example) : '-'}</td>
                   <td>
                     <button className="icon-btn" onClick={() => speak(w.word)} title="发音">🔊</button>
                     <button

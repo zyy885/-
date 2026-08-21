@@ -3,6 +3,11 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { api } from '../api.js';
 import { speak, speakSentence, getExampleFromDictionary, translateText, stopAll } from '../utils/speech.js';
 
+const formatExample = (ex) => {
+  if (!ex) return '';
+  return ex.split(/\n+/).map(s => s.trim()).filter(Boolean).join(' / ');
+};
+
 export default function StudyPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -136,7 +141,7 @@ export default function StudyPage() {
 
   const firstLetterHint = word.word.charAt(0).toUpperCase() + '... (' + word.word.length + '个字母)';
   const syllableHint = word.word.replace(/[^aeiouAEIOU]/g, '').length + ' 个元音';
-  const effectiveExample = word.example || fetchedExamples[word.id] || '';
+  const effectiveExample = formatExample(word.example || fetchedExamples[word.id] || '');
   const exampleWithBlank = effectiveExample
     ? effectiveExample.replace(new RegExp('\\b' + word.word + '\\b', 'gi'), '______')
     : '';

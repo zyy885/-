@@ -3,6 +3,11 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { api } from '../api.js';
 import { speak } from '../utils/speech.js';
 
+const formatExample = (ex) => {
+  if (!ex) return '';
+  return ex.split(/\n+/).map(s => s.trim()).filter(Boolean).join(' / ');
+};
+
 export default function TestPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -115,7 +120,7 @@ export default function TestPage() {
             >🔊</button>
           )}
         </div>
-        {word.example && qType === 'en_to_zh' && <p className="muted test-example">例句：{word.example}</p>}
+        {word.example && qType === 'en_to_zh' && <p className="muted test-example">例句：{formatExample(word.example)}</p>}
         <input
           className="test-input"
           placeholder={qType === 'en_to_zh' ? '请输入中文释义' : '请输入英文单词'}

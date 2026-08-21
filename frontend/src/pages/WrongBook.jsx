@@ -3,6 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
 import { speak } from '../utils/speech.js';
 
+const formatExample = (ex) => {
+  if (!ex) return '';
+  return ex.split(/\n+/).map(s => s.trim()).filter(Boolean).join(' / ');
+};
+
 export default function WrongBook() {
   const navigate = useNavigate();
   const [words, setWords] = useState([]);
@@ -95,7 +100,7 @@ export default function WrongBook() {
           {showMeaning ? (
             <>
               <div className="review-meaning">{current.meaning}</div>
-              {current.example && <div className="review-example">📝 {current.example}</div>}
+              {current.example && <div className="review-example">📝 {formatExample(current.example)}</div>}
             </>
           ) : (
             <div className="review-hint">👆 点击查看释义</div>
