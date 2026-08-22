@@ -402,6 +402,166 @@ async function runSeedData() {
           { word: 'include', meaning: 'v. 包含, 包括', example: 'The hotel room charge includes breakfast.' },
           { word: 'exclude', meaning: 'v. 不包括; 拒(某人)于(某地、活动)之外', example: 'She is excluded by her classmates.' }
         ]
+      },
+      {
+        name: 'PART 21 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'replace', meaning: 'v. 代替', example: 'Will robots replace humans in the workplace?' },
+          { word: 'total', meaning: 'adj. 总计的; 总的\nn. 总共', example: 'Total losses were $800.\nThere are 500 students in total.' },
+          { word: 'survive', meaning: 'v. 幸存', example: 'survive the crisis\nIn the crash, only two people survived.' },
+          { word: 'landscape', meaning: 'n. 风景', example: 'natural landscape\ncultural landscape' },
+          { word: 'port', meaning: 'n. 港口; 港口城市', example: 'Rotterdam is a major port.' },
+          { word: 'era', meaning: 'n. 时代; 年代', example: 'in an information era' },
+          { word: 'grateful', meaning: 'adj. 感激的', example: 'I am deeply grateful to my parents.' },
+          { word: 'current', meaning: 'adj. 目前的; 当前的', example: 'the current economic situation\nits current leader' },
+          { word: 'apply', meaning: 'v. 申请; 应用', example: 'I want to apply for this job.' },
+          { word: 'graph', meaning: 'n. 图表', example: 'bar graph\nline graph' }
+        ]
+      },
+      {
+        name: 'PART 22 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'honor', meaning: 'n. 荣耀; 荣誉; 荣幸', example: 'This is a great honor for me.' },
+          { word: 'average', meaning: 'adj. 普通的; 平均的', example: 'average people\nat an average speed of 100 miles per hour' },
+          { word: 'attract', meaning: 'v. 吸引', example: 'attract attention\nattract buyers/customers' },
+          { word: 'geology', meaning: 'n. 地质学', example: 'the development of geology' },
+          { word: 'disappoint', meaning: 'v. 使...失望', example: 'The author is disappointed at the present situation.\nPeople feel disappointed at the realities.' },
+          { word: 'describe', meaning: 'v. 描述', example: 'His manner can be described as being polite.' },
+          { word: 'ladder', meaning: 'n. 梯子; 阶梯, 途径', example: 'climb the social ladder\nthe ladder of success' },
+          { word: 'purchase', meaning: 'n. 购买\nv. 购买, 采购', example: 'online purchase\nMore than 60,000 people have purchased the PTKs.' },
+          { word: 'simply', meaning: 'adv. 仅仅; 简直', example: 'It simply didn\'t foresee what would happen next.' },
+          { word: 'origin', meaning: 'n. 起源', example: 'the origin of the universe' }
+        ]
+      },
+      {
+        name: 'PART 23 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'forth', meaning: 'adv. 向前, 向外', example: 'back and forth' },
+          { word: 'struggle', meaning: 'n. 斗争; 奋斗\nv. 努力; 斗争', example: 'a struggle for independence\nstruggle against cancer' },
+          { word: 'privacy', meaning: 'n. 隐私', example: 'digital privacy\nprivacy protection' },
+          { word: 'deprive', meaning: 'v. 剥夺', example: 'They are deprived of their independence.' },
+          { word: 'postpone', meaning: 'v. 延期; 延迟', example: 'The meeting has been postponed to Friday.' },
+          { word: 'suitable', meaning: 'adj. 合适的', example: 'a suitable place for a picnic' },
+          { word: 'chapter', meaning: 'n. 章, 回', example: 'in the next/last chapter' },
+          { word: 'visual', meaning: 'adj. 视觉的', example: 'a visual impact' },
+          { word: 'privilege', meaning: 'n. 特权', example: 'the privileges granted by the Queen' },
+          { word: 'legal', meaning: 'adj. 法律的; 合法的', example: 'the legal system' }
+        ]
+      },
+      {
+        name: 'PART 24 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'sell', meaning: 'v. 卖; 出售', example: 'sell product\nsell DNA tests' },
+          { word: 'arrival', meaning: 'n. 到来; 到达者', example: 'All students are friendly with new arrivals.' },
+          { word: 'stream', meaning: 'n. 溪流; 一连串', example: 'a large stream of words' },
+          { word: 'sudden', meaning: 'adj. 突然的, 意外的\nn. 突然发生', example: 'all of a sudden' },
+          { word: 'sharp', meaning: 'adj. 锋利的; 急剧的', example: 'a sharp knife\na sharp pain' },
+          { word: 'astonish', meaning: 'v. 使十分惊讶', example: 'The news astonished everyone.' },
+          { word: 'courage', meaning: 'n. 勇气; 勇敢', example: 'lose courage' },
+          { word: 'athlete', meaning: 'n. 运动员', example: 'Athletes need a good sense of balance.' },
+          { word: 'balloon', meaning: 'n. 气球', example: 'Many children like balloons.' },
+          { word: 'bamboo', meaning: 'n. 竹子', example: 'His chair is made of bamboo.' }
+        ]
+      },
+      {
+        name: 'PART 25 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'hunt', meaning: 'v. 寻找; 狩猎', example: 'She is still hunting for a new job.\nThe dog was trained to hunt.' },
+          { word: 'crowd', meaning: 'n. 人群\nv. 挤满, 塞满', example: 'a crowd of people\nPeople crowd into the street to see the super star.' },
+          { word: 'nerve', meaning: 'n. 神经; 勇气', example: 'get on one\'s nerves\nhave the nerve to do sth.\nlose one\'s nerve' },
+          { word: 'support', meaning: 'n. 支持; 鼓励\nv. 支持; 鼓励', example: 'People in general will support us.' },
+          { word: 'serious', meaning: 'adj. 严重的, 重要的', example: 'The government still faces very serious difficulties.' },
+          { word: 'passage', meaning: 'n. 段落, (法律方面的) 通过', example: 'Read the following passage and answer the questions below.\nFinally, we got the passage of the new law.' },
+          { word: 'tear', meaning: 'n. 眼泪\nv. 撕碎', example: 'Her eyes filled with tears.\nShe tore up the letter.' },
+          { word: 'add', meaning: 'v. 加, 增加, 补充', example: 'add sth to sth\n"And don\'t be late," she added.' },
+          { word: 'dig', meaning: 'v. 挖', example: 'dig a hole\ndig out\ndig into' },
+          { word: 'satisfy', meaning: 'v. 满足, 使满意', example: 'The newspaper cannot satisfy the readers.' }
+        ]
+      },
+      {
+        name: 'PART 26 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'policy', meaning: 'n. 政策, 方针', example: 'public policy\npolicymaker' },
+          { word: 'realize', meaning: 'v. 意识到, 了解; 实现', example: 'He realized his mistake.\nrealize one\'s dream' },
+          { word: 'bite', meaning: 'v. 咬\nn. 咬', example: 'Does your dog bite?\nHe took another bite of apple.' },
+          { word: 'thought', meaning: 'n. 思考, 想法', example: 'have second thoughts\nI have a thought.' },
+          { word: 'cite', meaning: 'v. 引用', example: 'cite a poem\ncite an example' },
+          { word: 'widely', meaning: 'adv. 广泛地', example: 'The song is becoming widely popular.' },
+          { word: 'traditional', meaning: 'adj. 传统的', example: 'traditional dress' },
+          { word: 'certain', meaning: 'adj. 确信的, 肯定的', example: 'Are you certain about this?' },
+          { word: 'erase', meaning: 'v. 擦掉', example: 'He had erased the wrong word.' },
+          { word: 'file', meaning: 'n. 文件\nv. 归档', example: 'download/copy a file\nPlease file the letters.' }
+        ]
+      },
+      {
+        name: 'PART 27 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'innovation', meaning: 'n. 创新', example: 'technological innovation' },
+          { word: 'quantity', meaning: 'n. 量, 数量', example: 'a large/small quantity of sth.\nhuge/vast quantities of food' },
+          { word: 'equal', meaning: 'adj. 相等的', example: 'All men are created equal.' },
+          { word: 'crisis', meaning: 'n. 危机', example: 'a political/financial crisis' },
+          { word: 'boom', meaning: 'n. 繁荣', example: 'an economic boom\nbaby boom' },
+          { word: 'rise', meaning: 'n. 增加\nv. 上升', example: 'the rise in oil prices\nThe sun rises in the east.' },
+          { word: 'decline', meaning: 'v. 下降; 衰退\nn. 下降; 衰退', example: 'a rapid/sharp/gradual decline' },
+          { word: 'core', meaning: 'n. 核; 中心\nadj. 核心的; 主要的', example: 'the earth\'s core\nWe need to concentrate on our core business.' },
+          { word: 'profit', meaning: 'n. 利润; 好处', example: 'make handsome profits\nbring huge profits' },
+          { word: 'response', meaning: 'n. 响应; 反应; 回答', example: 'make no response\nin response to' }
+        ]
+      },
+      {
+        name: 'PART 28 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'blame', meaning: 'v. 责备; 归咎于\nn. 责备; 过失', example: 'I don\'t blame you.\nHe put all the blame on me.' },
+          { word: 'region', meaning: 'n. 地区', example: 'small regions' },
+          { word: 'soil', meaning: 'n. 土壤', example: 'rich/poor soil' },
+          { word: 'bubble', meaning: 'n. 气泡, 泡沫', example: 'bubbles in the job market' },
+          { word: 'school', meaning: 'n. 学校; 学院; 学派', example: 'go to school\nin school\nbusiness school' },
+          { word: 'scholar', meaning: 'n. 学者', example: 'The library attracts thousands of scholars.' },
+          { word: 'argue', meaning: 'v. 争论; 论证', example: 'sb. argue that...' },
+          { word: 'agree', meaning: 'v. 同意', example: 'agree on\nagree to do' },
+          { word: 'fund', meaning: 'n. 基金; 资金\nv. 为...提供资金', example: 'government funds\nThey do not fund research.' },
+          { word: 'line', meaning: 'n. 线条', example: 'a straight line\nline graph' }
+        ]
+      },
+      {
+        name: 'PART 29 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'industry', meaning: 'n. 工业; 行业', example: 'the banking industry' },
+          { word: 'description', meaning: 'n. 描述; 描绘', example: 'a guideline for job description' },
+          { word: 'benefit', meaning: 'n. 益处; 救济金\nv. 获益', example: 'It has brought much benefit to the banking industry.\nbenefit from\nIt will benefit other Asian countries.' },
+          { word: 'defect', meaning: 'n. 缺点, 缺陷', example: 'a hearing defect' },
+          { word: 'enhance', meaning: 'v. 提升, 提高', example: 'enhance his sense of responsibility' },
+          { word: 'collect', meaning: 'v. 收集; 采集; 收藏', example: 'collect stamps\ncollection' },
+          { word: 'admit', meaning: 'v. 承认', example: 'He admitted his mistake.' },
+          { word: 'parallel', meaning: 'adj. 平行的', example: 'parallel lines' },
+          { word: 'believe', meaning: 'v. 相信', example: 'Sagan believes in ghosts.' },
+          { word: 'communicate', meaning: 'v. 交流; 沟通', example: 'Scientists should communicate more with the public.' }
+        ]
+      },
+      {
+        name: 'PART 30 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'figure', meaning: 'n. 人物; 人士; 数字\nv. 弄懂', example: 'a political figure\nWrite the figure \'7\' on the board.\nI can\'t figure out how to do this.' },
+          { word: 'long', meaning: 'adj. 长的; 长期的\nv. 渴望', example: 'She had long dark hair.\nlong for sth.' },
+          { word: 'race', meaning: 'n. 种族; 比赛\nv. 和...比赛', example: 'The Chinese belong to the yellow race.\nwalking race\nrace to do sth.' },
+          { word: 'deepen', meaning: 'v. 加深', example: 'deepen understanding' },
+          { word: 'symbol', meaning: 'n. 符号; 象征', example: 'A heart shape is a symbol of love.' },
+          { word: 'account', meaning: 'n. 账户; 账号\nv. 解释', example: 'I don\'t have a bank account.\naccount for' },
+          { word: 'achieve', meaning: 'v. 实现; 达到', example: 'achieve one\'s goal\nachieve the desired result' },
+          { word: 'separate', meaning: 'v. 分开\nadj. 分开的', example: 'separate sth. from sth.\nseparate bedrooms' },
+          { word: 'select', meaning: 'v. 挑选; 选择', example: 'He was selected for the team.' },
+          { word: 'assist', meaning: 'v. 帮助', example: 'We\'ll do all we can to assist you.' }
+        ]
       }
     ];
 
