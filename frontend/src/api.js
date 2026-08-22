@@ -166,4 +166,8 @@ export const api = {
   trackStudySession: (data) => request('POST', '/study-sessions/track', data),
   updateAvatar: (avatar) => request('PUT', '/me/avatar', { avatar }),
   getVersion: () => request('GET', '/version'),
+  getNotifications: () => request('GET', '/notifications'),
+  getUnreadCount: () => request('GET', '/notifications/unread-count'),
+  readNotification: (id) => request('POST', `/notifications/${id}/read`),
+  readAllNotifications: () => request('POST', '/notifications/read-all'),
 };

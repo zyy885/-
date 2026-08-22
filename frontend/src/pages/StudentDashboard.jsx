@@ -37,11 +37,16 @@ export default function StudentDashboard() {
   const [showKaoyanEdit, setShowKaoyanEdit] = useState(false);
   const [kaoyanInput, setKaoyanInput] = useState(kaoyanDate);
   const [countdown, setCountdown] = useState(calcCountdown(kaoyanDate));
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
     loadAll();
+    loadUnreadCount();
     const t = setInterval(() => setCountdown(calcCountdown(kaoyanDate)), 60000);
-    return () => clearInterval(t);
+    const nt = setInterval(loadUnreadCount, 30000);
+    return () => { clearInterval(t); clearInterval(nt); };
   }, [kaoyanDate]);
 
   const loadAll = async () => {
@@ -58,6 +63,41 @@ export default function StudentDashboard() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadUnreadCount = async () => {
+    try {
+      const data = await api.getUnreadCount();
+      setUnreadCount(data.count || 0);
+    } catch (e) {}
+  };
+
+  const loadNotifications = async () => {
+    try {
+      const data = await api.getNotifications();
+      setNotifications(data.notifications || []);
+    } catch (e) {}
+  };
+
+  const openNotifications = async () => {
+    setShowNotifications(true);
+    await loadNotifications();
+  };
+
+  const handleReadOne = async (id) => {
+    try {
+      await api.readNotification(id);
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: 1 } : n));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (e) {}
+  };
+
+  const handleReadAll = async () => {
+    try {
+      await api.readAllNotifications();
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: 1 })));
+      setUnreadCount(0);
+    } catch (e) {}
   };
 
   const handleCheckin = async () => {
@@ -93,6 +133,50 @@ export default function StudentDashboard() {
         <div className="bg-blob bg-blob-2"></div>
         <div className="bg-blob bg-blob-3"></div>
       </div>
+
+      <div className="notification-bell-wrap">
+        <button className="notification-bell" onClick={openNotifications} title="通知">
+          🔔
+          {unreadCount > 0 && (
+            <span className="notification-badge">{unreadCount > 99 ? '99+' : unreadCount}</span>
+          )}
+        </button>
+      </div>
+
+      {showNotifications && (
+        <div className="modal" onClick={() => setShowNotifications(false)}>
+          <div className="modal-content notification-modal" onClick={e => e.stopPropagation()}>
+            <div className="notification-header">
+              <h3>通知</h3>
+              {unreadCount > 0 && (
+                <button className="btn btn-outline btn-sm" onClick={handleReadAll}>全部已读</button>
+              )}
+            </div>
+            <div className="notification-list">
+              {notifications.length === 0 ? (
+                <div className="empty-state">暂无通知</div>
+              ) : (
+                notifications.map(n => (
+                  <div
+                    key={n.id}
+                    className={'notification-item' + (n.is_read ? ' is-read' : '')}
+                    onClick={() => { if (!n.is_read) handleReadOne(n.id); }}
+                  >
+                    <div className="notification-item-content">{n.content}</div>
+                    <div className="notification-item-time">
+                      {new Date(n.created_at).toLocaleString()}
+                      {!n.is_read && <span className="notification-unread-dot">未读</span>}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            <div className="modal-actions">
+              <button className="btn btn-outline" onClick={() => setShowNotifications(false)}>关闭</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="top-row">
         <div className="checkin-section" style={{ flex: 1, minWidth: 0 }}>

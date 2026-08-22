@@ -1412,7 +1412,14 @@ app.post('/api/tasks', authMiddleware, requireRole('teacher'), async (req, res) 
     const stmt = db.prepare(
       'INSERT OR IGNORE INTO task_students (task_id, student_id) VALUES (?, ?)'
     );
-    for (const sid of student_ids) await stmt.run(taskId, sid);
+    const notifStmt = db.prepare(
+      'INSERT INTO notifications (student_id, task_id, content) VALUES (?, ?, ?)'
+    );
+    const notifContent = `📚 你有新任务「${name}」，请尽快完成`;
+    for (const sid of student_ids) {
+      await stmt.run(taskId, sid);
+      try { await notifStmt.run(sid, taskId, notifContent); } catch (e) {}
+    }
   }
   res.json({ id: taskId });
 });
@@ -1430,6 +1437,49 @@ app.delete('/api/tasks/:id', authMiddleware, requireRole('teacher'), async (req,
   await db.prepare('DELETE FROM tasks WHERE id = ? AND teacher_id = ?').run(req.params.id, req.user.id);
   res.json({ ok: true });
 });
+
+// ============ 通知 API ============
+
+// 获取当前学生的通知列表
+app.get('/api/notifications', authMiddleware, async (req, res) => {
+  if (req.user.role !== 'student') return res.status(403).json({ error: '仅学生可查看通知' });
+  const rows = await db.prepare(
+    `SELECT n.id, n.task_id, n.content, n.is_read, n.created_at,
+            t.name as task_name
+     FROM notifications n
+     LEFT JOIN tasks t ON t.id = n.task_id
+     WHERE n.student_id = ?
+     ORDER BY n.created_at DESC
+     LIMIT 50`
+  ).all(req.user.id);
+  res.json({ notifications: rows });
+});
+
+// 获取未读通知数
+app.get('/api/notifications/unread-count', authMiddleware, async (req, res) => {
+  if (req.user.role !== 'student') return res.status(403).json({ error: '仅学生可查看通知' });
+  const row = await db.prepare(
+    'SELECT COUNT(*) as cnt FROM notifications WHERE student_id = ? AND is_read = 0'
+  ).get(req.user.id);
+  res.json({ count: row.cnt });
+});
+
+// 标记单条通知为已读
+app.post('/api/notifications/:id/read', authMiddleware, async (req, res) => {
+  await db.prepare(
+    'UPDATE notifications SET is_read = 1 WHERE id = ? AND student_id = ?'
+  ).run(req.params.id, req.user.id);
+  res.json({ ok: true });
+});
+
+// 全部标记已读
+app.post('/api/notifications/read-all', authMiddleware, async (req, res) => {
+  await db.prepare(
+    'UPDATE notifications SET is_read = 1 WHERE student_id = ?'
+  ).run(req.user.id);
+  res.json({ ok: true });
+});
+
 
 app.get('/api/tasks/:id/progress', authMiddleware, requireRole('teacher'), async (req, res) => {
   const task = await db.prepare('SELECT * FROM tasks WHERE id = ? AND teacher_id = ?').get(req.params.id, req.user.id);
