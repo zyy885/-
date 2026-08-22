@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../api.js';
+import { formatExample } from '../utils/format.js';
 
 const chineseNumMap = { '零':0, '一':1, '二':2, '两':2, '三':3, '四':4, '五':5, '六':6, '七':7, '八':8, '九':9, '十':10, '百':100, '千':1000, '万':10000 };
 
@@ -1246,7 +1247,7 @@ export default function WordListManage() {
                           <>
                             <td>{w.word}</td>
                             <td>{w.meaning}</td>
-                            <td className="muted small">{w.example || '-'}</td>
+                            <td className="muted small">{w.example ? formatExample(w.example) : '-'}</td>
                             <td>
                               <button className="icon-btn" title="在上方插入" onClick={() => openAddWord({ position: 'before', reference_word_id: w.id })}>⬆️</button>
                               <button className="icon-btn" title="在下方插入" onClick={() => openAddWord({ position: 'after', reference_word_id: w.id })}>⬇️</button>

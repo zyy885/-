@@ -2,11 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
 import { speak } from '../utils/speech.js';
-
-const formatExample = (ex) => {
-  if (!ex) return '';
-  return ex.split(/\n+/).map(s => s.trim()).filter(Boolean).join(' / ');
-};
+import { formatExample } from '../utils/format.js';
 
 export default function WrongBook() {
   const navigate = useNavigate();
