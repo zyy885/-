@@ -242,6 +242,166 @@ async function runSeedData() {
           { word: 'wait', meaning: 'v. 等待；等候', example: 'Wait for me!\nLet\'s wait until the rain stops.' },
           { word: 'blind', meaning: 'adj. 失明的，瞎的', example: 'One of her parents is blind.' }
         ]
+      },
+      {
+        name: 'PART 11 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'borrow', meaning: 'v. 借入, 借用', example: 'May I borrow your newspaper?' },
+          { word: 'method', meaning: 'n. 方法', example: 'a new method of solving the problem' },
+          { word: 'advice', meaning: 'n. 建议, 忠告', example: 'a piece of advice\nHe offered some useful advice.' },
+          { word: 'empty', meaning: 'adj. 空的, 空洞的', example: 'an empty box/glass\nHis room is empty.' },
+          { word: 'cheap', meaning: 'adj. 便宜的, 低劣的', example: 'a cheap restaurant/hotel\nI am going to buy something cheap.' },
+          { word: 'marry', meaning: 'v. 结婚; 嫁; 娶', example: 'Many people choose not to marry.' },
+          { word: 'decide', meaning: 'v. 决定', example: 'He decided to get married.' },
+          { word: 'develop', meaning: 'v. 发展, 培养, 开发', example: 'It is important to develop good study skills.' },
+          { word: 'forest', meaning: 'n. 森林', example: 'a forest fire\nWe need to protect the forest.' },
+          { word: 'main', meaning: 'adj. 主要的', example: 'The main thing is to stay calm.' }
+        ]
+      },
+      {
+        name: 'PART 12 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'painful', meaning: 'adj. 疼痛的', example: 'a painful experience/memory' },
+          { word: 'goal', meaning: 'n. 目标; 球门', example: 'main goal\nHe had only one shot at goal.' },
+          { word: 'media', meaning: 'n. 媒体, 媒介', example: 'the news media\nThe media have a lot of power today.' },
+          { word: 'computer', meaning: 'n. 计算机, 电脑', example: 'a personal computer\na computer program' },
+          { word: 'childhood', meaning: 'n. 幼年, 童年', example: 'She had a happy childhood.' },
+          { word: 'film', meaning: 'n. 电影', example: 'the film industry\nLet\'s stay at home and watch a film.' },
+          { word: 'date', meaning: 'n. 日期; 约会', example: 'What\'s the date today?' },
+          { word: 'guess', meaning: 'v. 猜测; 以为\nn. 猜测; 以为', example: 'Think and guess.' },
+          { word: 'couple', meaning: 'n. 一对(双); 夫妇', example: 'a couple of\nWe went there a couple of years ago.' },
+          { word: 'alone', meaning: 'adj. 单独的\nadv. 独自; 仅仅', example: 'I was alone in the classroom.\nHe lives alone.' }
+        ]
+      },
+      {
+        name: 'PART 13 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'code', meaning: 'n. 密码; 法规', example: 'break a code\ncivil code' },
+          { word: 'light', meaning: 'n. 光, 光线\nadj. 亮的, 轻的, 浅色的\nv. 点燃', example: 'All plants need light and water.\nlight blue eyes\nlight a candle' },
+          { word: 'danger', meaning: 'n. 危险', example: 'in danger of\nSmoking is a serious danger to health.' },
+          { word: 'call', meaning: 'v. 称呼, 打电话', example: 'I\'ll call again later.\nWe call her Alice.' },
+          { word: 'change', meaning: 'v. 改变; 互换\nn. 变化', example: 'The change of seasons.' },
+          { word: 'press', meaning: 'v. 压, 推, 按\nn. 新闻工作者; 出版社', example: 'press a key\npress conference' },
+          { word: 'pressure', meaning: 'n. 压力', example: 'air pressure\nwater pressure\nunder pressure' },
+          { word: 'depress', meaning: 'v. 使沮丧; 使萧条', example: 'Bad weather always depresses me.' },
+          { word: 'impress', meaning: 'v. 给...留下深刻印象', example: 'His words impressed her.' },
+          { word: 'acquire', meaning: 'v. 获得; 收购', example: 'She has acquired a good knowledge of English.' }
+        ]
+      },
+      {
+        name: 'PART 14 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'output', meaning: 'n. 产量, 输出', example: 'data output\neconomic output' },
+          { word: 'invite', meaning: 'v. 邀请', example: 'invite sb. to do sth.\nWho did you invite to the party?' },
+          { word: 'organize', meaning: 'v. 组织; 安排', example: 'organize a meeting/party/trip' },
+          { word: 'confuse', meaning: 'v. 混淆; 使困惑', example: 'People often confuse me and my twin sister.' },
+          { word: 'contribute', meaning: 'v. 贡献; 捐助; 导致', example: 'contribute to...\nEach of us can contribute to the world.' },
+          { word: 'lie', meaning: 'n. 谎言\nv. 说谎; 躺; 坐落在', example: 'tell a lie\nDon\'t lie to me!\nThere is a cat lying on the ground.\nThe town lies on the coast.' },
+          { word: 'rule', meaning: 'n. 规则\nv. 支配; 控制; 判决', example: 'follow/obey/observe the rules\nAt that time John ruled England.' },
+          { word: 'expect', meaning: 'v. 期待', example: 'Don\'t expect me to believe you.' },
+          { word: 'challenge', meaning: 'n. 挑战', example: 'an exciting/interesting challenge' },
+          { word: 'design', meaning: 'n. 设计; 构思\nv. 设计; 构思', example: 'web design\ndesign for...' }
+        ]
+      },
+      {
+        name: 'PART 15 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'prison', meaning: 'n. 监狱', example: 'in prison\nescape from prison' },
+          { word: 'upset', meaning: 'v. 弄翻; 打乱; 使...心烦意乱\nadj. 难过的; 沮丧的', example: 'He upset a bottle of water.\nYou look pretty upset.' },
+          { word: 'handle', meaning: 'v. 处理, 应付', example: 'handle the problem' },
+          { word: 'silent', meaning: 'adj. 沉默的; 寂静的', example: 'keep silent\na silent film' },
+          { word: 'abroad', meaning: 'adv. 在国外', example: 'go abroad\nwork abroad' },
+          { word: 'subject', meaning: 'n. 主题; 科目; 话题\nadj. 易遭受...的; 受...支配的', example: 'English is my favorite subject.\nbe subject to\nFlights are subject to delay because of the fog.' },
+          { word: 'allow', meaning: 'v. 允许; 准许', example: 'allow sb. to do sth.\nHe won\'t allow himself to fail.' },
+          { word: 'promise', meaning: 'v. 许诺; 承诺; 保证\nn. 诺言; 许诺; 承诺', example: 'promise sth. to sb.\npromise sb. sth.\nShe kept her promise to visit them.' },
+          { word: 'express', meaning: 'v. 表达\nn. 快递', example: 'Words cannot express my sadness.\nexpress company' },
+          { word: 'suffer', meaning: 'v. 受苦; 遭受(困难等)', example: 'suffer hunger\nsuffer from' }
+        ]
+      },
+      {
+        name: 'PART 16 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'remain', meaning: 'v. 保持, 仍然', example: 'remain silent\nIt remains to be seen.' },
+          { word: 'young', meaning: 'adj. 幼小的; 年轻的', example: 'young babies\nyoung people' },
+          { word: 'adult', meaning: 'n. 成年人', example: 'a childish adult\nadulthood' },
+          { word: 'similar', meaning: 'adj. 相似的', example: 'We have very similar interests.' },
+          { word: 'construct', meaning: 'v. 建造; 构建, 构想', example: 'CCB\nChina Construction Bank' },
+          { word: 'perfect', meaning: 'adj. 完美的', example: 'Practice makes perfect.' },
+          { word: 'infect', meaning: 'v. 传染; 感染', example: 'people infected with COVID-19' },
+          { word: 'fiction', meaning: 'n. 小说; 虚构', example: 'science fiction' },
+          { word: 'artificial', meaning: 'adj. 人造的; 人工的', example: 'artificial heart' },
+          { word: 'submit', meaning: 'v. 提交; 顺从; 屈服', example: 'submit the form\nsubmit to threats' }
+        ]
+      },
+      {
+        name: 'PART 17 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'patient', meaning: 'adj. 有耐心的\nn. 病人', example: 'We have to be patient.\na cancer patient' },
+          { word: 'shock', meaning: 'n. 震惊; 令人震惊的事\nv. 使...震惊', example: 'It was a great shock to him.\nThe news shocked me.' },
+          { word: 'adopt', meaning: 'v. 采纳; 收养; 领养', example: 'I would like to adopt his plan.\nMy husband wants to adopt a child.' },
+          { word: 'praise', meaning: 'n. 赞扬; 称赞\nv. 赞美; 表扬', example: 'She praised him for his good performance.' },
+          { word: 'infer', meaning: 'v. 推断', example: 'What can we infer from the last paragraph?' },
+          { word: 'differ', meaning: 'v. 不同于', example: 'My views differ from those of my parents.' },
+          { word: 'photo', meaning: 'n. 照片', example: 'He wants to take some photos.' },
+          { word: 'experiment', meaning: 'n. 实验\nv. 做实验', example: 'do an experiment\nexperiment on animals' },
+          { word: 'advise', meaning: 'v. 建议', example: 'advice\nsuggest' },
+          { word: 'error', meaning: 'n. 错误, 误差', example: 'He made an error.' }
+        ]
+      },
+      {
+        name: 'PART 18 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'sight', meaning: 'n. 视野; 景观', example: 'in sight\nout of sight' },
+          { word: 'globe', meaning: 'n. 地球,世界; 地球仪; 球体', example: 'tourists from every corner of the globe\nglobal' },
+          { word: 'system', meaning: 'n. 系统; 制度; 体系', example: 'educational system\nlegal system' },
+          { word: 'tailor', meaning: 'n. 裁缝\nv. 剪裁, 使适合', example: 'The tailor made a new suit for me.\ntailor the program' },
+          { word: 'magic', meaning: 'n. 魔法\nadj. 有魔力的, 不可思议的', example: 'Do you believe in magic?\nIt was a magic moment.' },
+          { word: 'technology', meaning: 'n. 技术', example: 'IT\ninformation technology' },
+          { word: 'final', meaning: 'adj. 最终的; 决定性的', example: 'final exam\nfinal decision\nfinally' },
+          { word: 'fee', meaning: 'n. 费用', example: 'college fee\ncharge a fee' },
+          { word: 'actual', meaning: 'adj. 实际的', example: 'actual income\nactual value' },
+          { word: 'edit', meaning: 'v. 编辑', example: 'the edited version\neditor' }
+        ]
+      },
+      {
+        name: 'PART 19 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'center', meaning: 'n. 中心', example: 'in the center of...\ncity center' },
+          { word: 'importance', meaning: 'n. 重要性', example: 'be of importance\nattach great importance to' },
+          { word: 'surface', meaning: 'n. 表面', example: 'on the surface\nIt seems like a good idea on the surface.' },
+          { word: 'cancel', meaning: 'v. 取消, 终止; 废除, 注销', example: 'All flights have been cancelled because of bad weather.' },
+          { word: 'private', meaning: 'adj. 私有的', example: 'private property\nprivate companies\nprivacy' },
+          { word: 'mislead', meaning: 'v. 误导', example: 'He was misled by her words.' },
+          { word: 'finally', meaning: 'adv. 最终; 决定性地', example: 'They finally lost sight of land.' },
+          { word: 'usual', meaning: 'adj. 通常的; 平常的', example: 'as usual\nusual practice' },
+          { word: 'loss', meaning: 'n. 损失; 减少; 亏损', example: 'a sense of loss\nloss of life\nat a loss' },
+          { word: 'dislike', meaning: 'v. 不喜欢', example: 'Why do old people dislike new music?' }
+        ]
+      },
+      {
+        name: 'PART 20 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'broad', meaning: 'adj. 广泛的; 宽的', example: 'The agreement won broad support.' },
+          { word: 'campus', meaning: 'n. (大学)校园', example: 'The campus of Harvard University is very beautiful.' },
+          { word: 'affect', meaning: 'v. 影响', example: 'This article will affect my thinking.' },
+          { word: 'effect', meaning: 'n. 影响; 效果; 作用', example: 'side effect\nin effect' },
+          { word: 'directly', meaning: 'adv. 直接地; 立即', example: 'Please answer my question directly.' },
+          { word: 'balance', meaning: 'n. 平衡; 天平\nv. 使(在某物上)保持平衡', example: 'keep a balance between work and relaxation\nkeep ecology in balance\nShe tries to balance home life and career.' },
+          { word: 'permit', meaning: 'v. 许可; 允许\nn. 许可证', example: 'We do not permit smoking in the room.\nDo you need a permit to work here?' },
+          { word: 'conclude', meaning: 'v. 得出结论', example: 'What do you conclude from that?' },
+          { word: 'include', meaning: 'v. 包含, 包括', example: 'The hotel room charge includes breakfast.' },
+          { word: 'exclude', meaning: 'v. 不包括; 拒(某人)于(某地、活动)之外', example: 'She is excluded by her classmates.' }
+        ]
       }
     ];
 
