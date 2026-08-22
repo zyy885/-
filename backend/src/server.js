@@ -162,6 +162,86 @@ async function runSeedData() {
           { word: 'revise', meaning: 'v. 修改；修订', example: 'revise the policy' },
           { word: 'government', meaning: 'n. 政府', example: 'local government\ncentral government' }
         ]
+      },
+      {
+        name: 'PART 06 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'author', meaning: 'n. 作者', example: 'best-selling author' },
+          { word: 'work', meaning: 'v. 工作；起作用\nn. 工作；作品', example: 'I\'ve always worked in education.\nIt works.\nBeethoven\'s piano works' },
+          { word: 'ordinary', meaning: 'adj. 普通的；平凡的；平常的', example: 'ordinary people\nThis is an ordinary meeting.' },
+          { word: 'continent', meaning: 'n. 大陆，洲，陆地', example: 'the continent of Asia' },
+          { word: 'hire', meaning: 'v. 雇佣；租借', example: 'hire a worker' },
+          { word: 'undergo', meaning: 'v. 经历', example: 'undergo tests\nShe underwent much suffering during her childhood.' },
+          { word: 'quality', meaning: 'n. 质量；素质', example: 'high quality\nquality of life\npersonal qualities' },
+          { word: 'monitor', meaning: 'n. 监控器；班长', example: 'a heart monitor\nclass monitor' },
+          { word: 'value', meaning: 'n. 价值；价值观\nv. 重视', example: 'moral values\nI really value your suggestions.' },
+          { word: 'rate', meaning: 'n. 比率；速度\nv. 评价', example: 'growth rate\na high rate of unemployment\nrate sth. as sth.\nThe show was rated (as) a success.' }
+        ]
+      },
+      {
+        name: 'PART 07 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'against', meaning: 'prep. 违反；以…为背景', example: 'against the law\nagainst the background of...' },
+          { word: 'rest', meaning: 'n. 休息；剩余部分\nv. 依靠', example: 'have a rest\nthe rest of the day\nrest on...' },
+          { word: 'voice', meaning: 'n. 声音；意见\nv. 表达', example: 'The Voice of China\nhave a voice in...\nvoice concern about...' },
+          { word: 'smile', meaning: 'n. 微笑\nv. 微笑', example: 'with a smile\nShe smiled at him and he smiled back.' },
+          { word: 'wear', meaning: 'v. 穿戴\nn. 磨损', example: 'wear a tie\nwear and tear' },
+          { word: 'street', meaning: 'n. 街道', example: 'The bank is just across the street.' },
+          { word: 'polite', meaning: 'adj. 有礼貌的；文雅的', example: 'Please be polite to our guests.' },
+          { word: 'need', meaning: 'v. 需要\nn. 需要；必须', example: 'Do you need any help?\nThere is no need for you to get up early tomorrow.' },
+          { word: 'begin', meaning: 'v. 开始，着手', example: 'We began to work on the project in May.' },
+          { word: 'lend', meaning: 'v. 借出；贷款', example: 'Can you lend me your car this evening?' }
+        ]
+      },
+      {
+        name: 'PART 08 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'ancient', meaning: 'adj. 古老的；古代的', example: 'ancient history' },
+          { word: 'peace', meaning: 'n. 和平，太平', example: 'war and peace' },
+          { word: 'war', meaning: 'n. 战争；战争状态', example: 'the Second World War' },
+          { word: 'background', meaning: 'n. 背景', example: 'background information' },
+          { word: 'month', meaning: 'n. 月；月份', example: 'the month of August' },
+          { word: 'problem', meaning: 'n. 问题', example: 'big problems\nfind the answer to the problem' },
+          { word: 'save', meaning: 'v. 拯救；节省\nprep. 除了', example: 'save one\'s life\nsave money\nThey knew nothing about her save her name.' },
+          { word: 'wind', meaning: 'n. 风；气息\nv. 缠绕', example: 'strong/high winds\nwind the bandage around your finger' },
+          { word: 'stop', meaning: 'v. 停止，阻止\nn. 停止；车站', example: 'The car stopped at the traffic lights.\nI get off at the next stop.' },
+          { word: 'message', meaning: 'n. 消息；启示', example: 'leave message' }
+        ]
+      },
+      {
+        name: 'PART 09 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'key', meaning: 'n. 钥匙；关键\nadj. 关键的', example: 'the car keys\nthe key to success\nthe key factor/point' },
+          { word: 'free', meaning: 'adj. 自由的；免费的', example: 'I don\'t have much free time.\nfree ticket\nfree advice' },
+          { word: 'flood', meaning: 'n. 洪水；大量\nv. 淹没；涌入', example: 'flood damage\na flood of complaints\nThe rain flooded the house.\nflood into...' },
+          { word: 'run', meaning: 'v. 奔跑；经营；运转', example: 'Can you run as fast as Mike?\nrun a hotel/school/business' },
+          { word: 'slow', meaning: 'adj. 慢的，缓慢的', example: 'The traffic is heavy and slow.' },
+          { word: 'relax', meaning: 'v. 松弛；放松', example: 'Let\'s just relax and enjoy ourselves.' },
+          { word: 'deep', meaning: 'adj. 深的，深奥的\nadv. 深地', example: 'a deep hole/river\ndeep in the forest' },
+          { word: 'soul', meaning: 'n. 灵魂，心灵', example: 'soul mate\nwith heart and soul' },
+          { word: 'hug', meaning: 'n. 拥抱，紧抱\nv. 拥抱，紧抱', example: 'She gave her mother a big hug.\nhug each other' },
+          { word: 'beach', meaning: 'n. 海滩，河滩', example: 'along the beach' }
+        ]
+      },
+      {
+        name: 'PART 10 · 基础唤醒词汇',
+        description: '基础唤醒词汇 10 词',
+        words: [
+          { word: 'airport', meaning: 'n. 机场；航空站', example: 'Would you meet me at the airport?' },
+          { word: 'style', meaning: 'n. 风格；样式；文体', example: 'a style of management\nThe letter is written in formal style.' },
+          { word: 'tired', meaning: 'adj. 疲劳的；厌倦的', example: 'I\'m too tired even to think.' },
+          { word: 'coach', meaning: 'n. 教练；长途汽车', example: 'a basketball/football/tennis coach\nThey went to Italy on a coach tour.' },
+          { word: 'fog', meaning: 'n. 雾', example: 'The fog disappeared like magic.' },
+          { word: 'always', meaning: 'adv. 总是；始终', example: 'I\'m always at home in the evenings.' },
+          { word: 'face', meaning: 'n. 脸；面部\nv. 面对；面临', example: 'Jack\'s face turned red.\nShe turned and faced him.' },
+          { word: 'bank', meaning: 'n. 银行；岸', example: 'a bank manager\nIt\'s on the north bank of the Thames.' },
+          { word: 'wait', meaning: 'v. 等待；等候', example: 'Wait for me!\nLet\'s wait until the rain stops.' },
+          { word: 'blind', meaning: 'adj. 失明的，瞎的', example: 'One of her parents is blind.' }
+        ]
       }
     ];
 
